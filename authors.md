@@ -7,7 +7,7 @@
 ## Citation
 
 Source:
-[`inst/CITATION`](https://github.com/temuulene/mongolmaps/blob/data-v1/inst/CITATION)
+[`inst/CITATION`](https://github.com/temuulene/mongolmaps/blob/main/inst/CITATION)
 
 Enebish T (2026). *mongolmaps: Maps and Administrative Boundaries of
 Mongolia and Ulaanbaatar*. R package version 0.0.0.9000,
