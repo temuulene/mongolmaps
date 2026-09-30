@@ -56,7 +56,13 @@ test_that("theme_mn() is a ggplot2 theme", {
 test_that("mn_map() snapshots look right", {
   skip_on_cran()
   skip_if_not_installed("vdiffr")
-  vdiffr::expect_doppelganger("aimags labelled", mn_map(mn_aimags(), label = TRUE, caption = FALSE))
+  # ggrepel places labels using font metrics that differ between platforms, so
+  # the picture test uses the deterministic labels drawn without ggrepel.
+  labelled <- local({
+    local_mocked_bindings(is_installed = function(pkg, ...) !identical(pkg, "ggrepel"), .package = "rlang")
+    mn_map(mn_aimags(), label = TRUE, caption = FALSE)
+  })
+  vdiffr::expect_doppelganger("aimags labelled", labelled)
   vdiffr::expect_doppelganger("khoroos of bayangol", mn_map(mn_khoroos(district = "Bayangol"), fill = area_km2, caption = FALSE))
   vdiffr::expect_doppelganger("regions with context", mn_map(mn_regions(), fill = name, context = TRUE, caption = FALSE))
 })
