@@ -119,13 +119,13 @@ credits.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/mn_map.html">mn_map</a></span><span class="op">(</span><span class="fu"><a href="../reference/mn_elevation.html">mn_elevation</a></span><span class="op">(</span><span class="op">)</span>, title <span class="op">=</span> <span class="st">"Elevation (m)"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="fu"><a href="../reference/mn_aimags.html">mn_aimags</a></span><span class="op">(</span><span class="op">)</span>, fill <span class="op">=</span> <span class="cn">NA</span>, colour <span class="op">=</span> <span class="st">"white"</span>, linewidth <span class="op">=</span> <span class="fl">0.2</span><span class="op">)</span></span></code></pre></div>
-<p><img src="terrain-population_files/figure-html/elevation-1.png" class="r-plt" alt="" width="672"></p>
+<p><img src="terrain-population_files/figure-html/elevation-1.png" class="r-plt" alt="" width="1400"></p>
 <p>Shaded relief makes a good background under other layers:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/mn_map.html">mn_map</a></span><span class="op">(</span><span class="fu"><a href="../reference/mn_elevation.html">mn_hillshade</a></span><span class="op">(</span><span class="op">)</span>, caption <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="fu"><a href="../reference/mn_aimags.html">mn_aimags</a></span><span class="op">(</span><span class="op">)</span>, fill <span class="op">=</span> <span class="cn">NA</span>, colour <span class="op">=</span> <span class="st">"white"</span>, linewidth <span class="op">=</span> <span class="fl">0.3</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="fu"><a href="../reference/mn_settlements.html">mn_settlements</a></span><span class="op">(</span>type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"capital"</span>, <span class="st">"aimag_centre"</span><span class="op">)</span><span class="op">)</span>, colour <span class="op">=</span> <span class="st">"firebrick"</span>, size <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></code></pre></div>
-<p><img src="terrain-population_files/figure-html/hillshade-1.png" class="r-plt" alt="" width="672"></p>
+<p><img src="terrain-population_files/figure-html/hillshade-1.png" class="r-plt" alt="" width="1400"></p>
 <p>For one area, 90 m detail:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/mn_map.html">mn_map</a></span><span class="op">(</span><span class="fu"><a href="../reference/mn_elevation.html">mn_hillshade</a></span><span class="op">(</span><span class="st">"90m"</span>, within <span class="op">=</span> <span class="st">"Ulaanbaatar"</span><span class="op">)</span>, caption <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op">+</span></span>
@@ -134,14 +134,14 @@ credits.</p>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Consider using `geom_tile()` instead.</span></span>
 <span><span class="co">#&gt; Raster pixels are placed at uneven horizontal intervals and will be shifted</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Consider using `geom_tile()` instead.</span></span></code></pre></div>
-<p><img src="terrain-population_files/figure-html/bogd-1.png" class="r-plt" alt="" width="672"></p>
+<p><img src="terrain-population_files/figure-html/bogd-1.png" class="r-plt" alt="" width="1400"></p>
 </div>
 <div class="section level2">
 <h2 id="land-cover">Land cover<a class="anchor" aria-label="anchor" href="#land-cover"></a>
 </h2>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/mn_map.html">mn_map</a></span><span class="op">(</span><span class="fu"><a href="../reference/mn_landcover.html">mn_landcover</a></span><span class="op">(</span><span class="op">)</span>, title <span class="op">=</span> <span class="st">"Land cover, 2021"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="terrain-population_files/figure-html/landcover-1.png" class="r-plt" alt="" width="672"></p>
+<p><img src="terrain-population_files/figure-html/landcover-1.png" class="r-plt" alt="" width="1400"></p>
 </div>
 <div class="section level2">
 <h2 id="population">Population<a class="anchor" aria-label="anchor" href="#population"></a>
@@ -153,7 +153,7 @@ example soums:</p>
 <span><span class="va">soums</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mn_zonal.html">mn_zonal</a></span><span class="op">(</span><span class="va">pop</span>, <span class="fu"><a href="../reference/mn_soums.html">mn_soums</a></span><span class="op">(</span><span class="op">)</span>, name <span class="op">=</span> <span class="st">"population"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/mn_map.html">mn_map</a></span><span class="op">(</span><span class="va">soums</span>, fill <span class="op">=</span> <span class="va">population</span> <span class="op">/</span> <span class="va">area_km2</span>, trans <span class="op">=</span> <span class="st">"log10"</span>,</span>
 <span>       title <span class="op">=</span> <span class="st">"People per km2 by soum, 2025 (WorldPop)"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="terrain-population_files/figure-html/population-1.png" class="r-plt" alt="" width="672"></p>
+<p><img src="terrain-population_files/figure-html/population-1.png" class="r-plt" alt="" width="1400"></p>
 </div>
 <div class="section level2">
 <h2 id="protected-areas">Protected areas<a class="anchor" aria-label="anchor" href="#protected-areas"></a>
@@ -165,7 +165,7 @@ is downloaded from UNEP-WCMC on first use:</p>
 <span><span class="fu"><a href="../reference/mn_map.html">mn_map</a></span><span class="op">(</span><span class="fu"><a href="../reference/mn_aimags.html">mn_aimags</a></span><span class="op">(</span><span class="op">)</span>, caption <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">pa</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="va">desig_eng</span><span class="op">)</span>, alpha <span class="op">=</span> <span class="fl">0.6</span>, colour <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="cn">NULL</span>, caption <span class="op">=</span> <span class="fu"><a href="../reference/mn_sources.html">mn_citation</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"admin"</span>, <span class="st">"wdpa"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="terrain-population_files/figure-html/protected-1.png" class="r-plt" alt="" width="672"></p>
+<p><img src="terrain-population_files/figure-html/protected-1.png" class="r-plt" alt="" width="1400"></p>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

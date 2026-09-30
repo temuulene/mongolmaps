@@ -152,7 +152,7 @@ once and cached (see <code><a href="../reference/mn_cache_dir.html">mn_cache_dir
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="fu"><a href="../reference/mn_roads.html">mn_railways</a></span><span class="op">(</span><span class="op">)</span>, colour <span class="op">=</span> <span class="st">"black"</span>, linewidth <span class="op">=</span> <span class="fl">0.6</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="fu"><a href="../reference/mn_roads.html">mn_airports</a></span><span class="op">(</span><span class="op">)</span>, shape <span class="op">=</span> <span class="fl">17</span>, colour <span class="op">=</span> <span class="st">"navy"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"Main roads, railways and airports"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="thematic-layers_files/figure-html/country-1.png" class="r-plt" alt="" width="672"></p>
+<p><img src="thematic-layers_files/figure-html/country-1.png" class="r-plt" alt="" width="1400"></p>
 </div>
 <div class="section level2">
 <h2 id="one-aimag">One aimag<a class="anchor" aria-label="anchor" href="#one-aimag"></a>
@@ -167,7 +167,7 @@ at its border:</p>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="fu"><a href="../reference/mn_roads.html">mn_roads</a></span><span class="op">(</span>within <span class="op">=</span> <span class="va">aimag</span><span class="op">)</span>, colour <span class="op">=</span> <span class="st">"grey30"</span>, linewidth <span class="op">=</span> <span class="fl">0.3</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="fu"><a href="../reference/mn_settlements.html">mn_settlements</a></span><span class="op">(</span>within <span class="op">=</span> <span class="va">aimag</span><span class="op">)</span>, size <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"Khuvsgul: soums, water, roads and soum centres"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="thematic-layers_files/figure-html/khuvsgul-1.png" class="r-plt" alt="" width="672"></p>
+<p><img src="thematic-layers_files/figure-html/khuvsgul-1.png" class="r-plt" alt="" width="1400"></p>
 </div>
 <div class="section level2">
 <h2 id="ulaanbaatar-streets">Ulaanbaatar streets<a class="anchor" aria-label="anchor" href="#ulaanbaatar-streets"></a>
@@ -179,7 +179,7 @@ at its border:</p>
 <span><span class="fu"><a href="../reference/mn_map.html">mn_map</a></span><span class="op">(</span><span class="fu"><a href="../reference/mn_ub.html">mn_khoroos</a></span><span class="op">(</span>district <span class="op">=</span> <span class="va">central</span><span class="op">)</span>, fill <span class="op">=</span> <span class="va">parent_pcode</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">streets</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>linewidth <span class="op">=</span> <span class="va">class</span><span class="op">)</span>, colour <span class="op">=</span> <span class="st">"grey20"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html" class="external-link">scale_linewidth_manual</a></span><span class="op">(</span>values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>main <span class="op">=</span> <span class="fl">0.5</span>, minor <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span>, guide <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="thematic-layers_files/figure-html/ub-1.png" class="r-plt" alt="" width="672"></p>
+<p><img src="thematic-layers_files/figure-html/ub-1.png" class="r-plt" alt="" width="1400"></p>
 </div>
 <div class="section level2">
 <h2 id="credits">Credits<a class="anchor" aria-label="anchor" href="#credits"></a>

@@ -113,7 +113,7 @@ Cyrillic:</p>
 grey:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/mn_map.html">mn_map</a></span><span class="op">(</span><span class="va">cases_map</span>, fill <span class="op">=</span> <span class="va">cases</span><span class="op">)</span></span></code></pre></div>
-<p><img src="joining-data_files/figure-html/small-map-1.png" class="r-plt" alt="" width="504"></p>
+<p><img src="joining-data_files/figure-html/small-map-1.png" class="r-plt" alt="" width="1400"></p>
 </div>
 <div class="section level2">
 <h2 id="nso-tables">NSO tables<a class="anchor" aria-label="anchor" href="#nso-tables"></a>
@@ -140,7 +140,7 @@ ask for and drops the rest with a message.</p>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Joining at the aimag level; dropped 6 rows for larger units (<span style="color: #0000BB;">"country"</span> and</span></span>
 <span><span class="co">#&gt;   <span style="color: #0000BB;">"region"</span>) and 2196 rows for smaller units (<span style="color: #0000BB;">"soum"</span> and <span style="color: #0000BB;">"bag"</span>).</span></span>
 <span><span class="fu"><a href="../reference/mn_map.html">mn_map</a></span><span class="op">(</span><span class="va">aimag_pop</span>, fill <span class="op">=</span> <span class="va">value</span> <span class="op">/</span> <span class="va">area_km2</span>, title <span class="op">=</span> <span class="st">"People per km2, 2025"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="joining-data_files/figure-html/nso-1.png" class="r-plt" alt="" width="504"></p>
+<p><img src="joining-data_files/figure-html/nso-1.png" class="r-plt" alt="" width="1400"></p>
 <p>The same table has soum figures:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">soum_pop</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mn_join.html">mn_join</a></span><span class="op">(</span><span class="va">pop_2025</span>, by <span class="op">=</span> <span class="st">"Region"</span>, level <span class="op">=</span> <span class="st">"soum"</span><span class="op">)</span></span>
@@ -154,7 +154,7 @@ ask for and drops the rest with a message.</p>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Villages and rural bags have NSO codes but no public boundary; see</span></span>
 <span><span class="co">#&gt;   `?mongolmaps::mn_bags()`.</span></span>
 <span><span class="fu"><a href="../reference/mn_map.html">mn_map</a></span><span class="op">(</span><span class="va">soum_pop</span>, fill <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log10</a></span><span class="op">(</span><span class="va">value</span><span class="op">)</span>, title <span class="op">=</span> <span class="st">"Soum population (log10), 2025"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="joining-data_files/figure-html/soums-1.png" class="r-plt" alt="" width="504"></p>
+<p><img src="joining-data_files/figure-html/soums-1.png" class="r-plt" alt="" width="1400"></p>
 </div>
 <div class="section level2">
 <h2 id="several-rows-per-place">Several rows per place<a class="anchor" aria-label="anchor" href="#several-rows-per-place"></a>
@@ -166,7 +166,7 @@ facets:</p>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Joining at the aimag level; dropped 18 rows for larger units (<span style="color: #0000BB;">"country"</span> and</span></span>
 <span><span class="co">#&gt;   <span style="color: #0000BB;">"region"</span>) and 6588 rows for smaller units (<span style="color: #0000BB;">"soum"</span> and <span style="color: #0000BB;">"bag"</span>).</span></span>
 <span><span class="fu"><a href="../reference/mn_map.html">mn_map</a></span><span class="op">(</span><span class="va">pop_years</span>, fill <span class="op">=</span> <span class="va">value</span> <span class="op">/</span> <span class="fl">1000</span><span class="op">)</span> <span class="op">+</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html" class="external-link">facet_wrap</a></span><span class="op">(</span><span class="op">~</span><span class="va">Year</span>, ncol <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></code></pre></div>
-<p><img src="joining-data_files/figure-html/facets-1.png" class="r-plt" alt="" width="504"></p>
+<p><img src="joining-data_files/figure-html/facets-1.png" class="r-plt" alt="" width="1400"></p>
 </div>
 <div class="section level2">
 <h2 id="repeated-soum-names">Repeated soum names<a class="anchor" aria-label="anchor" href="#repeated-soum-names"></a>
