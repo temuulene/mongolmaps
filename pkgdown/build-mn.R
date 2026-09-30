@@ -3,7 +3,8 @@
 # Run from the package root after the English site is built:
 #   Rscript pkgdown/build-mn.R
 # The package must be installed. The Mongolian sources live in pkgdown/mn/:
-# _pkgdown.yml (site settings), index.Rmd (home page) and articles/*.Rmd.
+# _pkgdown.yml (site settings), index.Rmd (home page), articles/*.Rmd and
+# man/*.Rd (reference pages, see pkgdown/mn-reference.R).
 
 root <- normalizePath(".", winslash = "/")
 src <- file.path(root, "pkgdown", "mn")
@@ -24,6 +25,10 @@ dir.create(file.path(tmp, "pkgdown"), showWarnings = FALSE)
 file.copy(file.path(src, "extra.js"), file.path(tmp, "pkgdown", "extra.js"), overwrite = TRUE)
 dir.create(file.path(tmp, "vignettes", "articles"), recursive = TRUE)
 file.copy(list.files(file.path(src, "articles"), full.names = TRUE), file.path(tmp, "vignettes", "articles"))
+
+# Reference pages: Mongolian prose merged into the English help pages.
+source(file.path(root, "pkgdown", "mn-reference.R"), chdir = FALSE)
+translate_man(file.path(tmp, "man"))
 
 # Home page: knit index.Rmd to index.md, with its figures in man/figures/.
 file.copy(file.path(src, "index.Rmd"), file.path(tmp, "index.Rmd"))

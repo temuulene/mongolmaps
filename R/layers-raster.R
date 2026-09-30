@@ -11,7 +11,8 @@
 #' background under other layers.
 #'
 #' @param resolution `"1km"` or `"90m"`.
-#' @param within Area to return (names or codes). Required for `"90m"`.
+#' @param within Area to return (names or codes). Required for the online
+#'   resolutions: `"90m"` elevation and `"10m"` land cover.
 #' @param mask If `TRUE` (default), cells outside Mongolia (or outside
 #'   `within`) are set to `NA`.
 #' @param angle,direction Sun elevation and direction (degrees) for the

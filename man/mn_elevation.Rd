@@ -24,7 +24,8 @@ mn_hillshade(
 \arguments{
 \item{resolution}{\code{"1km"} or \code{"90m"}.}
 
-\item{within}{Area to return (names or codes). Required for \code{"90m"}.}
+\item{within}{Area to return (names or codes). Required for the online
+resolutions: \code{"90m"} elevation and \code{"10m"} land cover.}
 
 \item{mask}{If \code{TRUE} (default), cells outside Mongolia (or outside
 \code{within}) are set to \code{NA}.}

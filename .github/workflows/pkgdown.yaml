@@ -42,6 +42,9 @@ jobs:
           NOT_CRAN: "true"
         run: Rscript pkgdown/build-mn.R
 
+      - name: Check Mongolian reference translations
+        run: Rscript pkgdown/mn-reference.R check
+
       - name: Deploy to GitHub pages
         uses: JamesIves/github-pages-deploy-action@v4
         with:
