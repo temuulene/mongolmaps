@@ -4,6 +4,8 @@
 administrative level.** One package, no downloads to start, and names
 that match however you spell them.
 
+Монгол хэлээр: <https://temuulene.github.io/mongolmaps/mn/>
+
 | Level | Function | Units |
 |----|----|----|
 | Country | [`mn_country()`](https://temuulene.github.io/mongolmaps/reference/mn_country.md) | 1 |
