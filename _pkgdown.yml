@@ -10,6 +10,11 @@ template:
     heading_font: {google: "Inter Tight"}
     code_font: {google: "JetBrains Mono"}
     enable-dark-mode: true
+figures:
+  dev: ragg::agg_png
+  dpi: 150
+  fig.width: 7
+  fig.height: 4.5
 development:
   mode: auto
 navbar:

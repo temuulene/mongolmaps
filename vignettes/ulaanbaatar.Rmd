@@ -13,7 +13,8 @@ knitr::opts_chunk$set(
   comment = "#>",
   fig.width = 7,
   fig.height = 5,
-  dpi = 72,
+  # Sharp figures on the website; small ones in the CRAN package.
+  dpi = if (identical(Sys.getenv("IN_PKGDOWN"), "true")) 200 else 96,
   eval = rlang::is_installed("ggplot2")
 )
 ```

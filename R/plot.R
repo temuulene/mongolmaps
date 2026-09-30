@@ -215,6 +215,19 @@ mn_label_points <- function(x) {
   } else {
     as.character(rlang::eval_tidy(label_q, data = sf::st_drop_geometry(pts)))
   }
+  # With ggrepel, labels are nudged apart where small units crowd together.
+  if (rlang::is_installed("ggrepel")) {
+    xy <- sf::st_coordinates(pts)
+    pts$..x <- xy[, 1]
+    pts$..y <- xy[, 2]
+    return(ggrepel::geom_label_repel(
+      data = sf::st_drop_geometry(pts), ggplot2::aes(x = .data$..x, y = .data$..y, label = .data$..label),
+      size = size, colour = "grey10", fill = ggplot2::alpha("white", 0.75), linewidth = 0,
+      label.padding = ggplot2::unit(0.12, "lines"), box.padding = ggplot2::unit(0.1, "lines"),
+      min.segment.length = 0.3, segment.colour = "grey40", segment.size = 0.25, max.overlaps = Inf,
+      seed = 1
+    ))
+  }
   ggplot2::geom_sf_label(
     data = pts, ggplot2::aes(label = .data$..label),
     size = size, colour = "grey10", fill = "white", alpha = 0.7, linewidth = 0,

@@ -25,7 +25,7 @@ test_that("mn_map() maps numbers and categories to fill scales", {
 test_that("mn_map() adds labels and context layers", {
   p <- mn_map(mn_aimags(), label = TRUE, context = TRUE, caption = "Custom")
   geoms <- purrr::map_chr(p$layers, \(l) class(l$geom)[1])
-  expect_equal(sum(geoms == "GeomLabel"), 1)
+  expect_equal(sum(geoms %in% c("GeomLabel", "GeomLabelRepel")), 1)
   expect_gte(length(p$layers), 5)
   expect_equal(p$labels$caption, "Custom")
   kh <- mn_map(mn_khoroos(district = "Baganuur"), label = TRUE)
@@ -68,4 +68,11 @@ test_that("mn_map() credits Natural Earth when context is drawn", {
 test_that("number labels work without the scales package", {
   local_mocked_bindings(is_installed = function(...) FALSE, .package = "rlang")
   expect_equal(.mm_number_labels(1234567), "1,234,567")
+})
+
+test_that("labels fall back to geom_sf_label() without ggrepel", {
+  local_mocked_bindings(is_installed = function(pkg, ...) pkg != "ggrepel", .package = "rlang")
+  p <- mn_map(mn_aimags(), label = TRUE)
+  expect_s3_class(p$layers[[2]]$geom, "GeomLabel")
+  expect_equal(nrow(ggplot2::layer_data(p, 2)), 22)
 })
