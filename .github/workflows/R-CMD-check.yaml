@@ -35,9 +35,22 @@ jobs:
           r-version: ${{ matrix.config.r }}
           use-public-rspm: true
 
+      # Pin roxygen2 to the version recorded in DESCRIPTION: newer releases
+      # format NAMESPACE differently, which would fail the stale-docs check.
+      - name: Read roxygen2 version from DESCRIPTION
+        id: roxygen
+        run: |
+          version=$(tr -d '\r' < DESCRIPTION | sed -n 's/^Config\/roxygen2\/version: *//p')
+          if [ -z "$version" ]; then
+            echo "::error::Config/roxygen2/version is missing from DESCRIPTION"
+            exit 1
+          fi
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+        shell: bash
+
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
-          extra-packages: any::rcmdcheck, any::roxygen2
+          extra-packages: any::rcmdcheck, roxygen2@${{ steps.roxygen.outputs.version }}
           needs: check
 
       - name: Check Rd files are up to date
