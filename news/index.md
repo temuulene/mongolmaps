@@ -1,8 +1,8 @@
 # Changelog
 
-## mongolmaps 0.0.0.9000
+## mongolmaps 0.1.0
 
-- First version.
+- First CRAN release.
 - Boundaries at every open level, with a shared set of columns:
   [`mn_country()`](https://temuulene.github.io/mongolmaps/reference/mn_country.md),
   [`mn_regions()`](https://temuulene.github.io/mongolmaps/reference/mn_country.md),

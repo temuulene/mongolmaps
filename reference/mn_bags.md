@@ -115,9 +115,17 @@ mn_codes("bag", within = "Khovd")
 #> # ℹ 6 more variables: parent_pcode <chr>, region_pcode <chr>,
 #> #   aimag_pcode <chr>, soum_pcode <chr>, area_km2 <dbl>, has_geometry <lgl>
 
+# Without a bag boundary file, mn_bags() explains how to get one:
+try(mn_bags())
+#> Error in mn_bags() : 
+#>   Bag boundaries are not openly published, so they are not included.
+#> ℹ Ask NSO for them (international@nso.mn), then use `mn_bags(path =
+#>   "bags.gpkg")`.
+#> ℹ Bag codes and names are available now: `mn_codes("bag")`.
+#> ℹ Khoroos of Ulaanbaatar are available now: `mn_khoroos()`.
+
+# With the file from NSO (not run, as the file is not public):
 if (FALSE) { # \dontrun{
-bags <- mn_bags(path = "bags_from_nso.gpkg")
-options(mongolmaps.bags_path = "bags_from_nso.gpkg")
-mn_bags(aimag = "Khovd")
+mn_bags(aimag = "Khovd", path = "bags_from_nso.gpkg")
 } # }
 ```
