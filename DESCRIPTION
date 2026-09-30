@@ -1,6 +1,6 @@
 Package: mongolmaps
 Title: Maps and Administrative Boundaries of Mongolia and Ulaanbaatar
-Version: 0.0.0.9000
+Version: 0.1.0
 Authors@R:
     person("Temuulen", "Enebish", , "temuulen@gmail.com", role = c("aut", "cre", "cph"))
 Description: Ready-to-use 'sf' maps of Mongolia at every openly available

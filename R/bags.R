@@ -33,10 +33,12 @@
 #' # Codes and names of all bags, without boundaries:
 #' mn_codes("bag", within = "Khovd")
 #'
+#' # Without a bag boundary file, mn_bags() explains how to get one:
+#' try(mn_bags())
+#'
+#' # With the file from NSO (not run, as the file is not public):
 #' \dontrun{
-#' bags <- mn_bags(path = "bags_from_nso.gpkg")
-#' options(mongolmaps.bags_path = "bags_from_nso.gpkg")
-#' mn_bags(aimag = "Khovd")
+#' mn_bags(aimag = "Khovd", path = "bags_from_nso.gpkg")
 #' }
 mn_bags <- function(aimag = NULL, soum = NULL, path = getOption("mongolmaps.bags_path"),
                     resolution = c("low", "high"), lang = NULL, crs = NULL) {

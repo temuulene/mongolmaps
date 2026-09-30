@@ -1,4 +1,4 @@
-% source: man/mn_bags.Rd md5 060dbd94181e72a8eab93b097cb57dd6
+% source: man/mn_bags.Rd md5 03bddd8a1bb503494bf72436195cf372
 \title{Баг: хөдөөгийн хамгийн жижиг нэгж}
 \description{
 Баг бол сумын хуваарь; нийт 1,650 орчим баг бий. Тэдгээрийн код, нэр багцад
