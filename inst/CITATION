@@ -1,0 +1,8 @@
+bibentry(
+  bibtype = "Manual",
+  title = "{mongolmaps}: Maps and Administrative Boundaries of Mongolia and Ulaanbaatar",
+  author = person("Temuulen", "Enebish"),
+  year = if (is.null(meta$Date)) format(Sys.Date(), "%Y") else sub("-.*", "", meta$Date),
+  note = paste("R package version", meta$Version),
+  url = "https://github.com/temuulene/mongolmaps"
+)

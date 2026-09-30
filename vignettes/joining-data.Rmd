@@ -1,0 +1,116 @@
+---
+title: "Putting your data on a map"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Putting your data on a map}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.width = 7,
+  fig.height = 4.2,
+  dpi = 72,
+  eval = rlang::is_installed("ggplot2")
+)
+```
+
+```{r setup}
+library(mongolmaps)
+```
+
+The usual workflow has three steps: get a table with one row per place,
+join it to boundaries with `mn_join()`, and draw it with `mn_map()`.
+
+## A small table
+
+Place names can be written any common way, in English or Cyrillic:
+
+```{r small}
+cases <- data.frame(
+  aimag = c("Khovsgol", "Hovd", "\u0423\u0432\u0441", "Ulan Bator", "Dornogobi"),
+  cases = c(12, 30, 7, 140, 9)
+)
+cases_map <- mn_join(cases, by = aimag)
+cases_map[c("name", "cases")]
+```
+
+Every aimag stays in the result, so places without data show up grey:
+
+```{r small-map}
+mn_map(cases_map, fill = cases)
+```
+
+## NSO tables
+
+Tables from the National Statistics Office list several levels in one
+column (the national total, regions, aimags, soums ...). Join them by the
+code column, not the label column: labels such as "Ulaanbaatar" name both a
+region and an aimag. `mn_join()` keeps the level you ask for and drops the
+rest with a message.
+
+```{r nso}
+head(mn_example_population)
+
+pop_2025 <- mn_example_population[mn_example_population$Year == 2025, ]
+aimag_pop <- mn_join(pop_2025, by = "Region", level = "aimag")
+mn_map(aimag_pop, fill = value / area_km2, title = "People per km2, 2025")
+```
+
+The same table has soum figures:
+
+```{r soums}
+soum_pop <- mn_join(pop_2025, by = "Region", level = "soum")
+mn_map(soum_pop, fill = log10(value), title = "Soum population (log10), 2025")
+```
+
+## Several rows per place
+
+Rows for several years give several copies of each polygon, ready for
+facets:
+
+```{r facets, fig.height = 6}
+pop_years <- mn_join(mn_example_population, by = "Region", level = "aimag")
+mn_map(pop_years, fill = value / 1000) + ggplot2::facet_wrap(~Year, ncol = 2)
+```
+
+## Repeated soum names
+
+Many soums share a name. Give each row's aimag with `by_parent`:
+
+```{r parent}
+soums <- data.frame(
+  aimag = c("Dornod", "Govi-Altai", "Khentii"),
+  soum = c("Bayan-Uul", "Bayan-Uul", "Bayan-Adarga"),
+  herders = c(820, 640, 910)
+)
+joined <- mn_join(soums, by = "soum", level = "soum", by_parent = "aimag")
+joined[!is.na(joined$herders), c("name", "aimag_pcode", "herders")]
+```
+
+## Fetching NSO data with mongolstats
+
+The mongolstats package downloads any NSO table. Its `Region` codes work
+directly with `mn_join()`:
+
+```{r mongolstats, eval = FALSE}
+library(mongolstats)
+tbl <- "DT_NSO_0300_002V4"
+regions <- nso_dim_values(tbl, "Region")$code
+years <- nso_dim_values(tbl, "Year", labels = "en")
+latest <- years$code[1]
+pop <- nso_data(tbl, selections = list(Region = regions, Year = latest), labels = "en")
+mn_map(mn_join(pop, by = "Region", level = "aimag"), fill = value)
+```
+
+## Checking the matches
+
+`mn_match()` shows what each value matches, and warns about anything
+ambiguous or unmatched:
+
+```{r check}
+mn_match(c("Khovd", "Hovd", "Kobdo", "Jargalant"), to = "name_en")
+```

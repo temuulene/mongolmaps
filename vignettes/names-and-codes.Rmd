@@ -1,0 +1,88 @@
+---
+title: "Names and codes"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Names and codes}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+```
+
+```{r setup}
+library(mongolmaps)
+```
+
+Mongolian place names are written in many ways: Khovsgol, Khuvsgul,
+Hovsgol, Khövsgöl or Хөвсгөл are the same aimag. mongolmaps gives every
+unit one code and knows its other names.
+
+## The codes
+
+`pcode` is unique across all levels:
+
+| Unit | pcode | NSO code | ISO 3166-2 |
+|---|---|---|---|
+| Mongolia | `MN` | `0` | `MN` |
+| Western region | `MNR1` | `1` | |
+| Khovd aimag | `MN84` | `184` | `MN-043` |
+| Jargalant soum (Khovd) | `MN8401` | `18401` | |
+| Ulaanbaatar | `MN11` | `511` | `MN-1` |
+| Bayangol district | `MN1107` | `51107` | |
+| Bayangol, 1st khoroo | `MN110751` | `5110751` | |
+
+pcodes match the humanitarian Common Operational Dataset (COD) and are the
+NSO codes without their leading region digit. `mn_codes()` lists them all:
+
+```{r codes}
+mn_codes("aimag")
+mn_codes("bag", within = "Baganuur")
+```
+
+Bags and villages (tosgon) have codes and names but no public boundary
+(`has_geometry` is `FALSE`).
+
+## Matching names
+
+`mn_match()` turns names or codes into pcodes (or any other column):
+
+```{r match}
+mn_match(c("Khuvsgul", "Hovsgol", "Kh\u00f6vsg\u00f6l", "\u0425\u04e9\u0432\u0441\u0433\u04e9\u043b", "MN-041", "267"))
+mn_match(c("MN84", "MN8401"), to = "name_mn")
+```
+
+It ignores case, punctuation and words such as "aimag", "province",
+"soum" or "district" -- but uses them as hints when a name is shared:
+
+```{r hints}
+mn_match(c("Sukhbaatar", "Sukhbaatar district", "Sukhbaatar soum"), within = c(NA, NA, "Selenge"))
+```
+
+Small typos are matched and reported:
+
+```{r typo}
+mn_match("Ulanbaatr")
+```
+
+When a name is shared by several units, `mn_match()` returns `NA` and says
+which ones; add `within` to choose:
+
+```{r ambiguous}
+mn_match("Bayan-Uul", level = "soum")
+mn_match("Bayan-Uul", level = "soum", within = "Dornod")
+```
+
+## Transliteration
+
+`mn_translit()` romanises Cyrillic with a fixed table:
+
+```{r translit}
+x <- c("\u04e8\u0432\u04e9\u0440\u0445\u0430\u043d\u0433\u0430\u0439", "\u0421\u04af\u0445\u0431\u0430\u0430\u0442\u0430\u0440")
+mn_translit(x)
+mn_translit(x, to = "nso")
+```
+
+The default is the national standard MNS 5217:2012; `to = "nso"` gives the
+plain-ASCII spellings used in NSO English tables.

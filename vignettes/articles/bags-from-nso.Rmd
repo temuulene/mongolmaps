@@ -1,0 +1,62 @@
+---
+title: "Bags: using boundaries from NSO"
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+```
+
+```{r setup}
+library(mongolmaps)
+```
+
+Bags (baga) are the smallest rural units: each soum is divided into a few
+bags, about 1,650 in all. mongolmaps knows every bag's code and name:
+
+```{r codes}
+mn_codes("bag", within = "Khovd")
+```
+
+but **not their boundaries**. No open dataset publishes them: GADM,
+geoBoundaries, the humanitarian COD and OpenStreetMap all stop at soums. The
+National Statistics Office of Mongolia (NSO) shares bag boundaries on
+request.
+
+## Getting the file
+
+Write to NSO at <international@nso.mn> and ask for:
+
+* bag boundaries as a shapefile or GeoPackage;
+* each bag's NSO code (7 digits, such as `1830151`) or its soum code and
+  bag number;
+* the date the boundaries are valid for;
+* the terms of use (can you share maps? can the file be redistributed?).
+
+## Using the file
+
+Point mongolmaps at the file:
+
+```{r use, eval = FALSE}
+bags <- mn_bags(path = "bags_from_nso.gpkg")
+mn_map(mn_bags(aimag = "Khovd", path = "bags_from_nso.gpkg"), label = TRUE)
+```
+
+or register it once, for example in your `.Rprofile`, and forget about it:
+
+```{r register, eval = FALSE}
+options(mongolmaps.bags_path = "C:/data/bags_from_nso.gpkg")
+
+mn_bags(aimag = "Khovd")
+mn_admin("bag") # khoroos and bags together
+mn_join(my_bag_table, by = "code", level = "bag")
+```
+
+`mn_read_bags()` checks the file when it is first read:
+
+* it finds the column of bag codes (or use `code_col`);
+* every code must be a known NSO bag code;
+* every bag must lie inside its soum (turn off with
+  `check_nesting = FALSE`).
+
+Bags then get the same columns as every other map in the package, so
+joining NSO bag tables works like joining aimag tables.

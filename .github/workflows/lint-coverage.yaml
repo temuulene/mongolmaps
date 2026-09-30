@@ -1,0 +1,50 @@
+name: lint-and-coverage
+
+on:
+  push:
+    branches: [main, master]
+    paths-ignore: [README.md, README.Rmd, _pkgdown.yml, NEWS.md, "docs/**", "pkgdown/**", "man/**"]
+  pull_request:
+    branches: [main, master]
+    paths-ignore: [README.md, README.Rmd, _pkgdown.yml, NEWS.md, "docs/**", "pkgdown/**", "man/**"]
+  workflow_dispatch:
+
+jobs:
+  lint-and-coverage:
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          use-public-rspm: true
+
+      - uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          extra-packages: any::lintr, any::covr, local::.
+          needs: check
+
+      - name: Lint
+        run: |
+          lints <- lintr::lint_package()
+          print(lints)
+          if (length(lints)) stop(length(lints), " lint(s) found", call. = FALSE)
+        shell: Rscript {0}
+
+      - name: Coverage
+        run: |
+          cov <- covr::package_coverage()
+          print(cov)
+          pct <- covr::percent_coverage(cov)
+          if (pct < 80) stop(sprintf("Coverage %.1f%% is below 80%%", pct), call. = FALSE)
+          # Name matching, codes, schema and bag checks must be fully tested.
+          by_file <- covr::tally_coverage(cov, by = "line")
+          strict <- c("R/names.R", "R/match.R", "R/codes.R", "R/schema.R", "R/bags.R")
+          for (f in strict) {
+            lines <- by_file[by_file$filename == f, ]
+            miss <- lines$line[lines$value == 0]
+            if (length(miss)) stop(f, " has untested lines: ", toString(miss), call. = FALSE)
+          }
+        shell: Rscript {0}

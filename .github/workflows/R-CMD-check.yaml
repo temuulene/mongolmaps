@@ -1,0 +1,58 @@
+name: R-CMD-check
+
+on:
+  push:
+    branches: [main, master]
+    paths-ignore: [README.md, README.Rmd, _pkgdown.yml, NEWS.md, "docs/**", "pkgdown/**"]
+  pull_request:
+    branches: [main, master]
+    paths-ignore: [README.md, README.Rmd, _pkgdown.yml, NEWS.md, "docs/**", "pkgdown/**"]
+  workflow_dispatch:
+
+jobs:
+  R-CMD-check:
+    runs-on: ${{ matrix.config.os }}
+    name: ${{ matrix.config.os }} (${{ matrix.config.r }})
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+          - {os: ubuntu-latest, r: release}
+          - {os: ubuntu-latest, r: devel}
+          - {os: ubuntu-latest, r: oldrel-1}
+          - {os: windows-latest, r: release}
+          - {os: macos-latest, r: release}
+    env:
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+      R_KEEP_PKG_SOURCE: yes
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: r-lib/actions/setup-pandoc@v2
+
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          r-version: ${{ matrix.config.r }}
+          use-public-rspm: true
+
+      - uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          extra-packages: any::rcmdcheck, any::roxygen2
+          needs: check
+
+      - name: Check Rd files are up to date
+        if: runner.os == 'Linux' && matrix.config.r == 'release'
+        run: |
+          roxygen2::roxygenise()
+          stale <- system2("git", c("status", "--porcelain", "--", "man", "NAMESPACE"), stdout = TRUE)
+          if (length(stale)) {
+            system2("git", c("--no-pager", "diff", "--", "man", "NAMESPACE"))
+            stop("Rd files or NAMESPACE are out of date; run devtools::document() and commit.", call. = FALSE)
+          }
+        shell: Rscript {0}
+
+      - uses: r-lib/actions/check-r-package@v2
+        with:
+          args: 'c("--no-manual", "--as-cran")'
+          error-on: '"warning"'
+          upload-snapshots: true

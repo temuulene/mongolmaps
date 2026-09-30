@@ -1,0 +1,61 @@
+Package: mongolmaps
+Title: Maps and Administrative Boundaries of Mongolia and Ulaanbaatar
+Version: 0.0.0.9000
+Authors@R:
+    person("Temuulen", "Enebish", , "temuulen@gmail.com", role = c("aut", "cre", "cph"))
+Description: Ready-to-use 'sf' maps of Mongolia at every openly available
+    administrative level: country, economic regions, aimags (provinces),
+    soums and Ulaanbaatar districts, and Ulaanbaatar khoroos
+    (subdistricts), with codes and names for every bag. Provides a
+    crosswalk between English and Cyrillic names, common spelling
+    variants, ISO 3166-2 codes, humanitarian P-codes and National
+    Statistics Office codes; helpers to join statistics to maps; thematic
+    layers (settlements, rivers, lakes, roads, railways, airports,
+    elevation, land cover, population and protected areas); and quick
+    'ggplot2' and 'leaflet' maps. Boundaries derive from the Common
+    Operational Dataset published by the National Statistics Office of
+    Mongolia and the United Nations Office for the Coordination of
+    Humanitarian Affairs <https://data.humdata.org/dataset/cod-ab-mng>.
+License: MIT + file LICENSE
+Copyright: See file inst/COPYRIGHTS for data sources and their licences.
+URL: https://github.com/temuulene/mongolmaps,
+    https://temuulene.github.io/mongolmaps/
+BugReports: https://github.com/temuulene/mongolmaps/issues
+Depends:
+    R (>= 4.1.0)
+Imports:
+    cli (>= 3.6.0),
+    curl,
+    dplyr (>= 1.1.0),
+    grDevices,
+    httr2 (>= 1.0.0),
+    openssl,
+    purrr (>= 1.0.0),
+    rlang (>= 1.1.0),
+    sf (>= 1.0-12),
+    stats,
+    stringi,
+    tibble,
+    tools,
+    utils
+Suggests:
+    covr,
+    geofacet,
+    ggplot2 (>= 3.5.0),
+    knitr,
+    leaflet,
+    mongolstats,
+    rmarkdown,
+    s2,
+    scales,
+    terra (>= 1.7-0),
+    testthat (>= 3.2.0),
+    vdiffr,
+    withr
+VignetteBuilder:
+    knitr
+Config/testthat/edition: 3
+Encoding: UTF-8
+LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 8.0.0

@@ -1,0 +1,81 @@
+url: https://temuulene.github.io/mongolmaps/
+template:
+  bootstrap: 5
+  bslib:
+    primary: "#0ea5e9"
+    success: "#22c55e"
+    warning: "#f59e0b"
+    danger: "#ef4444"
+    base_font: {google: "Inter"}
+    heading_font: {google: "Inter Tight"}
+    code_font: {google: "JetBrains Mono"}
+    enable-dark-mode: true
+development:
+  mode: auto
+navbar:
+  structure:
+    left: [intro, reference, articles, news]
+    right: [search, github]
+home:
+  title: mongolmaps
+  description: Maps and administrative boundaries of Mongolia and Ulaanbaatar for R, from the country down to khoroos.
+articles:
+  - title: Guides
+    navbar: ~
+    contents:
+      - mongolmaps
+      - ulaanbaatar
+      - joining-data
+      - names-and-codes
+  - title: More
+    contents:
+      - articles/thematic-layers
+      - articles/terrain-population
+      - articles/bags-from-nso
+reference:
+  - title: Boundaries
+    desc: Maps at every administrative level, all with the same columns.
+    contents:
+      - mn_admin
+      - mn_country
+      - mn_aimags
+      - mn_soums
+      - mn_ub
+      - mn_bags
+  - title: Names and codes
+    contents:
+      - mn_match
+      - mn_codes
+      - mn_translit
+  - title: Joining data
+    contents:
+      - mn_join
+      - mn_example_population
+  - title: Thematic layers
+    contents:
+      - mn_settlements
+      - mn_neighbours
+      - mn_roads
+      - mn_protected_areas
+  - title: Rasters
+    desc: Elevation, land cover and population grids (require the terra package).
+    contents:
+      - mn_elevation
+      - mn_landcover
+      - mn_population
+      - mn_zonal
+  - title: Drawing maps
+    contents:
+      - mn_map
+      - theme_mn
+      - mn_leaflet
+      - mn_label_points
+      - mn_crs
+      - mn_aimag_grid
+  - title: Data sources and cache
+    contents:
+      - mn_sources
+      - mn_cache_dir
+  - title: Package
+    contents:
+      - mongolmaps-package

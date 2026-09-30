@@ -1,0 +1,99 @@
+---
+title: "Maps of Ulaanbaatar"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Maps of Ulaanbaatar}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.width = 7,
+  fig.height = 5,
+  dpi = 72,
+  eval = rlang::is_installed("ggplot2")
+)
+```
+
+```{r setup}
+library(mongolmaps)
+```
+
+Ulaanbaatar has three map levels: the city, its 9 districts (duureg) and
+its 204 khoroos. The layers fit together exactly.
+
+```{r levels}
+mn_ub()
+mn_ub_districts()
+mn_khoroos()
+```
+
+## Districts
+
+```{r districts}
+mn_map(mn_ub_districts(), fill = name, label = TRUE)
+```
+
+Baganuur and Bagakhangai are exclaves, far to the east and south-east of the
+main city. To focus on the city centre, keep the districts you need:
+
+```{r central}
+central <- c("Bayangol", "Bayanzurkh", "Chingeltei", "Khan-Uul", "Songinokhairkhan", "Sukhbaatar")
+mn_map(mn_khoroos(district = central), fill = parent_pcode)
+```
+
+District names accept common abbreviations such as `"BZD"`, `"SBD"` or
+`"KhUD"`, and Cyrillic:
+
+```{r abbrev}
+mn_khoroos(district = "\u0411\u0417\u0414")
+```
+
+## Khoroos
+
+Khoroos are numbered within their district; the number is in the `number`
+column, and `mn_map(label = TRUE)` shows it.
+
+```{r khoroos}
+mn_map(mn_khoroos(district = "Sukhbaatar"), fill = area_km2, label = TRUE)
+```
+
+To find one khoroo, use `mn_match()` with the district:
+
+```{r match}
+mn_match("15-r khoroo", level = "bag", within = "Bayangol")
+mn_match("Bayangol 15")
+```
+
+## Joining statistics
+
+NSO publishes many statistics by khoroo. The example data has the mid-year
+population:
+
+```{r join, fig.height = 5.5}
+pop <- mn_example_population[mn_example_population$Year == 2025, ]
+khoroo_pop <- mn_join(pop, by = "Region", level = "bag", within = "Ulaanbaatar")
+
+mn_map(
+  khoroo_pop[khoroo_pop$parent_pcode %in% c("MN1107", "MN1119", "MN1125"), ],
+  fill = value / area_km2,
+  title = "People per km2: Bayangol, Sukhbaatar and Chingeltei"
+)
+```
+
+## Interactive maps
+
+```{r leaflet, eval = FALSE}
+mn_leaflet(khoroo_pop, fill = value)
+```
+
+## About the khoroo boundaries
+
+The khoroo boundaries come from the open khoroo-map project, which does not
+state where its data come from, so treat them as **unofficial**. They were
+fitted to the official Ulaanbaatar outline; the district boundaries in
+`mn_ub_districts()` are the unions of their khoroos and follow the current
+city layout. See `?mn_khoroos` for details.

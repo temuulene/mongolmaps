@@ -1,0 +1,82 @@
+mongolmaps: data sources and licences
+=====================================
+
+The package source code is under the MIT licence (see LICENSE). The data
+shipped with the package, or downloaded by it, keep the licences of their
+providers. Please credit them when you publish maps; mn_citation() returns
+suitable text and mn_map() adds it as a caption.
+
+Bundled with the package
+------------------------
+
+Administrative boundaries (country, regions, aimags, soums, UB districts)
+  Common Operational Dataset - Administrative Boundaries (COD-AB) for
+  Mongolia, National Statistics Office of Mongolia and the United Nations
+  Office for the Coordination of Humanitarian Affairs (OCHA).
+  https://data.humdata.org/dataset/cod-ab-mng
+  Licence: Creative Commons Attribution for Intergovernmental Organisations
+  (CC BY-IGO 3.0). Simplified for the package; economic regions dissolved
+  from aimags; soum MN8337 (Tsengel) re-coded from COD MN8340 to match NSO.
+
+Ulaanbaatar khoroo boundaries (unofficial)
+  khoroo-map, https://github.com/Tuvshin-Level/khoroo-map (commit
+  bb1bf18f27e57d7a5aa7fe6d4a17234b40e162c1).
+  Licence: BSD Zero Clause (0BSD). The upstream project does not state the
+  origin of the data. Fitted to the COD Ulaanbaatar outline, with gaps and
+  overlaps resolved (data-raw/khoroo_reconciliation.csv). The district
+  boundaries of Ulaanbaatar are the unions of these khoroos.
+
+Unit codes and names (country to bag and khoroo)
+  National Statistics Office of Mongolia, PXWeb table DT_NSO_0300_002V4,
+  https://data.1212.mn/pxweb/ (Region dimension and example population).
+
+Settlements (capital, aimag and soum centres)
+  Wikidata, https://www.wikidata.org/. Licence: CC0 1.0.
+
+Neighbouring countries, major rivers and lakes
+  Natural Earth, https://www.naturalearthdata.com/. Public domain.
+
+Downloaded on first use
+-----------------------
+
+Full-resolution administrative boundaries
+  Same sources and licences as the bundled boundaries, without
+  simplification; hosted as a GitHub release asset of the package.
+
+Roads, railways, stations, airports, waterways, water bodies and places
+  (c) OpenStreetMap contributors, via the Humanitarian OpenStreetMap Team
+  exports on the Humanitarian Data Exchange. Licence: Open Database Licence
+  (ODbL 1.0), https://opendatacommons.org/licenses/odbl/1-0/. Each theme is
+  a separate database file, hosted as a GitHub release asset.
+
+Elevation, 1 km
+  Copernicus DEM GLO-90, (c) DLR e.V. 2010-2014 and (c) Airbus Defence and
+  Space GmbH 2014-2018, provided under COPERNICUS by the European Union and
+  ESA; all rights reserved. Free to use and redistribute with attribution.
+  Resampled to a 1 km grid; hosted as a GitHub release asset.
+
+Land cover, 1 km
+  ESA WorldCover 10 m 2021 v200, (c) ESA WorldCover project / contains
+  modified Copernicus Sentinel data (2021) processed by the ESA WorldCover
+  consortium. Licence: CC BY 4.0. Majority class per 1 km cell; hosted as a
+  GitHub release asset.
+
+Read or downloaded from the original provider (never redistributed)
+--------------------------------------------------------------------
+
+Elevation, 90 m, and land cover, 10 m
+  Read on demand from the AWS Open Data Registry copies of the Copernicus
+  DEM GLO-90 and ESA WorldCover (licences as above).
+
+Population grids 2015-2030
+  WorldPop (www.worldpop.org), Global 2015-2030 constrained population
+  counts, release R2025A. Licence: CC BY 4.0.
+
+Protected areas
+  UNEP-WCMC and IUCN, Protected Planet: The World Database on Protected
+  Areas (WDPA), https://www.protectedplanet.net/. Terms:
+  https://www.protectedplanet.net/en/legal (non-commercial use with
+  attribution; no redistribution). Downloaded by each user on first use.
+
+The sources, licences and delivery of every layer are listed by
+mn_sources().

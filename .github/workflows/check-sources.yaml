@@ -1,0 +1,45 @@
+name: check-sources
+
+# Monthly check that downloadable layers are still reachable and that the
+# upstream boundary dataset has not changed, so data releases stay current.
+
+on:
+  schedule:
+    - cron: "0 6 1 * *"
+  workflow_dispatch:
+
+jobs:
+  check-sources:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          use-public-rspm: true
+
+      - uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          packages: any::httr2, any::jsonlite
+
+      - name: Check URLs and upstream versions
+        run: |
+          m <- read.csv("inst/extdata/manifest.csv", colClasses = "character", na.strings = "")
+          urls <- unique(stats::na.omit(c(m$url, m$source_url)))
+          bad <- character()
+          for (u in urls) {
+            status <- tryCatch(
+              httr2::request(u) |> httr2::req_method("HEAD") |> httr2::req_error(is_error = \(r) FALSE) |>
+                httr2::req_perform() |> httr2::resp_status(),
+              error = function(e) NA
+            )
+            cat(u, status, "\n")
+            if (is.na(status) || status >= 400) bad <- c(bad, u)
+          }
+          cod <- jsonlite::fromJSON("https://data.humdata.org/api/3/action/package_show?id=cod-ab-mng")$result
+          cat("COD-AB last modified:", cod$last_modified, "\n")
+          if (as.Date(substr(cod$last_modified, 1, 10)) > as.Date("2026-01-26")) {
+            bad <- c(bad, "COD-AB Mongolia was updated upstream: review and rebuild the data")
+          }
+          if (length(bad)) stop("Problems:\n", paste(bad, collapse = "\n"), call. = FALSE)
+        shell: Rscript {0}
