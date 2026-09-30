@@ -20,7 +20,12 @@ development:
 navbar:
   structure:
     left: [intro, reference, articles, news]
-    right: [search, github]
+    right: [search, mongolian, github]
+  components:
+    mongolian:
+      text: Монгол
+      href: https://temuulene.github.io/mongolmaps/mn/
+      aria-label: Mongolian version
 home:
   title: mongolmaps
   description: Maps and administrative boundaries of Mongolia and Ulaanbaatar for R, from the country down to khoroos.

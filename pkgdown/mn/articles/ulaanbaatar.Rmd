@@ -1,0 +1,95 @@
+---
+title: "Улаанбаатарын газрын зураг"
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  message = FALSE,
+  comment = "#>",
+  fig.width = 7,
+  fig.height = 5,
+  dpi = 200
+)
+```
+
+```{r setup}
+library(mongolmaps)
+options(mongolmaps.lang = "mn")
+```
+
+Улаанбаатар гурван түвшний газрын зурагтай: хот, 9 дүүрэг, 204 хороо.
+Давхаргууд хоорондоо яг таарна.
+
+```{r levels}
+mn_ub()
+mn_ub_districts()
+mn_khoroos()
+```
+
+## Дүүрэг
+
+```{r districts}
+mn_map(mn_ub_districts(), fill = name, label = TRUE)
+```
+
+Багануур, Багахангай нь хотын төвөөс зүүн болон зүүн өмнө зүгт тусдаа
+байрладаг. Хотын төвд анхаарах бол хэрэгтэй дүүргүүдээ сонгоно:
+
+```{r central}
+central <- c("Баянгол", "Баянзүрх", "Чингэлтэй", "Хан-Уул", "Сонгинохайрхан", "Сүхбаатар дүүрэг")
+mn_map(mn_khoroos(district = central), fill = parent_pcode)
+```
+
+Дүүргийн нэрийг "БЗД", "СБД", "ХУД" гэх мэт товчлолоор, мөн латинаар
+бичиж болно:
+
+```{r abbrev}
+mn_khoroos(district = "БЗД")
+```
+
+## Хороо
+
+Хороо дүүрэг дотроо дугаартай; дугаар нь `number` баганад байна, мөн
+`mn_map(label = TRUE)` үүнийг харуулна.
+
+```{r khoroos}
+mn_map(mn_khoroos(district = "Сүхбаатар дүүрэг"), fill = area_km2, label = TRUE)
+```
+
+Нэг хороог олох бол `mn_match()`-д дүүргийг нь зааж өгнө:
+
+```{r match}
+mn_match("15-р хороо", level = "bag", within = "Баянгол дүүрэг")
+mn_match("Баянгол 15")
+```
+
+## Статистик холбох
+
+ҮСХ олон үзүүлэлтийг хороогоор нийтэлдэг. Жишээ өгөгдөлд жилийн дундаж
+хүн ам байна:
+
+```{r join, fig.height = 5.5}
+pop <- mn_example_population[mn_example_population$Year == 2025, ]
+khoroo_pop <- mn_join(pop, by = "Region", level = "bag", within = "Улаанбаатар")
+
+mn_map(
+  khoroo_pop[khoroo_pop$parent_pcode %in% c("MN1107", "MN1119", "MN1125"), ],
+  fill = value / area_km2,
+  title = "Хүн амын нягтрал (хүн/км²): Баянгол, Сүхбаатар, Чингэлтэй"
+)
+```
+
+## Интерактив газрын зураг
+
+```{r leaflet, eval = FALSE}
+mn_leaflet(khoroo_pop, fill = value)
+```
+
+## Хорооны хилийн тухай
+
+Хорооны хилийг гарал үүслээ заагаагүй нээлттэй khoroo-map төслөөс авсан
+тул **албан бус** гэж үзнэ үү. Хилийг Улаанбаатарын албан ёсны хилд
+тааруулсан; `mn_ub_districts()` дахь дүүргийн хил нь хороодынх нь нийлбэр
+бөгөөд хотын одоогийн хуваарийг дагана. Дэлгэрэнгүйг `?mn_khoroos`-оос
+харна уу.

@@ -1,0 +1,126 @@
+---
+output: github_document
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  message = FALSE,
+  comment = "#>",
+  fig.path = "man/figures/mn-README-",
+  dpi = 200,
+  dev = "ragg_png",
+  out.width = "100%"
+)
+options(mongolmaps.lang = "mn")
+```
+
+# mongolmaps
+
+**Монгол Улс, Улаанбаатар хотын газрын зураг R програмд — нээлттэй
+байгаа засаг захиргааны бүх түвшинд.** Нэг багц, эхлэхэд юу ч татах
+шаардлагагүй, газар нутгийн нэрийг хэрхэн бичсэн ч танина.
+
+| Түвшин | Функц | Нэгжийн тоо |
+|---|---|---|
+| Улс | `mn_country()` | 1 |
+| Эдийн засгийн бүс | `mn_regions()` | 5 |
+| Аймаг ба нийслэл | `mn_aimags()` | 22 |
+| Сум ба Улаанбаатарын дүүрэг | `mn_soums()`, `mn_ub_districts()` | 330 + 9 |
+| Улаанбаатарын хороо | `mn_khoroos()` | 204 |
+| Баг | `mn_bags()` | ~1,650 багийн код, нэр; хилийг ҮСХ-оос хүсэлтээр авна |
+
+Функц бүр ижил баганатай `sf` хүснэгт буцаана (код, англи ба монгол нэр,
+харьяалах нэгж, талбай), тиймээс аль ч түвшний газрын зурагтай адилхан
+ажиллана.
+
+## Суулгах
+
+```r
+# install.packages("pak")
+pak::pak("temuulene/mongolmaps")
+```
+
+## Анхны газрын зураг
+
+```{r first-map, fig.height = 4.2}
+library(mongolmaps)
+options(mongolmaps.lang = "mn")  # нэрийг монголоор
+
+mn_map(label = TRUE)
+```
+
+`mn_map()` Монголд тохирсон проекц сонгож, нэрийг хил дотор нь байрлуулж,
+өгөгдлийн эх сурвалжийг тэмдэглэнэ.
+
+## Өөрийн өгөгдлөө газрын зураг дээр
+
+`mn_join()` хүснэгтийг хил хязгаартай холбоно. Газрын нэрийг ямар ч
+галигаар, кирилээр, эсвэл Үндэсний статистикийн хорооны (ҮСХ) хүснэгтийн
+кодоор өгч болно. ҮСХ-ны хүснэгт дэх нийт дүн, бусад түвшний мөрийг
+автоматаар хасна.
+
+```{r join, fig.height = 4.2}
+pop <- mn_example_population[mn_example_population$Year == 2025, ]
+
+pop_map <- mn_join(pop, by = "Region", level = "aimag")
+
+mn_map(pop_map, fill = value, trans = "log10", context = TRUE,
+       title = "Аймгийн хүн ам, 2025")
+```
+
+## Улаанбаатар — хороо хүртэл
+
+```{r ub, fig.height = 5}
+# Төвийн зургаан дүүрэг, товчилсон нэрээр
+central <- c("БГД", "БЗД", "ЧД", "ХУД", "СХД", "СБД")
+khoroo_pop <- mn_join(pop, by = "Region", level = "bag", within = central)
+
+mn_map(khoroo_pop, fill = value / area_km2, trans = "log10",
+       title = "Хорооны хүн амын нягтрал (хүн/км²), 2025")
+```
+
+Хороог дугаараар нь, дүүрэг болон бусад нэгжийг нэрээр нь тэмдэглэнэ:
+
+```{r ub-labels, fig.height = 4.5}
+mn_map(mn_ub_districts(), label = TRUE)
+```
+
+## Нэрийг ямар ч бичлэгээр
+
+```{r match}
+mn_match(c("Khuvsgul", "Hovsgol", "Khövsgöl", "Хөвсгөл", "MN-041", "267"))
+
+mn_match("Сүхбаатар дүүрэг")
+mn_match("Баян-Уул", level = "soum", within = "Дорнод")
+
+mn_codes("soum", within = "Ховд")
+```
+
+## Бусад боломж
+
+* Интерактив газрын зураг: `mn_leaflet(mn_khoroos(), fill = area_km2)`.
+* Нэрийг англиар: `lang = "en"`, эсвэл `options(mongolmaps.lang = "en")`.
+* Бүрэн нарийвчлалтай хил: `resolution = "high"` (нэг удаа татаж, хадгална).
+* Суурин, гол мөрөн, нуур, хөрш орнууд: `mn_settlements()`, `mn_rivers()`,
+  `mn_lakes()`, `mn_neighbours()`.
+* OpenStreetMap-аас зам, төмөр зам, нисэх буудал, суурин газар:
+  `mn_roads(within = "Улаанбаатар")`, `mn_railways()`, `mn_airports()`,
+  `mn_places()` (нэг удаа татаж, хадгална).
+* Өндөршил, рельефийн сүүдэр, газрын бүрхэвч, хүн амын тор (terra
+  багцтай): `mn_map(mn_elevation())`, `mn_landcover()`,
+  `mn_population(2025)`, мөн аймаг, сум, хороогоор нэгтгэх `mn_zonal()`.
+* Тусгай хамгаалалттай газар: `mn_protected_areas()`.
+* Жижиг олон зураг: `geofacet::facet_geo()`-д зориулсан `mn_aimag_grid`.
+
+## Өгөгдлийн эх сурвалж
+
+```{r sources, echo = FALSE}
+knitr::kable(mn_sources()[c("title", "provider", "license")])
+```
+
+Хорооны хил нь гарал үүслээ заагаагүй нээлттэй төслөөс авсан тул
+**албан бус** гэж үзнэ үү. Багийн хил нээлттэй нийтлэгдээгүй; ҮСХ-оос авсны
+дараа хэрхэн ашиглахыг `?mn_bags` -ээс харна уу. Газрын зураг нийтлэхдээ
+эх сурвалжийг заавал дурдана уу: `mn_citation()` тэмдэглэлийн текстийг
+буцаадаг бөгөөд `mn_map()` үүнийг автоматаар нэмдэг.

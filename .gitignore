@@ -16,3 +16,4 @@ data-raw/build/
 *.tar.gz
 CRAN-SUBMISSION
 .Renviron
+.claude/

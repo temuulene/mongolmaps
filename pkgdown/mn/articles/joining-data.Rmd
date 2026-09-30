@@ -1,0 +1,111 @@
+---
+title: "Өөрийн өгөгдлөө газрын зураг дээр"
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  message = FALSE,
+  comment = "#>",
+  fig.width = 7,
+  fig.height = 4.2,
+  dpi = 200
+)
+```
+
+```{r setup}
+library(mongolmaps)
+options(mongolmaps.lang = "mn")
+```
+
+Ихэвчлэн гурван алхамтай: газар тус бүрт нэг мөртэй хүснэгт бэлтгэх,
+`mn_join()`-оор хилтэй холбох, `mn_map()`-аар зурах.
+
+## Жижиг хүснэгт
+
+Газрын нэрийг англи эсвэл кирилээр, ямар ч түгээмэл бичлэгээр бичиж
+болно:
+
+```{r small}
+cases <- data.frame(
+  aimag = c("Хөвсгөл", "Hovd", "Увс", "Ulan Bator", "Dornogobi"),
+  cases = c(12, 30, 7, 140, 9)
+)
+cases_map <- mn_join(cases, by = aimag)
+cases_map[c("name", "cases")]
+```
+
+Бүх аймаг үр дүнд үлддэг тул өгөгдөлгүй газар саарал өнгөөр харагдана:
+
+```{r small-map}
+mn_map(cases_map, fill = cases)
+```
+
+## ҮСХ-ны хүснэгт
+
+Үндэсний статистикийн хорооны хүснэгтүүд нэг баганад хэд хэдэн түвшнийг
+(улсын дүн, бүс, аймаг, сум ...) агуулдаг. Эдгээрийг нэрийн бус **кодын**
+баганаар (жишээ нь `Region`) холбоно уу: "Улаанбаатар" гэх мэт нэр нь бүс,
+аймгийн аль алиныг заадаг. `mn_join()` хүссэн түвшнээ үлдээж, бусдыг
+мэдэгдэлтэйгээр хасна.
+
+```{r nso}
+head(mn_example_population)
+
+pop_2025 <- mn_example_population[mn_example_population$Year == 2025, ]
+aimag_pop <- mn_join(pop_2025, by = "Region", level = "aimag")
+mn_map(aimag_pop, fill = value / area_km2, trans = "log10", title = "Хүн амын нягтрал (хүн/км²), 2025")
+```
+
+Ижил хүснэгтэд сумын тоо ч бий:
+
+```{r soums}
+soum_pop <- mn_join(pop_2025, by = "Region", level = "soum")
+mn_map(soum_pop, fill = value, trans = "log10", title = "Сумын хүн ам, 2025")
+```
+
+## Нэг газарт олон мөр
+
+Олон жилийн мөр бүр олигоны хуулбар үүсгэх тул facet-д бэлэн:
+
+```{r facets, fig.height = 6}
+pop_years <- mn_join(mn_example_population, by = "Region", level = "aimag")
+mn_map(pop_years, fill = value, trans = "log10") + ggplot2::facet_wrap(~Year, ncol = 2)
+```
+
+## Давхардсан сумын нэр
+
+Олон сум ижил нэртэй. Мөр бүрийн аймгийг `by_parent`-ээр зааж өгнө:
+
+```{r parent}
+soums <- data.frame(
+  aimag = c("Дорнод", "Говь-Алтай", "Хэнтий"),
+  soum = c("Баян-Уул", "Баян-Уул", "Баян-Адарга"),
+  herders = c(820, 640, 910)
+)
+joined <- mn_join(soums, by = "soum", level = "soum", by_parent = "aimag")
+joined[!is.na(joined$herders), c("name", "aimag_pcode", "herders")]
+```
+
+## mongolstats-аар ҮСХ-ны өгөгдөл татах
+
+mongolstats багц ҮСХ-ны дурын хүснэгтийг татдаг. Түүний `Region` код
+`mn_join()`-д шууд ажиллана:
+
+```{r mongolstats, eval = FALSE}
+library(mongolstats)
+tbl <- "DT_NSO_0300_002V4"
+regions <- nso_dim_values(tbl, "Region")$code
+years <- nso_dim_values(tbl, "Year", labels = "en")
+pop <- nso_data(tbl, selections = list(Region = regions, Year = years$code[1]), labels = "mn")
+mn_map(mn_join(pop, by = "Region", level = "aimag"), fill = value)
+```
+
+## Тохирлыг шалгах
+
+`mn_match()` утга бүр юутай тохирсныг харуулж, давхардсан эсвэл тохироогүй
+утгыг анхааруулна:
+
+```{r check}
+mn_match(c("Ховд", "Hovd", "Kobdo", "Жаргалант"), to = "name_mn")
+```
