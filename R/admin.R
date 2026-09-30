@@ -78,7 +78,7 @@ mn_admin <- function(level = "aimag", within = NULL, resolution = c("low", "high
 
 .mm_geom <- function(layer, resolution) {
   if (resolution == "low") {
-    return(.mm_low[[layer]])
+    return(.mm_bundled(.mm_low[[layer]]))
   }
   .mm_high_layer(layer)
 }

@@ -74,3 +74,11 @@ test_that("resolution = 'high' reads the downloaded release asset", {
   expect_equal(hi$pcode, mn_soums(aimag = "Khovd")$pcode)
   expect_equal(nrow(mn_khoroos(resolution = "high")), 204)
 })
+
+test_that("bundled layers use this system's definition of EPSG:4326", {
+  foreign <- sf::st_set_crs(sf::st_set_crs(mn_aimags()[1:2, "pcode"], NA), "+proj=longlat +datum=WGS84 +no_defs")
+  expect_false(isTRUE(all.equal(sf::st_crs(foreign), sf::st_crs(4326))))
+  expect_equal(sf::st_crs(.mm_bundled(foreign)), sf::st_crs(4326))
+  expect_equal(sf::st_crs(mn_settlements()), sf::st_crs(4326))
+  expect_equal(sf::st_crs(mn_neighbours()), sf::st_crs(4326))
+})

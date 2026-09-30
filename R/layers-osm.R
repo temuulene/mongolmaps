@@ -92,7 +92,7 @@ mn_places <- function(type = c("city", "town", "village"), within = NULL, lang =
   u <- .mm_units[match(targets, .mm_units$pcode), ]
   layer <- c(country = "country", region = "region", aimag = "aimag", soum = "soum", bag = "khoroo")[u$level]
   geoms <- purrr::map2(targets, layer, function(p, l) {
-    g <- .mm_low[[l]]
+    g <- .mm_bundled(.mm_low[[l]])
     sf::st_geometry(g)[g$pcode == p]
   })
   geoms <- geoms[lengths(geoms) > 0]

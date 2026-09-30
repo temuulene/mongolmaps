@@ -124,7 +124,7 @@ mn_read_bags <- function(path, code_col = NULL, check_nesting = TRUE) {
 
 .mm_check_bag_nesting <- function(geom, call = rlang::caller_env()) {
   soum_pcode <- .mm_units$soum_pcode[match(geom$pcode, .mm_units$pcode)]
-  soums <- .mm_low$soum
+  soums <- .mm_bundled(.mm_low$soum)
   pts <- suppressWarnings(sf::st_point_on_surface(sf::st_geometry(geom)))
   poly <- sf::st_geometry(soums)[match(soum_pcode, soums$pcode)]
   has_poly <- !is.na(match(soum_pcode, soums$pcode))

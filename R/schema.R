@@ -36,3 +36,11 @@
   if (include_self) inside <- inside | pcodes %in% targets
   inside
 }
+
+# Bundled layers keep the CRS definition written by the PROJ version that
+# built them, which differs between systems. Re-stamp EPSG:4326 from the local
+# PROJ (coordinates are unchanged) so CRS comparisons hold everywhere.
+.mm_bundled <- function(x) {
+  sf::st_geometry(x) <- sf::st_set_crs(sf::st_set_crs(sf::st_geometry(x), NA), 4326)
+  x
+}
