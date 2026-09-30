@@ -1,9 +1,8 @@
-# Codes and names of Mongolian administrative units
+# Монголын засаг захиргааны нэгжийн код ба нэр
 
-Returns the table behind every map in the package: one row per unit,
-from the country down to bags and khoroos, with its codes, names and
-place in the hierarchy. Use it to look up codes, to build your own
-crosswalks, or to see which units have a boundary.
+Багцын бүх газрын зургийн цаад хүснэгтийг буцаана: улсаас баг, хороо
+хүртэлх нэгж бүрт нэг мөр, код, нэр, шатлал дахь байршилтай. Кодыг хайх,
+өөрийн холболтын хүснэгт үүсгэх, аль нэгж хилтэйг харахад ашиглана.
 
 ## Usage
 
@@ -15,59 +14,59 @@ mn_codes(level = NULL, within = NULL, aliases = FALSE, lang = NULL)
 
 - level:
 
-  Levels to return (see
-  [`mn_match()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_match.md));
-  `NULL` returns all.
+  Буцаах түвшин
+  ([`mn_match()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_match.md)-ийг
+  үзнэ үү); `NULL` бол бүгдийг.
 
 - within:
 
-  Keep only units inside this parent (a name or code).
+  Зөвхөн энэ дээд нэгж доторх нэгжийг үлдээнэ (нэр эсвэл код).
 
 - aliases:
 
-  If `TRUE`, return one row per known spelling of each unit (the table
-  used by
-  [`mn_match()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_match.md))
-  instead of one row per unit.
+  `TRUE` бол нэгж бүрт нэг мөрийн оронд нэгж бүрийн мэдэгдэж буй бичлэг
+  бүрт нэг мөр
+  ([`mn_match()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_match.md)-ийн
+  ашигладаг хүснэгт) буцаана.
 
 - lang:
 
-  Language of the `name` column: `"en"` (English, as in NSO tables),
-  `"mn"` (Cyrillic) or `"mns"` (Latin with diacritics). Defaults to
+  `name` баганын хэл: `"en"` (англи, ҮСХ-ны хүснэгтийн бичлэгээр),
+  `"mn"` (кирил) эсвэл `"mns"` (тэмдэгттэй латин). Анхдагч утга нь
   `getOption("mongolmaps.lang", "en")`.
 
 ## Value
 
-A tibble. With `aliases = FALSE`: the columns of every admin map (see
-[`mn_admin()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_admin.md))
-plus `has_geometry`. With `aliases = TRUE`: `pcode`, `level`, `name_en`,
-`alias` and `source`.
+Tibble. `aliases = FALSE` бол засаг захиргааны газрын зургийн бүх багана
+([`mn_admin()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_admin.md)-ийг
+үзнэ үү) ба `has_geometry`. `aliases = TRUE` бол `pcode`, `level`,
+`name_en`, `alias`, `source`.
 
 ## Details
 
-Units are identified by `pcode`, a code that is unique across levels:
+Нэгжийг бүх түвшинд давтагдашгүй `pcode`-оор ялгана:
 
-- `"MN"` for the country, `"MNR1"` to `"MNR5"` for the economic regions
-  (Western, Khangai, Central, Eastern, Ulaanbaatar);
+- улсад `"MN"`, эдийн засгийн бүсэд `"MNR1"`-ээс `"MNR5"` хүртэл
+  (Баруун, Хангай, Төв, Зүүн, Улаанбаатар);
 
-- `"MN"` + the two-digit NSO aimag code for aimags (`"MN84"` Khovd,
-  `"MN11"` Ulaanbaatar);
+- аймагт `"MN"` + ҮСХ-ны хоёр оронтой аймгийн код (`"MN84"` Ховд,
+  `"MN11"` Улаанбаатар);
 
-- two more digits for soums and Ulaanbaatar districts (`"MN8401"`), and
-  two more for bags and khoroos (`"MN110751"`).
+- сум, Улаанбаатарын дүүрэгт дахин хоёр орон (`"MN8401"`), баг, хороонд
+  дахин хоёр орон (`"MN110751"`).
 
-These match the P-codes of the humanitarian Common Operational Dataset
-and are the NSO statistical codes without their leading region digit
-(`nso_code`, as used in NSO PXWeb tables).
+Эдгээр нь хүмүүнлэгийн Common Operational Dataset-ийн P-кодтой ижил
+бөгөөд ҮСХ-ны статистикийн кодоос эхний бүсийн цифрийг хассантай тэнцүү
+(`nso_code`, ҮСХ-ны PXWeb хүснэгтэд хэрэглэдэг).
 
-The `type` column separates units that share a level: `"capital"`
-(Ulaanbaatar) among aimags; `"district"` and `"village"` among soums;
-`"khoroo"` among bags. Villages (tosgon) and rural bags have codes and
-statistics but no boundary (`has_geometry` is `FALSE`).
+`type` багана нэг түвшний нэгжүүдийг ялгана: аймгийн дунд `"capital"`
+(Улаанбаатар); сумын дунд `"district"` ба `"village"`; багийн дунд
+`"khoroo"`. Тосгон, хөдөөгийн баг код, статистиктай ч хилгүй
+(`has_geometry` нь `FALSE`).
 
 ## See also
 
-Other names and codes:
+Нэр, кодын бусад функц:
 [`mn_match()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_match.md),
 [`mn_translit()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_translit.md)
 

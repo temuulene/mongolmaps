@@ -1,8 +1,9 @@
-# Settlements: the capital, aimag centres and soum centres
+# Суурин: нийслэл, аймгийн төв, сумын төв
 
-Points for Ulaanbaatar, the 21 aimag centres and the soum centres, handy
-for labelling maps. Locations come from Wikidata; a few soums without
-coordinates there use a point inside the soum (see `location_source`).
+Улаанбаатар, 21 аймгийн төв, сумдын төвийн цэг; газрын зурагт нэр
+тавихад тохиромжтой. Байршлыг Wikidata-аас авсан; тэнд координатгүй цөөн
+сумын хувьд сумын дотор орших цэгийг ашигласан (`location_source`-ийг
+үзнэ үү).
 
 ## Usage
 
@@ -19,37 +20,38 @@ mn_settlements(
 
 - type:
 
-  Which settlements to return: any of `"capital"`, `"aimag_centre"` and
-  `"soum_centre"`. By default, all.
+  Аль суурин буцаах: `"capital"`, `"aimag_centre"`, `"soum_centre"`-ийн
+  аль нь ч. Анхдагч нь бүгд.
 
 - within:
 
-  Keep only settlements inside these places (names or codes).
+  Зөвхөн эдгээр газар доторх суурийг үлдээнэ (нэр эсвэл код).
 
 - lang:
 
-  Language of the `name` column: `"en"` (English, as in NSO tables),
-  `"mn"` (Cyrillic) or `"mns"` (Latin with diacritics, MNS 5217).
-  Defaults to `getOption("mongolmaps.lang", "en")`.
+  `name` баганын хэл: `"en"` (англи, ҮСХ-ны хүснэгтийн бичлэгээр),
+  `"mn"` (кирил) эсвэл `"mns"` (MNS 5217 стандартын латин, тэмдэгттэй).
+  Анхдагч утга нь `getOption("mongolmaps.lang", "en")`.
 
 - crs:
 
-  Coordinate reference system of the result. `NULL` (default) keeps
-  longitude/latitude (EPSG:4326). Use `"albers"`, `"lcc"` or `"utm"` for
-  a projection suited to Mongolia (see
-  [`mn_crs()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_crs.md)),
-  or any value accepted by
-  [`sf::st_crs()`](https://r-spatial.github.io/sf/reference/st_crs.html).
+  Үр дүнгийн координатын систем. `NULL` (анхдагч) бол уртраг, өргөрөг
+  (EPSG:4326) хэвээр. Монголд тохирсон проекцод `"albers"`, `"lcc"`
+  эсвэл `"utm"`-ийг
+  ([`mn_crs()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_crs.md)-ийг
+  үзнэ үү), эсвэл
+  [`sf::st_crs()`](https://r-spatial.github.io/sf/reference/st_crs.html)-ийн
+  хүлээн авах дурын утгыг өгнө.
 
 ## Value
 
-An `sf` tibble of points with columns `admin_pcode` (the aimag or soum
-the settlement is the centre of), `soum_pcode`, `aimag_pcode`, `type`,
-`name`, `name_en`, `name_mn`, `name_mns` and `location_source`.
+Цэгийн `sf` tibble, баганууд: `admin_pcode` (суурин нь аль аймаг эсвэл
+сумын төв болох), `soum_pcode`, `aimag_pcode`, `type`, `name`,
+`name_en`, `name_mn`, `name_mns`, `location_source`.
 
 ## See also
 
-Other thematic layers:
+Сэдэвчилсэн бусад давхарга:
 [`mn_neighbours()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_neighbours.md),
 [`mn_protected_areas()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_protected_areas.md),
 [`mn_roads()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_roads.md)

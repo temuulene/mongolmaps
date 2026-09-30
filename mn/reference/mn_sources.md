@@ -1,11 +1,11 @@
-# Data sources, licences and citations
+# Өгөгдлийн эх сурвалж, лиценз, иш татах
 
-`mn_sources()` lists every data layer in the package: who provides it,
-under which licence, whether it ships with the package or is downloaded,
-and how current it is. `mn_citation()` returns the attribution text to
-put under a map;
+`mn_sources()` багцын өгөгдлийн давхарга бүрийг жагсаана: хэн
+нийлүүлдэг, ямар лицензтэй, багцад ирдэг эсвэл татдаг, хэр шинэ.
+`mn_citation()` газрын зургийн доор тавих эх сурвалжийн бичвэрийг
+буцаана;
 [`mn_map()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_map.md)
-adds it as a caption automatically.
+үүнийг тайлбар мөрөөр автоматаар нэмнэ.
 
 ## Usage
 
@@ -19,24 +19,24 @@ mn_citation(layers = "admin")
 
 - layer, layers:
 
-  Layer ids, such as `"admin"`, `"khoroos"` or `"settlements"`. `NULL`
-  lists all layers.
+  Давхаргын id, жишээ нь `"admin"`, `"khoroos"`, `"settlements"`. `NULL`
+  бол бүх давхаргыг жагсаана.
 
 ## Value
 
-`mn_sources()`: a tibble with columns `id`, `title`, `group`, `delivery`
-(`"bundled"`, `"release"` or `"upstream"`), `provider`, `license`,
-`license_url`, `valid_on`, `source_url`, `attribution` and `notes`.
-`mn_citation()`: a single string.
+`mn_sources()`: `id`, `title`, `group`, `delivery` (`"bundled"`,
+`"release"` эсвэл `"upstream"`), `provider`, `license`, `license_url`,
+`valid_on`, `source_url`, `attribution`, `notes` баганатай tibble.
+`mn_citation()`: нэг тэмдэгт мөр.
 
 ## Details
 
-Please credit the data providers when you publish maps. Most layers are
-under licences that require attribution (CC BY, ODbL).
+Газрын зураг нийтлэхдээ өгөгдөл нийлүүлэгчийг дурдана уу. Ихэнх давхарга
+эх сурвалжийг дурдахыг шаарддаг лицензтэй (CC BY, ODbL).
 
 ## See also
 
-Other data sources and cache:
+Эх сурвалж, кэшийн бусад функц:
 [`mn_cache_dir()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_cache_dir.md)
 
 ## Examples

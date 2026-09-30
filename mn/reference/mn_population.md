@@ -1,11 +1,11 @@
-# Population grids
+# Хүн амын тор
 
-Estimated population per grid cell from WorldPop (2015 to 2030,
-constrained to built-up areas), at 1 km or 100 m. The national file for
-the year is downloaded once from WorldPop (0.4 MB at 1 km, 11 MB at 100
-m) and cached. Use
-[`mn_zonal()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_zonal.md)
-to sum it over aimags, soums or khoroos.
+WorldPop-ын нүд бүрийн хүн амын тооцоо (2015-2030 он, суурьшлын бүсээр
+хязгаарласан), 1 км эсвэл 100 м нарийвчлалтай. Тухайн оны улсын файлыг
+WorldPop-оос нэг удаа (1 км-т 0.4 МБ, 100 м-т 11 МБ) татаж хадгална.
+Аймаг, сум, хороогоор нэгтгэхэд
+[`mn_zonal()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_zonal.md)-ийг
+ашиглана.
 
 ## Usage
 
@@ -23,43 +23,44 @@ mn_population(
 
 - year:
 
-  A year from 2015 to 2030 (years after the last census are
-  projections).
+  2015-2030 оны хооронд он (сүүлийн тооллогоос хойших он нь төсөөлөл).
 
 - resolution:
 
-  `"1km"` or `"100m"`.
+  `"1km"` эсвэл `"100m"`.
 
 - within:
 
-  Area to return (names or codes). Required for `"90m"`.
+  Буцаах газар (нэр эсвэл код). Онлайнаар уншдаг нарийвчлалд заавал
+  өгнө: өндөршилд `"90m"`, газрын бүрхэвчид `"10m"`.
 
 - mask:
 
-  If `TRUE` (default), cells outside Mongolia (or outside `within`) are
-  set to `NA`.
+  `TRUE` (анхдагч) бол Монголоос (эсвэл `within`-ээс) гадуурх нүдийг
+  `NA` болгоно.
 
 - crs:
 
-  Coordinate reference system of the result. `NULL` (default) keeps
-  longitude/latitude (EPSG:4326). Use `"albers"`, `"lcc"` or `"utm"` for
-  a projection suited to Mongolia (see
-  [`mn_crs()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_crs.md)),
-  or any value accepted by
-  [`sf::st_crs()`](https://r-spatial.github.io/sf/reference/st_crs.html).
+  Үр дүнгийн координатын систем. `NULL` (анхдагч) бол уртраг, өргөрөг
+  (EPSG:4326) хэвээр. Монголд тохирсон проекцод `"albers"`, `"lcc"`
+  эсвэл `"utm"`-ийг
+  ([`mn_crs()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_crs.md)-ийг
+  үзнэ үү), эсвэл
+  [`sf::st_crs()`](https://r-spatial.github.io/sf/reference/st_crs.html)-ийн
+  хүлээн авах дурын утгыг өгнө.
 
 ## Value
 
-A `terra` SpatRaster of people per cell.
+Нүд бүрийн хүний тоо бүхий `terra` SpatRaster.
 
-## Source
+## Эх сурвалж
 
 WorldPop (www.worldpop.org), Global 2015-2030 constrained population
 counts, release R2025A. CC BY 4.0.
 
 ## See also
 
-Other raster layers:
+Растерийн бусад давхарга:
 [`mn_elevation()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_elevation.md),
 [`mn_landcover()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_landcover.md),
 [`mn_zonal()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_zonal.md)

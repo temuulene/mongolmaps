@@ -1,9 +1,10 @@
-# Roads, railways, airports and places from OpenStreetMap
+# OpenStreetMap-аас авто зам, төмөр зам, нисэх буудал, суурин
 
-Transport and settlement layers from OpenStreetMap, prepared from the
-Humanitarian OpenStreetMap Team exports. Each layer is downloaded once
-(roads about 30 MB, the others smaller) and cached; see
-[`mn_download()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_cache_dir.md).
+Хүмүүнлэгийн OpenStreetMap багийн (HOT) экспортоос бэлтгэсэн тээвэр,
+суурин газрын OpenStreetMap давхаргууд. Давхарга бүрийг нэг удаа татаж
+(авто зам ойролцоогоор 30 МБ, бусад нь бага) хадгална;
+[`mn_download()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_cache_dir.md)-ийг
+үзнэ үү.
 
 ## Usage
 
@@ -26,62 +27,63 @@ mn_places(
 
 - class:
 
-  Road classes to keep: `"main"` (motorways to tertiary roads, the
-  default), `"minor"` (residential, service and unclassified streets),
-  `"track"`, `"path"`, or `"all"`.
+  Үлдээх замын ангилал: `"main"` (хурдны замаас гуравдугаар зэрэглэлийн
+  зам хүртэл, анхдагч), `"minor"` (орон сууцны, үйлчилгээний, ангилалгүй
+  гудамж), `"track"`, `"path"` эсвэл `"all"`.
 
 - within:
 
-  Keep only features inside these places (names or codes of any level
-  with a boundary, such as `"Ulaanbaatar"` or `"Khovd"`).
+  Зөвхөн эдгээр газар доторх объектыг үлдээнэ (хилтэй дурын түвшний нэр
+  эсвэл код, жишээ нь `"Улаанбаатар"`, `"Ховд"`).
 
 - crs:
 
-  Coordinate reference system of the result. `NULL` (default) keeps
-  longitude/latitude (EPSG:4326). Use `"albers"`, `"lcc"` or `"utm"` for
-  a projection suited to Mongolia (see
-  [`mn_crs()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_crs.md)),
-  or any value accepted by
-  [`sf::st_crs()`](https://r-spatial.github.io/sf/reference/st_crs.html).
+  Үр дүнгийн координатын систем. `NULL` (анхдагч) бол уртраг, өргөрөг
+  (EPSG:4326) хэвээр. Монголд тохирсон проекцод `"albers"`, `"lcc"`
+  эсвэл `"utm"`-ийг
+  ([`mn_crs()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_crs.md)-ийг
+  үзнэ үү), эсвэл
+  [`sf::st_crs()`](https://r-spatial.github.io/sf/reference/st_crs.html)-ийн
+  хүлээн авах дурын утгыг өгнө.
 
 - stations:
 
-  If `TRUE`, `mn_railways()` returns railway stations as points instead
-  of the lines.
+  `TRUE` бол `mn_railways()` шугамын оронд төмөр замын өртөөг цэгээр
+  буцаана.
 
 - type:
 
-  Place types for `mn_places()`: any of `"city"`, `"town"`, `"village"`,
-  `"hamlet"`, `"suburb"` and `"isolated_dwelling"`.
+  `mn_places()`-ийн суурины төрөл: `"city"`, `"town"`, `"village"`,
+  `"hamlet"`, `"suburb"`, `"isolated_dwelling"`-ийн аль нь ч.
 
 - lang:
 
-  Language of the `name` column: `"en"` (English, as in NSO tables),
-  `"mn"` (Cyrillic) or `"mns"` (Latin with diacritics, MNS 5217).
-  Defaults to `getOption("mongolmaps.lang", "en")`.
+  `name` баганын хэл: `"en"` (англи, ҮСХ-ны хүснэгтийн бичлэгээр),
+  `"mn"` (кирил) эсвэл `"mns"` (MNS 5217 стандартын латин, тэмдэгттэй).
+  Анхдагч утга нь `getOption("mongolmaps.lang", "en")`.
 
 ## Value
 
-An `sf` tibble with `osm_id`, `name` (in the chosen language, where
-OpenStreetMap has it), `name_en`, `name_mn` and layer-specific columns:
-`highway`, `class` and `surface` for roads; `railway` for railways;
-`place` and `population` for places.
+`osm_id`, `name` (OpenStreetMap-д байгаа бол сонгосон хэлээр),
+`name_en`, `name_mn` болон давхарга бүрийн баганатай `sf` tibble: авто
+замд `highway`, `class`, `surface`; төмөр замд `railway`; суурин газарт
+`place`, `population`.
 
 ## Details
 
-Use `within` to get a layer for one place: only the features in that
-place's bounding box are read from disk, then lines are cut at its
-border.
+Нэг газрын давхарга авахын тулд `within`-ийг ашиглана: зөвхөн тухайн
+газрын хүрээ доторх объектыг дискнээс уншаад, шугамыг хил дээр нь
+тасална.
 
-## Licence
+## Лиценз
 
-OpenStreetMap data are available under the Open Database Licence (ODbL).
-Credit "(c) OpenStreetMap contributors" when you publish maps;
-`mn_citation("osm_roads")` gives the text.
+OpenStreetMap-ийн өгөгдөл Open Database License (ODbL) лицензтэй. Газрын
+зураг нийтлэхдээ "(c) OpenStreetMap contributors" гэж дурдана уу;
+`mn_citation("osm_roads")` бичвэрийг нь өгнө.
 
 ## See also
 
-Other thematic layers:
+Сэдэвчилсэн бусад давхарга:
 [`mn_neighbours()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_neighbours.md),
 [`mn_protected_areas()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_protected_areas.md),
 [`mn_settlements()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_settlements.md)

@@ -1,6 +1,6 @@
-# Map context: neighbouring countries, rivers and lakes
+# Газрын зургийн орчин: хөрш орнууд, гол мөрөн, нуур
 
-Layers that give a map of Mongolia its surroundings and water.
+Монголын газрын зурагт эргэн тойрон, усыг нэмэх давхаргууд.
 
 ## Usage
 
@@ -16,44 +16,44 @@ mn_lakes(detail = c("major", "all"), within = NULL, crs = NULL)
 
 - crs:
 
-  Coordinate reference system of the result. `NULL` (default) keeps
-  longitude/latitude (EPSG:4326). Use `"albers"`, `"lcc"` or `"utm"` for
-  a projection suited to Mongolia (see
-  [`mn_crs()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_crs.md)),
-  or any value accepted by
-  [`sf::st_crs()`](https://r-spatial.github.io/sf/reference/st_crs.html).
+  Үр дүнгийн координатын систем. `NULL` (анхдагч) бол уртраг, өргөрөг
+  (EPSG:4326) хэвээр. Монголд тохирсон проекцод `"albers"`, `"lcc"`
+  эсвэл `"utm"`-ийг
+  ([`mn_crs()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_crs.md)-ийг
+  үзнэ үү), эсвэл
+  [`sf::st_crs()`](https://r-spatial.github.io/sf/reference/st_crs.html)-ийн
+  хүлээн авах дурын утгыг өгнө.
 
 - detail:
 
-  `"major"` for the main rivers and lakes (bundled), or `"all"` for
-  everything in OpenStreetMap (downloaded).
+  Томоохон гол, нуурт `"major"` (багцад), OpenStreetMap-ийн бүх объектод
+  `"all"` (татаж авна).
 
 - within:
 
-  Keep only features inside these places (names or codes).
+  Зөвхөн эдгээр газар доторх объектыг үлдээнэ (нэр эсвэл код).
 
 ## Value
 
-An `sf` tibble. Natural Earth layers have `name_en` and `scalerank`
-(lower is more important). OpenStreetMap layers have `osm_id`, `name`,
-`name_en`, `name_mn` and `class` (for example `"river"`, `"stream"`,
-`"lake"` or `"reservoir"`).
+`sf` tibble. Natural Earth-ийн давхарга `name_en` ба `scalerank` (бага
+нь илүү чухал) баганатай. OpenStreetMap-ийн давхарга `osm_id`, `name`,
+`name_en`, `name_mn`, `class` (жишээ нь `"river"`, `"stream"`, `"lake"`,
+`"reservoir"`) баганатай.
 
 ## Details
 
-- `mn_neighbours()`: the neighbouring parts of Russia, China and
-  Kazakhstan (Natural Earth, public domain), clipped to a frame 300 km
-  around Mongolia.
+- `mn_neighbours()`: Монголын эргэн тойрон дахь Орос, Хятад, Казахстаны
+  хэсэг (Natural Earth, нийтийн өмч), Монголоос 300 км-ийн хүрээгээр
+  тасалсан.
 
-- `mn_rivers()` and `mn_lakes()`: with `detail = "major"` (default),
-  major rivers and lakes from Natural Earth, bundled with the package.
-  With `detail = "all"`, every river, stream, canal and water body
-  mapped in OpenStreetMap (ODbL), downloaded once (about 20 MB) and
-  cached.
+- `mn_rivers()`, `mn_lakes()`: `detail = "major"` (анхдагч) бол Natural
+  Earth-ийн томоохон гол, нуур, багцтай ирнэ. `detail = "all"` бол
+  OpenStreetMap-д зурагдсан бүх гол, горхи, суваг, усан сан (ODbL), нэг
+  удаа (ойролцоогоор 20 МБ) татаж хадгална.
 
 ## See also
 
-Other thematic layers:
+Сэдэвчилсэн бусад давхарга:
 [`mn_protected_areas()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_protected_areas.md),
 [`mn_roads()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_roads.md),
 [`mn_settlements()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_settlements.md)

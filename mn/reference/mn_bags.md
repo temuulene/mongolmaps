@@ -1,11 +1,10 @@
-# Bags: the smallest rural units
+# Баг: хөдөөгийн хамгийн жижиг нэгж
 
-Bags (baga) are the subdivisions of soums; there are about 1,650 of
-them. Their codes and names are built in (see `mn_codes("bag")`), but
-**their boundaries are not openly published**: the National Statistics
-Office of Mongolia (NSO) shares them on request. Once you have a bag
-boundary file, `mn_bags()` and every other function in the package can
-use it.
+Баг бол сумын хуваарь; нийт 1,650 орчим баг бий. Тэдгээрийн код, нэр
+багцад бий (`mn_codes("bag")`-ийг үзнэ үү), гэхдээ **хил нь нээлттэй
+нийтлэгдээгүй**: Үндэсний статистикийн хороо (ҮСХ) хүсэлтээр өгдөг.
+Багийн хилийн файлтай болсон бол `mn_bags()` болон багцын бусад бүх
+функц үүнийг ашиглаж чадна.
 
 ## Usage
 
@@ -26,67 +25,70 @@ mn_read_bags(path, code_col = NULL, check_nesting = TRUE)
 
 - aimag, soum:
 
-  Keep only bags in these aimags or soums (names or codes).
+  Зөвхөн эдгээр аймаг, сумын багуудыг үлдээнэ (нэр эсвэл код).
 
 - path:
 
-  Path to a bag boundary file readable by
-  [`sf::st_read()`](https://r-spatial.github.io/sf/reference/st_read.html).
-  Defaults to `getOption("mongolmaps.bags_path")`.
+  [`sf::st_read()`](https://r-spatial.github.io/sf/reference/st_read.html)-ээр
+  уншигдах багийн хилийн файлын зам. Анхдагч нь
+  `getOption("mongolmaps.bags_path")`.
 
 - resolution:
 
-  `"low"` (default) uses simplified boundaries that ship with the
-  package and suit most maps. `"high"` uses full-resolution boundaries,
-  downloaded once (about 10 MB) and cached; see
-  [`mn_cache_dir()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_cache_dir.md).
+  `"low"` (анхдагч) нь багцтай хамт ирдэг, ихэнх газрын зурагт тохирох
+  хялбаршуулсан хилийг ашиглана. `"high"` нь бүрэн нарийвчлалтай хилийг
+  нэг удаа (ойролцоогоор 10 МБ) татаж, хадгална;
+  [`mn_cache_dir()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_cache_dir.md)-ийг
+  үзнэ үү.
 
 - lang:
 
-  Language of the `name` column: `"en"` (English, as in NSO tables),
-  `"mn"` (Cyrillic) or `"mns"` (Latin with diacritics, MNS 5217).
-  Defaults to `getOption("mongolmaps.lang", "en")`.
+  `name` баганын хэл: `"en"` (англи, ҮСХ-ны хүснэгтийн бичлэгээр),
+  `"mn"` (кирил) эсвэл `"mns"` (MNS 5217 стандартын латин, тэмдэгттэй).
+  Анхдагч утга нь `getOption("mongolmaps.lang", "en")`.
 
 - crs:
 
-  Coordinate reference system of the result. `NULL` (default) keeps
-  longitude/latitude (EPSG:4326). Use `"albers"`, `"lcc"` or `"utm"` for
-  a projection suited to Mongolia (see
-  [`mn_crs()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_crs.md)),
-  or any value accepted by
-  [`sf::st_crs()`](https://r-spatial.github.io/sf/reference/st_crs.html).
+  Үр дүнгийн координатын систем. `NULL` (анхдагч) бол уртраг, өргөрөг
+  (EPSG:4326) хэвээр. Монголд тохирсон проекцод `"albers"`, `"lcc"`
+  эсвэл `"utm"`-ийг
+  ([`mn_crs()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_crs.md)-ийг
+  үзнэ үү), эсвэл
+  [`sf::st_crs()`](https://r-spatial.github.io/sf/reference/st_crs.html)-ийн
+  хүлээн авах дурын утгыг өгнө.
 
 - code_col:
 
-  Name of the column holding bag codes: 7-digit NSO codes (`"1830151"`)
-  or P-codes (`"MN830151"`). `NULL` detects it.
+  Багийн кодын баганын нэр: ҮСХ-ны 7 оронтой код (`"1830151"`) эсвэл
+  P-код (`"MN830151"`). `NULL` бол автоматаар олно.
 
 - check_nesting:
 
-  If `TRUE` (default), stop when a bag lies outside its soum.
+  `TRUE` (анхдагч) бол баг сумаасаа гадуур байвал зогсоно.
 
 ## Value
 
-An `sf` tibble; see
-[`mn_admin()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_admin.md)
-for the columns.
+`sf` tibble; баганыг
+[`mn_admin()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_admin.md)-аас
+үзнэ үү.
 
-## Getting bag boundaries
+## Багийн хил авах
 
-Write to NSO (<international@nso.mn>) and ask for the bag boundaries as
-a shapefile or GeoPackage, with each bag's NSO code. Then either pass
-the file to `mn_bags(path = ...)`, or register it once per session with
-`options(mongolmaps.bags_path = "path/to/bags.gpkg")` (put that line in
-your `.Rprofile` to make it permanent). Registered bags are also
-returned by `mn_admin("bag")` and used by
-[`mn_join()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_join.md).
+ҮСХ-нд (<international@nso.mn>) хандаж, багийн хилийг баг бүрийн ҮСХ-ны
+кодтой shapefile эсвэл GeoPackage хэлбэрээр хүснэ үү. Дараа нь файлыг
+`mn_bags(path = ...)`-д өгөх, эсвэл нэг удаа
+`options(mongolmaps.bags_path = "path/to/bags.gpkg")`-ээр бүртгэнэ
+(байнга ашиглах бол энэ мөрийг `.Rprofile`-даа нэмнэ). Бүртгэсэн багийг
+`mn_admin("bag")` мөн буцааж,
+[`mn_join()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_join.md)
+ашиглана.
 
-`mn_read_bags()` checks the file: every bag must have a known code and
-sit inside its soum.
+`mn_read_bags()` файлыг шалгана: баг бүр мэдэгдэж буй кодтой, өөрийн сум
+дотор байх ёстой.
 
 ## See also
 
-Other admin boundaries:
+Хил хязгаарын бусад функц:
 [`mn_admin()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_admin.md),
 [`mn_aimags()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_aimags.md),
 [`mn_country()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_country.md),

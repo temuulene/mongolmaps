@@ -1,8 +1,7 @@
-# Soums of Mongolia and districts of Ulaanbaatar
+# Монгол Улсын сумд ба Улаанбаатарын дүүргүүд
 
-Returns the 330 soums (rural districts) together with the 9 districts
-(duureg) of Ulaanbaatar, which sit at the same level (`type` is `"soum"`
-or `"district"`).
+330 сумыг Улаанбаатарын 9 дүүргийн хамт буцаана; дүүрэг нь сумтай ижил
+түвшинд байдаг (`type` нь `"soum"` эсвэл `"district"`).
 
 ## Usage
 
@@ -14,39 +13,41 @@ mn_soums(aimag = NULL, resolution = c("low", "high"), lang = NULL, crs = NULL)
 
 - aimag:
 
-  Keep only soums in these aimags (names or codes).
+  Зөвхөн эдгээр аймгийн сумдыг үлдээнэ (нэр эсвэл код).
 
 - resolution:
 
-  `"low"` (default) uses simplified boundaries that ship with the
-  package and suit most maps. `"high"` uses full-resolution boundaries,
-  downloaded once (about 10 MB) and cached; see
-  [`mn_cache_dir()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_cache_dir.md).
+  `"low"` (анхдагч) нь багцтай хамт ирдэг, ихэнх газрын зурагт тохирох
+  хялбаршуулсан хилийг ашиглана. `"high"` нь бүрэн нарийвчлалтай хилийг
+  нэг удаа (ойролцоогоор 10 МБ) татаж, хадгална;
+  [`mn_cache_dir()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_cache_dir.md)-ийг
+  үзнэ үү.
 
 - lang:
 
-  Language of the `name` column: `"en"` (English, as in NSO tables),
-  `"mn"` (Cyrillic) or `"mns"` (Latin with diacritics, MNS 5217).
-  Defaults to `getOption("mongolmaps.lang", "en")`.
+  `name` баганын хэл: `"en"` (англи, ҮСХ-ны хүснэгтийн бичлэгээр),
+  `"mn"` (кирил) эсвэл `"mns"` (MNS 5217 стандартын латин, тэмдэгттэй).
+  Анхдагч утга нь `getOption("mongolmaps.lang", "en")`.
 
 - crs:
 
-  Coordinate reference system of the result. `NULL` (default) keeps
-  longitude/latitude (EPSG:4326). Use `"albers"`, `"lcc"` or `"utm"` for
-  a projection suited to Mongolia (see
-  [`mn_crs()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_crs.md)),
-  or any value accepted by
-  [`sf::st_crs()`](https://r-spatial.github.io/sf/reference/st_crs.html).
+  Үр дүнгийн координатын систем. `NULL` (анхдагч) бол уртраг, өргөрөг
+  (EPSG:4326) хэвээр. Монголд тохирсон проекцод `"albers"`, `"lcc"`
+  эсвэл `"utm"`-ийг
+  ([`mn_crs()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_crs.md)-ийг
+  үзнэ үү), эсвэл
+  [`sf::st_crs()`](https://r-spatial.github.io/sf/reference/st_crs.html)-ийн
+  хүлээн авах дурын утгыг өгнө.
 
 ## Value
 
-An `sf` tibble; see
-[`mn_admin()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_admin.md)
-for the columns.
+`sf` tibble; баганыг
+[`mn_admin()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_admin.md)-аас
+үзнэ үү.
 
 ## See also
 
-Other admin boundaries:
+Хил хязгаарын бусад функц:
 [`mn_admin()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_admin.md),
 [`mn_aimags()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_aimags.md),
 [`mn_bags()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_bags.md),

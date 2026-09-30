@@ -1,11 +1,12 @@
-# Match place names and codes to Mongolian administrative units
+# Газрын нэр, кодыг Монголын засаг захиргааны нэгжтэй тааруулах
 
-Converts any common way of writing a Mongolian place into its code:
-English spellings ("Khuvsgul", "Khovsgol", "Hovsgol"), Cyrillic, NSO
-statistical codes, ISO 3166-2 codes and P-codes. Names are compared
-through a normalised key, so spelling variants, case, punctuation and
-words such as "aimag", "province", "soum" or "district" do not matter.
-Values that still do not match are tried with a small edit distance.
+Монгол газар нутгийн нэрийн аливаа түгээмэл бичлэгийг кодод нь
+хөрвүүлнэ: англи бичлэг ("Khuvsgul", "Khovsgol", "Hovsgol"), кирил,
+ҮСХ-ны статистикийн код, ISO 3166-2 код, P-код. Нэрийг хэвийн болгосон
+түлхүүрээр харьцуулдаг тул бичлэгийн хувилбар, том жижиг үсэг, цэг
+таслал, "аймаг", "province", "сум", "дүүрэг" гэх мэт үг нөлөөлөхгүй.
+Ингээд ч тохироогүй утгыг бага зэргийн засварын зайгаар тааруулахыг
+оролдоно.
 
 ## Usage
 
@@ -26,52 +27,50 @@ mn_match(
 
 - x:
 
-  A character vector of names or codes (numbers and factors are
-  converted to character).
+  Нэр эсвэл кодын тэмдэгт мөрийн вектор (тоо, factor-ыг тэмдэгт мөр
+  болгоно).
 
 - level:
 
-  The level(s) to search: `"country"`, `"region"`, `"aimag"`, `"soum"`
-  (includes Ulaanbaatar districts) or `"bag"` (includes khoroos). `NULL`
-  (the default) searches every level, preferring aimags, then soums,
-  regions, the country and bags.
+  Хайх түвшин(үүд): `"country"`, `"region"`, `"aimag"`, `"soum"`
+  (Улаанбаатарын дүүргийг оруулна) эсвэл `"bag"` (хороог оруулна).
+  `NULL` (анхдагч) бол бүх түвшнээс хайж, аймаг, дараа нь сум, бүс, улс,
+  багийг тэргүүн ээлжинд авна.
 
 - within:
 
-  Restricts the search to units inside a parent, given as a name or
-  code. Use it to separate soums that share a name. Either a single
-  value or one value per element of `x`.
+  Хайлтыг нэг дээд нэгж доторх нэгжээр хязгаарлана. Нэг утга, эсвэл
+  `x`-ийн элемент бүрт нэг утга өгнө.
 
 - to:
 
-  What to return: `"pcode"` (default), `"name_en"`, `"name_mn"`,
-  `"name_mns"`, `"iso_code"`, `"nso_code"`, `"level"` or `"type"`.
+  Юу буцаах: `"pcode"` (анхдагч), `"name_en"`, `"name_mn"`,
+  `"name_mns"`, `"iso_code"`, `"nso_code"`, `"level"` эсвэл `"type"`.
 
 - fuzzy:
 
-  If `TRUE` (default), values without an exact match are matched by edit
-  distance when a single close candidate exists. Each fuzzy match is
-  reported in a message so you can check it.
+  `TRUE` (анхдагч) бол яг тохироогүй утгыг, ганц ойролцоо хувилбар
+  байвал засварын зайгаар тааруулна. Ойролцоогоор тааруулсан утга бүрийг
+  шалгаж болохоор мэдэгдлээр харуулна.
 
 - max_dist:
 
-  Maximum edit distance for fuzzy matching. `NULL` scales it with the
-  length of the name (0 for 3 letters or fewer, up to 3 for long names).
+  Ойролцоо тааруулалтын засварын хамгийн их зай. `NULL` бол нэрийн
+  уртаас хамааруулна (3 ба түүнээс цөөн үсэгтэйд 0, урт нэрт 3 хүртэл).
 
 - quiet:
 
-  If `TRUE`, suppresses the message listing fuzzy matches. Warnings
-  about ambiguous or unmatched values are always shown.
+  `TRUE` бол ойролцоо тааруулалтын мэдэгдлийг нууна. Давхардсан эсвэл
+  тохироогүй утгын анхааруулга үргэлж гарна.
 
 ## Value
 
-A character vector the same length as `x`. Values that cannot be
-matched, or that match several units, are `NA` and are listed in a
-warning.
+`x`-тэй ижил урттай тэмдэгт мөрийн вектор. Тааруулж чадаагүй, эсвэл хэд
+хэдэн нэгжтэй тохирсон утга `NA` болж, анхааруулгад жагсагдана.
 
 ## See also
 
-Other names and codes:
+Нэр, кодын бусад функц:
 [`mn_codes()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_codes.md),
 [`mn_translit()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_translit.md)
 

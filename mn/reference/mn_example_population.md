@@ -1,11 +1,12 @@
-# Mid-year resident population of Mongolia (example data)
+# Монгол Улсын жилийн дундаж хүн ам (жишээ өгөгдөл)
 
-Population by administrative unit for 2015, 2020 and 2025, exactly as
-returned by the National Statistics Office (NSO) table DT_NSO_0300_002V4
-via the mongolstats package. The `Region` column mixes levels (national
-total, regions, aimags, soums, bags and khoroos), as NSO tables do,
-which makes it a good example for
-[`mn_join()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_join.md).
+2015, 2020, 2025 оны засаг захиргааны нэгжээрх хүн ам, Үндэсний
+статистикийн хорооны (ҮСХ) DT_NSO_0300_002V4 хүснэгтээс mongolstats
+багцаар татсан хэлбэрээрээ. ҮСХ-ны хүснэгтүүдийн нэгэн адил `Region`
+багана олон түвшнийг (улсын дүн, бүс, аймаг, сум, баг, хороо) агуулдаг
+тул
+[`mn_join()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_join.md)-ийн
+сайн жишээ болно.
 
 ## Usage
 
@@ -15,33 +16,33 @@ mn_example_population
 
 ## Format
 
-A data frame with 6,672 rows and 4 columns:
+6,672 мөр, 4 баганатай хүснэгт:
 
 - Region:
 
-  NSO unit code, such as `"0"` (Mongolia), `"183"` (Bayan-Ulgii),
-  `"18301"` (Ulgii soum) or `"5110751"` (Bayangol district, 1st khoroo).
+  ҮСХ-ны нэгжийн код, жишээ нь `"0"` (Монгол Улс), `"183"` (Баян-Өлгий),
+  `"18301"` (Өлгий сум), `"5110751"` (Баянгол дүүргийн 1-р хороо).
 
 - Region_en:
 
-  English label of the unit.
+  Нэгжийн англи нэр.
 
 - Year:
 
-  Year.
+  Он.
 
 - value:
 
-  Mid-year resident population.
+  Жилийн дундаж хүн ам.
 
 ## Source
 
-National Statistics Office of Mongolia, <https://data.1212.mn/pxweb/>,
-retrieved 2026-09-29.
+Үндэсний статистикийн хороо, <https://data.1212.mn/pxweb/>,
+2026-09-29-нд татсан.
 
 ## See also
 
-Other joining data:
+Өгөгдөл холбох бусад:
 [`mn_join()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_join.md)
 
 ## Examples

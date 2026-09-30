@@ -1,9 +1,10 @@
-# Label points for map units
+# Газрын зургийн нэгжийн нэр тавих цэг
 
-Returns one point per unit, placed well inside its polygon (unlike a
-centroid, which can fall outside curved shapes). Points for the maps in
-this package are precomputed; other polygons use
-[`sf::st_point_on_surface()`](https://r-spatial.github.io/sf/reference/geos_unary.html).
+Нэгж бүрт олигоныхоо гүнд байрлах нэг цэг буцаана (муруй хэлбэрийн гадна
+гарч болох центроидоос ялгаатай). Багцын газрын зургийн цэгүүдийг
+урьдчилан тооцсон; бусад олигонд
+[`sf::st_point_on_surface()`](https://r-spatial.github.io/sf/reference/geos_unary.html)-ийг
+ашиглана.
 
 ## Usage
 
@@ -15,15 +16,15 @@ mn_label_points(x)
 
 - x:
 
-  An `sf` object of polygons.
+  Олигоны `sf` объект.
 
 ## Value
 
-An `sf` object of points with the attributes of `x`.
+`x`-ийн шинжүүдтэй цэгийн `sf` объект.
 
 ## See also
 
-Other mapping helpers:
+Газрын зураг зурах бусад функц:
 [`mn_aimag_grid`](https://temuulene.github.io/mongolmaps/mn/reference/mn_aimag_grid.md),
 [`mn_crs()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_crs.md),
 [`mn_leaflet()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_leaflet.md),

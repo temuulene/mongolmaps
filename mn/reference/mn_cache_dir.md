@@ -1,8 +1,8 @@
-# Manage downloaded map data
+# Татаж авсан газрын зургийн өгөгдлийг удирдах
 
-Full-resolution boundaries and the larger thematic layers are downloaded
-the first time you use them and kept in a cache folder, so later calls
-work offline.
+Бүрэн нарийвчлалтай хил болон томоохон сэдэвчилсэн давхаргуудыг анх
+ашиглахад татаж, кэш хавтаст хадгалдаг тул дараагийн удаа интернетгүй
+ажиллана.
 
 ## Usage
 
@@ -20,40 +20,40 @@ mn_download(layers = "all")
 
 - layers:
 
-  Layer ids or groups (see
-  [`mn_sources()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_sources.md)),
-  such as `"admin_high"` or `"osm"`. `NULL` (the default for
-  `mn_cache_clear()`) means all; `"all"` (the default for
-  `mn_download()`) means every downloadable layer.
+  Давхаргын id эсвэл бүлэг
+  ([`mn_sources()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_sources.md)-ийг
+  үзнэ үү), жишээ нь `"admin_high"`, `"osm"`. `NULL`
+  (`mn_cache_clear()`-ийн анхдагч) бол бүгдийг; `"all"`
+  (`mn_download()`-ийн анхдагч) бол татаж болох бүх давхаргыг.
 
 - old_versions:
 
-  If `TRUE`, `mn_cache_clear()` removes only data left by older versions
-  of the package.
+  `TRUE` бол `mn_cache_clear()` зөвхөн багцын өмнөх хувилбаруудаас
+  үлдсэн өгөгдлийг устгана.
 
 ## Value
 
-`mn_cache_dir()`: a path. `mn_cache_list()`: a tibble with one row per
-cached file. `mn_cache_clear()` and `mn_download()`: the affected paths,
-invisibly.
+`mn_cache_dir()`: зам. `mn_cache_list()`: кэшд буй файл бүрт нэг мөртэй
+tibble. `mn_cache_clear()` ба `mn_download()`: хамаарах замууд,
+харагдахгүйгээр.
 
 ## Details
 
-- `mn_cache_dir()` returns the cache folder. Change it with
-  `options(mongolmaps.cache_dir = "path")`.
+- `mn_cache_dir()` кэш хавтсыг буцаана.
+  `options(mongolmaps.cache_dir = "path")`-ээр өөрчилнө.
 
-- `mn_cache_list()` lists what is cached.
+- `mn_cache_list()` кэшд юу байгааг жагсаана.
 
-- `mn_cache_clear()` deletes cached files.
+- `mn_cache_clear()` кэшийн файлыг устгана.
 
-- `mn_download()` downloads layers now, for example before fieldwork
-  without internet. See
-  [`mn_sources()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_sources.md)
-  for the layer ids.
+- `mn_download()` давхаргыг одоо татна, жишээ нь интернетгүй газар
+  хээрийн ажилд гарахын өмнө. Давхаргын id-г
+  [`mn_sources()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_sources.md)-ээс
+  харна уу.
 
 ## See also
 
-Other data sources and cache:
+Эх сурвалж, кэшийн бусад функц:
 [`mn_sources()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_sources.md)
 
 ## Examples

@@ -1,8 +1,8 @@
-# Transliterate Mongolian Cyrillic to Latin script
+# Монгол кирилийг латин үсэгт буулгах
 
-Converts Mongolian Cyrillic text to Latin script with a fixed,
-package-owned table, so results never change between systems. Latin
-characters, digits and punctuation pass through unchanged.
+Монгол кирил бичвэрийг багцын өөрийн тогтмол хүснэгтээр латин үсэгт
+буулгадаг тул үр дүн систем бүрт адилхан. Латин үсэг, цифр, цэг таслал
+өөрчлөгдөхгүй.
 
 ## Usage
 
@@ -14,26 +14,25 @@ mn_translit(x, to = c("mns", "nso"))
 
 - x:
 
-  A character vector (factors are converted to character).
+  Тэмдэгт мөрийн вектор (factor-ыг тэмдэгт мөр болгоно).
 
 - to:
 
-  The romanisation scheme:
+  Галиглах арга:
 
-  - `"mns"` (default): the Mongolian national standard MNS 5217:2012,
-    which writes the front vowels as o-umlaut and u-umlaut, for example
-    "Khovsgol" with umlauts.
+  - `"mns"` (анхдагч): Монгол Улсын үндэсний стандарт MNS 5217:2012, ө,
+    ү үсгийг ö, ü-ээр бичнэ, жишээ нь "Khövsgöl".
 
-  - `"nso"`: the plain-ASCII spelling used in English tables of the
-    National Statistics Office, for example "Khuvsgul".
+  - `"nso"`: Үндэсний статистикийн хорооны англи хүснэгтэд хэрэглэдэг
+    зөвхөн ASCII бичлэг, жишээ нь "Khuvsgul".
 
 ## Value
 
-A character vector the same length as `x`.
+`x`-тэй ижил урттай тэмдэгт мөрийн вектор.
 
 ## See also
 
-Other names and codes:
+Нэр, кодын бусад функц:
 [`mn_codes()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_codes.md),
 [`mn_match()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_match.md)
 

@@ -1,10 +1,10 @@
-# Land cover
+# Газрын бүрхэвч
 
-Land cover from ESA WorldCover 2021, in 11 classes such as grassland,
-bare ground, cropland and built-up areas. The result is a categorical
-raster with class names and the official colours, so
+ESA WorldCover 2021-ийн газрын бүрхэвч, бэлчээр, ил хөрс, тариалан,
+барилгажсан талбай зэрэг 11 ангилалтай. Үр дүн нь ангиллын нэр, албан
+ёсны өнгөтэй ангиллын растер тул
 [`terra::plot()`](https://rspatial.github.io/terra/reference/plot.html)
-draws it with a legend.
+үүнийг тайлбартай нь зурна.
 
 ## Usage
 
@@ -21,39 +21,41 @@ mn_landcover(
 
 - resolution:
 
-  `"1km"` or `"10m"`.
+  `"1km"` эсвэл `"10m"`.
 
 - within:
 
-  Area to return (names or codes). Required for `"90m"`.
+  Буцаах газар (нэр эсвэл код). Онлайнаар уншдаг нарийвчлалд заавал
+  өгнө: өндөршилд `"90m"`, газрын бүрхэвчид `"10m"`.
 
 - mask:
 
-  If `TRUE` (default), cells outside Mongolia (or outside `within`) are
-  set to `NA`.
+  `TRUE` (анхдагч) бол Монголоос (эсвэл `within`-ээс) гадуурх нүдийг
+  `NA` болгоно.
 
 - crs:
 
-  Coordinate reference system of the result. `NULL` (default) keeps
-  longitude/latitude (EPSG:4326). Use `"albers"`, `"lcc"` or `"utm"` for
-  a projection suited to Mongolia (see
-  [`mn_crs()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_crs.md)),
-  or any value accepted by
-  [`sf::st_crs()`](https://r-spatial.github.io/sf/reference/st_crs.html).
+  Үр дүнгийн координатын систем. `NULL` (анхдагч) бол уртраг, өргөрөг
+  (EPSG:4326) хэвээр. Монголд тохирсон проекцод `"albers"`, `"lcc"`
+  эсвэл `"utm"`-ийг
+  ([`mn_crs()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_crs.md)-ийг
+  үзнэ үү), эсвэл
+  [`sf::st_crs()`](https://r-spatial.github.io/sf/reference/st_crs.html)-ийн
+  хүлээн авах дурын утгыг өгнө.
 
 ## Value
 
-A categorical `terra` SpatRaster.
+Ангиллын `terra` SpatRaster.
 
 ## Details
 
-- `resolution = "1km"` (default): national grid, majority class of each
-  square kilometre, downloaded once (about 2 MB).
+- `resolution = "1km"` (анхдагч): улсын тор, квадрат километр бүрийн
+  зонхилох ангилал, нэг удаа (ойролцоогоор 2 МБ) татна.
 
-- `resolution = "10m"`: the original 10 m data for the area in `within`
-  (a soum, district or smaller aimag), read from the cloud.
+- `resolution = "10m"`: `within` дахь газрын (сум, дүүрэг эсвэл жижиг
+  аймаг) анхны 10 м-ийн өгөгдөл, үүлнээс уншина.
 
-## Source
+## Эх сурвалж
 
 ESA WorldCover 10 m 2021 v200, (c) ESA WorldCover project / contains
 modified Copernicus Sentinel data (2021) processed by the ESA WorldCover
@@ -61,7 +63,7 @@ consortium. CC BY 4.0.
 
 ## See also
 
-Other raster layers:
+Растерийн бусад давхарга:
 [`mn_elevation()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_elevation.md),
 [`mn_population()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_population.md),
 [`mn_zonal()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_zonal.md)

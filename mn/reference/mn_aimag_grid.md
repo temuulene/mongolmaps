@@ -1,8 +1,7 @@
-# A grid layout of the aimags for small-multiple maps
+# Олон жижиг газрын зурагт зориулсан аймгийн торон байрлал
 
-Positions of the 21 aimags and Ulaanbaatar on a 4-by-9 grid that keeps
-their rough geographic arrangement, in the format used by the geofacet
-package.
+21 аймаг ба Улаанбаатарыг газарзүйн ойролцоо байрлалаар нь 4 х 9 торонд
+байрлуулсан, geofacet багцын хэрэглэдэг хэлбэрээр.
 
 ## Usage
 
@@ -12,12 +11,12 @@ mn_aimag_grid
 
 ## Format
 
-A data frame with 22 rows and 4 columns: `row`, `col`, `code` (the aimag
-pcode) and `name` (English name).
+22 мөр, 4 баганатай хүснэгт: `row`, `col`, `code` (аймгийн pcode),
+`name` (англи нэр).
 
 ## See also
 
-Other mapping helpers:
+Газрын зураг зурах бусад функц:
 [`mn_crs()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_crs.md),
 [`mn_label_points()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_label_points.md),
 [`mn_leaflet()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_leaflet.md),

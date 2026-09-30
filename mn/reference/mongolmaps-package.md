@@ -1,34 +1,33 @@
-# mongolmaps: Maps and Administrative Boundaries of Mongolia and Ulaanbaatar
+# mongolmaps: Монгол Улс, Улаанбаатарын газрын зураг, засаг захиргааны хил
 
-Ready-to-use 'sf' maps of Mongolia at every openly available
-administrative level: country, economic regions, aimags (provinces),
-soums and Ulaanbaatar districts, and Ulaanbaatar khoroos (subdistricts),
-with codes and names for every bag. Provides a crosswalk between English
-and Cyrillic names, common spelling variants, ISO 3166-2 codes,
-humanitarian P-codes and National Statistics Office codes; helpers to
-join statistics to maps; thematic layers (settlements, rivers, lakes,
-roads, railways, airports, elevation, land cover, population and
-protected areas); and quick 'ggplot2' and 'leaflet' maps. Boundaries
-derive from the Common Operational Dataset published by the National
-Statistics Office of Mongolia and the United Nations Office for the
-Coordination of Humanitarian Affairs
+Монгол Улсын нээлттэй байгаа засаг захиргааны бүх түвшний бэлэн 'sf'
+газрын зураг: улс, эдийн засгийн бүс, аймаг, сум ба Улаанбаатарын
+дүүрэг, Улаанбаатарын хороо, мөн бүх багийн код, нэр. Англи, кирил нэр,
+түгээмэл бичлэгийн хувилбар, ISO 3166-2 код, хүмүүнлэгийн P-код,
+Үндэсний статистикийн хорооны кодын хоорондох холбоос; статистикийг
+газрын зурагтай холбох туслах функц; сэдэвчилсэн давхарга (суурин, гол
+мөрөн, нуур, авто зам, төмөр зам, нисэх буудал, өндөршил, газрын
+бүрхэвч, хүн ам, тусгай хамгаалалттай газар); 'ggplot2', 'leaflet'-ээр
+хурдан газрын зураг зурах боломжтой. Хил хязгаар нь Монгол Улсын
+Үндэсний статистикийн хороо болон НҮБ-ын Хүмүүнлэгийн асуудал зохицуулах
+газрын нийтэлсэн Common Operational Dataset-ээс гаралтай
 <https://data.humdata.org/dataset/cod-ab-mng>.
 
 ## See also
 
-Useful links:
+Холбоос:
 
 - <https://github.com/temuulene/mongolmaps>
 
 - <https://temuulene.github.io/mongolmaps/>
 
-- Report bugs at <https://github.com/temuulene/mongolmaps/issues>
+- Алдаа мэдээлэх: <https://github.com/temuulene/mongolmaps/issues>
 
 ## Author
 
-**Maintainer**: Temuulen Enebish <temuulen@gmail.com> \[copyright
-holder\]
+**Хариуцагч**: Temuulen Enebish <temuulen@gmail.com> \[зохиогчийн эрх
+эзэмшигч\]
 
-Authors:
+Зохиогчид:
 
-- Temuulen Enebish <temuulen@gmail.com> \[copyright holder\]
+- Temuulen Enebish <temuulen@gmail.com> \[зохиогчийн эрх эзэмшигч\]

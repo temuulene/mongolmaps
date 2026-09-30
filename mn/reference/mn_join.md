@@ -1,11 +1,11 @@
-# Join your data to a map of Mongolia
+# Өөрийн өгөгдлийг Монголын газрын зурагтай холбох
 
-Attaches a data frame to boundaries in one step. The column in `by` can
-hold names in any common spelling, Cyrillic names, NSO codes, ISO codes
-or P-codes; they are matched with
-[`mn_match()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_match.md).
-Every unit of the level is kept, so places without data still appear on
-the map (with `NA`).
+Хүснэгтийг хил хязгаартай нэг алхамд холбоно. `by` баганад дурын
+түгээмэл бичлэгийн нэр, кирил нэр, ҮСХ-ны код, ISO код эсвэл P-код байж
+болно; тэдгээрийг
+[`mn_match()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_match.md)-ээр
+тааруулна. Тухайн түвшний бүх нэгж үлддэг тул өгөгдөлгүй газар ч газрын
+зураг дээр (`NA`-тай) харагдана.
 
 ## Usage
 
@@ -27,82 +27,84 @@ mn_join(
 
 - data:
 
-  A data frame.
+  Хүснэгт (data frame).
 
 - by:
 
-  The column of `data` with place names or codes, as a string or a bare
-  column name.
+  `data` дахь газрын нэр эсвэл кодын багана, тэмдэгт мөр эсвэл хашилтгүй
+  баганын нэрээр.
 
 - level:
 
-  The level of the places in `by`. `NULL` detects it.
+  `by` дахь газруудын түвшин. `NULL` бол автоматаар тодорхойлно.
 
 - by_parent:
 
-  Optional column of `data` naming each row's parent (for example the
-  aimag of each soum). Needed when soum or bag names repeat across the
-  country.
+  Мөр бүрийн дээд нэгжийг (жишээ нь сум бүрийн аймгийг) заах `data` дахь
+  нэмэлт багана. Сум эсвэл багийн нэр улс даяар давхардах үед хэрэгтэй.
 
 - within:
 
-  Keep only units inside these places, or these places themselves: names
-  or codes of any level, such as `"Khovd"`, `"MN84"` or
-  `"Western region"`.
+  Зөвхөн эдгээр газар доторх нэгжүүд, эсвэл эдгээр газрыг өөрсдийг нь
+  үлдээнэ: дурын түвшний нэр эсвэл код, жишээ нь `"Ховд"`, `"MN84"`,
+  `"Баруун бүс"`.
 
 - drop_other_levels:
 
-  If `TRUE` (default), rows for units at other levels, such as national
-  or aimag totals in a soum table, are dropped with a single message. If
-  `FALSE` they are reported as unmatched.
+  `TRUE` (анхдагч) бол бусад түвшний нэгжийн мөрийг, жишээ нь сумын
+  хүснэгт дэх улсын болон аймгийн дүнг, нэг мэдэгдэлтэйгээр хасна.
+  `FALSE` бол тэдгээрийг тохироогүй гэж мэдээлнэ.
 
 - resolution:
 
-  `"low"` (default) uses simplified boundaries that ship with the
-  package and suit most maps. `"high"` uses full-resolution boundaries,
-  downloaded once (about 10 MB) and cached; see
-  [`mn_cache_dir()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_cache_dir.md).
+  `"low"` (анхдагч) нь багцтай хамт ирдэг, ихэнх газрын зурагт тохирох
+  хялбаршуулсан хилийг ашиглана. `"high"` нь бүрэн нарийвчлалтай хилийг
+  нэг удаа (ойролцоогоор 10 МБ) татаж, хадгална;
+  [`mn_cache_dir()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_cache_dir.md)-ийг
+  үзнэ үү.
 
 - lang:
 
-  Language of the `name` column: `"en"` (English, as in NSO tables),
-  `"mn"` (Cyrillic) or `"mns"` (Latin with diacritics, MNS 5217).
-  Defaults to `getOption("mongolmaps.lang", "en")`.
+  `name` баганын хэл: `"en"` (англи, ҮСХ-ны хүснэгтийн бичлэгээр),
+  `"mn"` (кирил) эсвэл `"mns"` (MNS 5217 стандартын латин, тэмдэгттэй).
+  Анхдагч утга нь `getOption("mongolmaps.lang", "en")`.
 
 - crs:
 
-  Coordinate reference system of the result. `NULL` (default) keeps
-  longitude/latitude (EPSG:4326). Use `"albers"`, `"lcc"` or `"utm"` for
-  a projection suited to Mongolia (see
-  [`mn_crs()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_crs.md)),
-  or any value accepted by
-  [`sf::st_crs()`](https://r-spatial.github.io/sf/reference/st_crs.html).
+  Үр дүнгийн координатын систем. `NULL` (анхдагч) бол уртраг, өргөрөг
+  (EPSG:4326) хэвээр. Монголд тохирсон проекцод `"albers"`, `"lcc"`
+  эсвэл `"utm"`-ийг
+  ([`mn_crs()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_crs.md)-ийг
+  үзнэ үү), эсвэл
+  [`sf::st_crs()`](https://r-spatial.github.io/sf/reference/st_crs.html)-ийн
+  хүлээн авах дурын утгыг өгнө.
 
 ## Value
 
-An `sf` tibble: the boundaries of every unit at the level, with the
-columns of `data` added. Columns of `data` whose names clash with
-boundary columns get the suffix `.data`.
+`sf` tibble: тухайн түвшний бүх нэгжийн хил, `data`-гийн баганууд
+нэмэгдсэн. Хилийн баганатай ижил нэртэй `data`-гийн баганад `.data`
+дагавар залгана.
 
 ## Details
 
-**Level.** When `level` is `NULL`, the level with the most matches is
-used. NSO tables often list several levels in one column (the national
-total, regions, aimags, soums ...); rows at other levels are dropped
-with a message (see `drop_other_levels`). Join NSO tables by their code
-column (such as `Region`) rather than the label column: labels such as
-"Ulaanbaatar" name both a region and an aimag.
+**Түвшин.** `level` нь `NULL` бол хамгийн олон тохирол бүхий түвшнийг
+ашиглана. ҮСХ-ны хүснэгтүүд нэг баганад хэд хэдэн түвшнийг (улсын дүн,
+бүс, аймаг, сум ...) агуулдаг; бусад түвшний мөрийг мэдэгдэлтэйгээр
+хасна (`drop_other_levels`-ийг үзнэ үү). ҮСХ-ны хүснэгтийг нэрийн бус
+кодын баганаар (жишээ нь `Region`) холбоно уу: "Улаанбаатар" гэх мэт нэр
+нь бүс, аймгийн аль алиныг заадаг.
 
-**Several rows per unit.** Data with several rows per place (for example
-one per year) give several copies of that place's polygon, ready for
-[`ggplot2::facet_wrap()`](https://ggplot2.tidyverse.org/reference/facet_wrap.html).
+**Нэг нэгжид олон мөр.** Нэг газарт олон мөр (жишээ нь жил бүрт нэг)
+байвал тухайн газрын олигоныг хэд хэдэн удаа давтаж,
+[`ggplot2::facet_wrap()`](https://ggplot2.tidyverse.org/reference/facet_wrap.html)-д
+бэлэн болгоно.
 
-**Places without boundaries.** Villages (tosgon) and rural bags have NSO
-codes but no boundary; their rows are reported and left out.
+**Хилгүй газар.** Тосгон, хөдөөгийн баг ҮСХ-ны кодтой ч хилгүй;
+тэдгээрийн мөрийг мэдэгдээд хасна.
 
 ## See also
 
-Other joining data:
+Өгөгдөл холбох бусад:
 [`mn_example_population`](https://temuulene.github.io/mongolmaps/mn/reference/mn_example_population.md)
 
 ## Examples

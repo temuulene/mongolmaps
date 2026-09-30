@@ -1,10 +1,11 @@
-# Quick maps of Mongolia with ggplot2
+# ggplot2-оор Монголын газрын зургийг хурдан зурах
 
-Draws any map from this package, or a map joined to your data, with
-sensible defaults: a projection suited to Mongolia, a colour-blind
-friendly palette, grey for missing values, optional labels and
-surroundings, and the data attribution as a caption. The result is a
-normal ggplot, so you can add layers, scales and themes to it.
+Багцын дурын газрын зураг, эсвэл өөрийн өгөгдөлтэй холбосон газрын
+зургийг тохиромжтой анхдагч тохиргоотой зурна: Монголд тохирсон проекц,
+өнгөний харалган хүмүүст ялгагдах өнгөний хуваарь, өгөгдөлгүй газарт
+саарал өнгө, нэр, эргэн тойрныг сонголтоор, өгөгдлийн эх сурвалжийг
+тайлбар мөрөөр. Үр дүн нь энгийн ggplot тул давхарга, хуваарь, загвар
+нэмж болно.
 
 ## Usage
 
@@ -27,72 +28,73 @@ mn_map(
 
 - x:
 
-  An `sf` object, typically from
+  `sf` объект, ихэвчлэн
   [`mn_aimags()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_aimags.md),
   [`mn_soums()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_soums.md),
   [`mn_khoroos()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_ub.md)
-  or
-  [`mn_join()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_join.md),
-  or a `terra` raster such as
+  эсвэл
+  [`mn_join()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_join.md)-ийн
+  үр дүн, эсвэл
   [`mn_elevation()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_elevation.md),
-  [`mn_landcover()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_landcover.md)
-  or
-  [`mn_population()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_population.md).
-  Defaults to the aimags.
+  [`mn_landcover()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_landcover.md),
+  [`mn_population()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_population.md)
+  зэрэг `terra` растер. Анхдагч нь аймгууд.
 
 - fill:
 
-  Column to colour the polygons by (unquoted), or a single colour such
-  as `"steelblue"`. Numbers get a continuous viridis scale; text and
-  factors get a discrete one.
+  Олигоныг будах багана (хашилтгүй), эсвэл `"steelblue"` гэх мэт нэг
+  өнгө. Тоонд тасралтгүй viridis хуваарь, тэмдэгт мөр ба factor-т
+  салангид хуваарь өгнө.
 
 - trans:
 
-  Transformation of a numeric `fill` scale, such as `"log10"` or
-  `"sqrt"`. Useful when Ulaanbaatar dwarfs everything else.
+  Тоон `fill` хуваарийн хувиргалт, жишээ нь `"log10"`, `"sqrt"`.
+  Улаанбаатар бусдыг дарах үед хэрэгтэй.
 
 - label:
 
-  `TRUE` to label each unit with its name (khoroos with their number),
-  or an unquoted column to label with.
+  `TRUE` бол нэгж бүрийг нэрээр (хороог дугаараар) нь тэмдэглэнэ, эсвэл
+  тэмдэглэх хашилтгүй баганыг өгнө.
 
 - context:
 
-  If `TRUE`, draws neighbouring countries, major rivers and lakes around
-  the map.
+  `TRUE` бол газрын зургийн эргэн тойронд хөрш орнууд, томоохон гол,
+  нуурыг зурна.
 
 - crs:
 
-  Projection. `NULL` picks one: Albers equal-area for the country or
-  large parts of it, UTM zone 48N for Ulaanbaatar and other small areas
-  in central Mongolia. See
-  [`mn_crs()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_crs.md).
+  Проекц. `NULL` бол автоматаар сонгоно: улс эсвэл түүний томоохон
+  хэсэгт Альберсийн тэнцүү талбайт проекц, Улаанбаатар болон төвийн
+  бүсийн жижиг газарт UTM-ийн 48N бүс.
+  [`mn_crs()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_crs.md)-ийг
+  үзнэ үү.
 
 - lang:
 
-  Language of labels when `label = TRUE`: `"en"`, `"mn"` or `"mns"`.
+  `label = TRUE` үеийн нэрийн хэл: `"en"`, `"mn"` эсвэл `"mns"`.
 
 - caption:
 
-  `TRUE` adds the data attribution from
-  [`mn_citation()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_sources.md);
-  `FALSE` adds none; a string is used as is.
+  `TRUE` бол
+  [`mn_citation()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_sources.md)-аас
+  өгөгдлийн эх сурвалжийг нэмнэ; `FALSE` бол нэмэхгүй; тэмдэгт мөр өгвөл
+  түүнийг хэвээр ашиглана.
 
 - title:
 
-  Optional plot title.
+  Зургийн гарчиг (заавал биш).
 
 - label_size:
 
-  Text size of labels.
+  Нэрийн бичгийн хэмжээ.
 
 ## Value
 
-A `ggplot` object.
+`ggplot` объект.
 
 ## See also
 
-Other mapping helpers:
+Газрын зураг зурах бусад функц:
 [`mn_aimag_grid`](https://temuulene.github.io/mongolmaps/mn/reference/mn_aimag_grid.md),
 [`mn_crs()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_crs.md),
 [`mn_label_points()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_label_points.md),

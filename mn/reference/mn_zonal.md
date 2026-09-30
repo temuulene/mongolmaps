@@ -1,8 +1,7 @@
-# Summarise a raster over map units
+# Растерийг газрын зургийн нэгжээр нэгтгэх
 
-Adds a column to `x` with a summary of the raster cells in each unit,
-for example the total population of every soum or the mean elevation of
-every aimag.
+`x`-д нэгж бүр доторх растерийн нүдний нэгтгэлийг шинэ баганаар нэмнэ,
+жишээ нь сум бүрийн нийт хүн ам, аймаг бүрийн дундаж өндөршил.
 
 ## Usage
 
@@ -19,31 +18,32 @@ mn_zonal(
 
 - r:
 
-  A `terra` SpatRaster (one layer), such as from
-  [`mn_population()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_population.md).
+  `terra` SpatRaster (нэг давхаргатай), жишээ нь
+  [`mn_population()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_population.md)-ийн
+  үр дүн.
 
 - x:
 
-  An `sf` object of polygons, such as
+  Олигоны `sf` объект, жишээ нь
   [`mn_soums()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_soums.md).
-  Defaults to the aimags.
+  Анхдагч нь аймгууд.
 
 - fun:
 
-  Summary function name: `"sum"` (default), `"mean"`, `"min"`, `"max"`
-  or `"median"`.
+  Нэгтгэх функцийн нэр: `"sum"` (анхдагч), `"mean"`, `"min"`, `"max"`
+  эсвэл `"median"`.
 
 - name:
 
-  Name of the new column.
+  Шинэ баганын нэр.
 
 ## Value
 
-`x` with a new column.
+Шинэ баганатай `x`.
 
 ## See also
 
-Other raster layers:
+Растерийн бусад давхарга:
 [`mn_elevation()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_elevation.md),
 [`mn_landcover()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_landcover.md),
 [`mn_population()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_population.md)

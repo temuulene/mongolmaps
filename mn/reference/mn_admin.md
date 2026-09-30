@@ -1,15 +1,13 @@
-# Administrative boundaries of Mongolia at any level
+# Монгол Улсын засаг захиргааны хил, дурын түвшинд
 
-The engine behind
 [`mn_country()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_country.md),
 [`mn_regions()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_country.md),
 [`mn_aimags()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_aimags.md),
 [`mn_soums()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_soums.md),
-[`mn_khoroos()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_ub.md)
-and
-[`mn_bags()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_bags.md).
-Every function returns the same columns, so maps from different levels
-can be combined and joined in the same way.
+[`mn_khoroos()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_ub.md),
+[`mn_bags()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_bags.md)
+функцүүдийн цаад хөдөлгүүр. Бүх функц ижил баганатай үр дүн буцаадаг тул
+өөр өөр түвшний газрын зургийг нэгтгэж, өгөгдөлтэй адилхан холбож болно.
 
 ## Usage
 
@@ -27,101 +25,105 @@ mn_admin(
 
 - level:
 
-  The level to return:
+  Буцаах түвшин:
 
-  - `"country"`: Mongolia.
+  - `"country"`: Монгол Улс.
 
-  - `"region"`: the five economic regions used by NSO (Western, Khangai,
-    Central, Eastern, Ulaanbaatar).
+  - `"region"`: ҮСХ-ны ашигладаг эдийн засгийн таван бүс (Баруун,
+    Хангай, Төв, Зүүн, Улаанбаатар).
 
-  - `"aimag"`: the 21 aimags (provinces) and the capital, Ulaanbaatar.
+  - `"aimag"`: 21 аймаг ба нийслэл Улаанбаатар.
 
-  - `"soum"`: the 330 soums and the 9 districts (duureg) of Ulaanbaatar.
+  - `"soum"`: 330 сум ба Улаанбаатарын 9 дүүрэг.
 
-  - `"bag"`: the 204 khoroos of Ulaanbaatar, plus rural bags if you have
-    registered a bag boundary file (see
-    [`mn_bags()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_bags.md)).
+  - `"bag"`: Улаанбаатарын 204 хороо, мөн багийн хилийн файл бүртгэсэн
+    бол хөдөөгийн багууд
+    ([`mn_bags()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_bags.md)-ийг
+    үзнэ үү).
 
-  Synonyms such as `"province"`, `"district"`, `"adm1"` or `"khoroo"`
-  also work.
+  `"province"`, `"district"`, `"adm1"`, `"khoroo"` зэрэг ижил утгатай
+  нэрийг ч хүлээн авна.
 
 - within:
 
-  Keep only units inside these places, or these places themselves: names
-  or codes of any level, such as `"Khovd"`, `"MN84"` or
-  `"Western region"`.
+  Зөвхөн эдгээр газар доторх нэгжүүд, эсвэл эдгээр газрыг өөрсдийг нь
+  үлдээнэ: дурын түвшний нэр эсвэл код, жишээ нь `"Ховд"`, `"MN84"`,
+  `"Баруун бүс"`.
 
 - resolution:
 
-  `"low"` (default) uses simplified boundaries that ship with the
-  package and suit most maps. `"high"` uses full-resolution boundaries,
-  downloaded once (about 10 MB) and cached; see
-  [`mn_cache_dir()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_cache_dir.md).
+  `"low"` (анхдагч) нь багцтай хамт ирдэг, ихэнх газрын зурагт тохирох
+  хялбаршуулсан хилийг ашиглана. `"high"` нь бүрэн нарийвчлалтай хилийг
+  нэг удаа (ойролцоогоор 10 МБ) татаж, хадгална;
+  [`mn_cache_dir()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_cache_dir.md)-ийг
+  үзнэ үү.
 
 - lang:
 
-  Language of the `name` column: `"en"` (English, as in NSO tables),
-  `"mn"` (Cyrillic) or `"mns"` (Latin with diacritics, MNS 5217).
-  Defaults to `getOption("mongolmaps.lang", "en")`.
+  `name` баганын хэл: `"en"` (англи, ҮСХ-ны хүснэгтийн бичлэгээр),
+  `"mn"` (кирил) эсвэл `"mns"` (MNS 5217 стандартын латин, тэмдэгттэй).
+  Анхдагч утга нь `getOption("mongolmaps.lang", "en")`.
 
 - crs:
 
-  Coordinate reference system of the result. `NULL` (default) keeps
-  longitude/latitude (EPSG:4326). Use `"albers"`, `"lcc"` or `"utm"` for
-  a projection suited to Mongolia (see
-  [`mn_crs()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_crs.md)),
-  or any value accepted by
-  [`sf::st_crs()`](https://r-spatial.github.io/sf/reference/st_crs.html).
+  Үр дүнгийн координатын систем. `NULL` (анхдагч) бол уртраг, өргөрөг
+  (EPSG:4326) хэвээр. Монголд тохирсон проекцод `"albers"`, `"lcc"`
+  эсвэл `"utm"`-ийг
+  ([`mn_crs()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_crs.md)-ийг
+  үзнэ үү), эсвэл
+  [`sf::st_crs()`](https://r-spatial.github.io/sf/reference/st_crs.html)-ийн
+  хүлээн авах дурын утгыг өгнө.
 
 ## Value
 
-An `sf` tibble with one row per unit and the columns:
+Нэгж бүрт нэг мөртэй, дараах баганатай `sf` tibble:
 
 - pcode:
 
-  Unique code (see
-  [`mn_codes()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_codes.md)).
+  Давтагдашгүй код
+  ([`mn_codes()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_codes.md)-ийг
+  үзнэ үү).
 
 - name:
 
-  Name in the language chosen with `lang`.
+  `lang`-аар сонгосон хэл дээрх нэр.
 
 - name_en, name_mn, name_mns:
 
-  English, Cyrillic and MNS Latin names.
+  Англи, кирил, MNS латин нэр.
 
 - level, type:
 
-  Level (`"aimag"`, `"soum"`, ...) and type (`"capital"`, `"district"`,
+  Түвшин (`"aimag"`, `"soum"`, ...) ба төрөл (`"capital"`, `"district"`,
   `"khoroo"`, ...).
 
 - number:
 
-  Bag or khoroo number within its soum or district.
+  Сум эсвэл дүүрэг доторх баг, хорооны дугаар.
 
 - iso_code:
 
-  ISO 3166-2 code (aimags only).
+  ISO 3166-2 код (зөвхөн аймагт).
 
 - nso_code:
 
-  Code used in NSO statistical tables.
+  ҮСХ-ны статистикийн хүснэгтэд хэрэглэдэг код.
 
 - parent_pcode, region_pcode, aimag_pcode, soum_pcode:
 
-  Codes of the units that contain this one.
+  Энэ нэгжийг агуулах дээд нэгжүүдийн код.
 
 - area_km2:
 
-  Area in square kilometres, computed from the full-resolution boundary.
+  Бүрэн нарийвчлалтай хилээр тооцсон талбай, км².
 
 - geometry:
 
-  Multipolygon boundary.
+  Олон олигон хил.
 
 ## See also
 
-Other admin boundaries:
+Хил хязгаарын бусад функц:
 [`mn_aimags()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_aimags.md),
 [`mn_bags()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_bags.md),
 [`mn_country()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_country.md),

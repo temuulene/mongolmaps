@@ -1,12 +1,12 @@
-# Ulaanbaatar: city, districts and khoroos
+# Улаанбаатар: хот, дүүрэг, хороо
 
-Maps of the capital at three levels:
+Нийслэлийн газрын зураг гурван түвшинд:
 
-- `mn_ub()`: the city boundary;
+- `mn_ub()`: хотын хил;
 
-- `mn_ub_districts()`: its 9 districts (duureg);
+- `mn_ub_districts()`: 9 дүүрэг;
 
-- `mn_khoroos()`: its 204 khoroos (subdistricts).
+- `mn_khoroos()`: 204 хороо.
 
 ## Usage
 
@@ -27,61 +27,62 @@ mn_khoroos(
 
 - resolution:
 
-  `"low"` (default) uses simplified boundaries that ship with the
-  package and suit most maps. `"high"` uses full-resolution boundaries,
-  downloaded once (about 10 MB) and cached; see
-  [`mn_cache_dir()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_cache_dir.md).
+  `"low"` (анхдагч) нь багцтай хамт ирдэг, ихэнх газрын зурагт тохирох
+  хялбаршуулсан хилийг ашиглана. `"high"` нь бүрэн нарийвчлалтай хилийг
+  нэг удаа (ойролцоогоор 10 МБ) татаж, хадгална;
+  [`mn_cache_dir()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_cache_dir.md)-ийг
+  үзнэ үү.
 
 - lang:
 
-  Language of the `name` column: `"en"` (English, as in NSO tables),
-  `"mn"` (Cyrillic) or `"mns"` (Latin with diacritics, MNS 5217).
-  Defaults to `getOption("mongolmaps.lang", "en")`.
+  `name` баганын хэл: `"en"` (англи, ҮСХ-ны хүснэгтийн бичлэгээр),
+  `"mn"` (кирил) эсвэл `"mns"` (MNS 5217 стандартын латин, тэмдэгттэй).
+  Анхдагч утга нь `getOption("mongolmaps.lang", "en")`.
 
 - crs:
 
-  Coordinate reference system of the result. `NULL` (default) keeps
-  longitude/latitude (EPSG:4326). Use `"albers"`, `"lcc"` or `"utm"` for
-  a projection suited to Mongolia (see
-  [`mn_crs()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_crs.md)),
-  or any value accepted by
-  [`sf::st_crs()`](https://r-spatial.github.io/sf/reference/st_crs.html).
+  Үр дүнгийн координатын систем. `NULL` (анхдагч) бол уртраг, өргөрөг
+  (EPSG:4326) хэвээр. Монголд тохирсон проекцод `"albers"`, `"lcc"`
+  эсвэл `"utm"`-ийг
+  ([`mn_crs()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_crs.md)-ийг
+  үзнэ үү), эсвэл
+  [`sf::st_crs()`](https://r-spatial.github.io/sf/reference/st_crs.html)-ийн
+  хүлээн авах дурын утгыг өгнө.
 
 - district:
 
-  Keep only khoroos in these districts (names or codes, such as
-  `"Bayangol"`, `"BGD"` or `"MN1107"`).
+  Зөвхөн эдгээр дүүргийн хороодыг үлдээнэ (нэр эсвэл код, жишээ нь
+  `"Баянгол"`, `"БГД"` эсвэл `"MN1107"`).
 
 ## Value
 
-An `sf` tibble; see
-[`mn_admin()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_admin.md)
-for the columns. For khoroos, `number` holds the khoroo number within
-its district.
+`sf` tibble; баганыг
+[`mn_admin()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_admin.md)-аас
+үзнэ үү. Хороонд `number` багана нь дүүрэг доторх хорооны дугаар.
 
 ## Details
 
-The three layers share borders exactly: khoroos tile their districts and
-districts tile the city.
+Гурван давхарга хоорондоо яг таарна: хороод дүүргээ, дүүргүүд хотоо
+бүрэн бүрхэнэ.
 
-## Data source
+## Өгөгдлийн эх сурвалж
 
-Khoroo boundaries come from the open khoroo-map project
-(<https://github.com/Tuvshin-Level/khoroo-map>, 0BSD licence), which
-does not state where its data come from, so treat them as
-**unofficial**. They were fitted to the official Ulaanbaatar outline,
-with small gaps and overlaps between khoroos resolved: 0.6% of the city
-area was reassigned, and 97% of khoroos changed area by less than 1%.
-Khoroo codes and names follow NSO.
+Хорооны хилийг нээлттэй khoroo-map төслөөс
+(<https://github.com/Tuvshin-Level/khoroo-map>, 0BSD лиценз) авсан.
+Төсөл өгөгдлийн гарал үүслээ заагаагүй тул **албан бус** гэж үзнэ үү.
+Хилийг Улаанбаатарын албан ёсны хилд тааруулж, хороодын хоорондох жижиг
+завсар, давхцлыг засав: хотын талбайн 0.6% нь өөр хороонд шилжсэн бөгөөд
+хороодын 97%-ийн талбай 1%-иас бага өөрчлөгдсөн. Хорооны код, нэр ҮСХ-ыг
+дагана.
 
-The district lines are the unions of their khoroos. They follow the
-current city layout and can differ slightly from the 2020 district lines
-in
-[`mn_soums()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_soums.md).
+Дүүргийн хил нь хороодынх нь нийлбэр. Хотын одоогийн хуваарийг дагах
+бөгөөд
+[`mn_soums()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_soums.md)
+дахь 2020 оны дүүргийн хилээс бага зэрэг ялгаатай байж болно.
 
 ## See also
 
-Other admin boundaries:
+Хил хязгаарын бусад функц:
 [`mn_admin()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_admin.md),
 [`mn_aimags()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_aimags.md),
 [`mn_bags()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_bags.md),

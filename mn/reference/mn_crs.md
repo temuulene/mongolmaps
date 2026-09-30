@@ -1,9 +1,9 @@
-# Coordinate reference systems suited to Mongolia
+# Монголд тохирсон координатын систем
 
-Returns a projection that keeps Mongolia's shape and area true. Maps of
-the whole country look best in an equal-area Albers or Lambert conic
-projection centred on Mongolia; maps of Ulaanbaatar look best in UTM
-zone 48N.
+Монгол Улсын хэлбэр, талбайг зөв хадгалах проекц буцаана. Улсын
+хэмжээний газрын зураг Монголын төвд тохируулсан Альберсийн тэнцүү
+талбайт эсвэл Ламбертын конус проекцоор, Улаанбаатарын газрын зураг
+UTM-ийн 48N бүсээр хамгийн сайн харагдана.
 
 ## Usage
 
@@ -15,29 +15,28 @@ mn_crs(type = c("albers", "lcc", "utm", "wgs84"))
 
 - type:
 
-  One of:
+  Дараахын нэг:
 
-  - `"albers"`: Albers equal-area conic centred on 104E, 47N, with
-    standard parallels 43.5N and 50.5N. Best for national choropleths
-    because areas are true.
+  - `"albers"`: 104°E, 47°N төвтэй, 43.5°N ба 50.5°N стандарт
+    параллелтай Альберсийн тэнцүү талбайт конус проекц. Талбай зөв тул
+    улсын хэмжээний өнгөт газрын зурагт хамгийн тохиромжтой.
 
-  - `"lcc"`: Lambert conformal conic with the same parameters. Keeps
-    local shapes true.
+  - `"lcc"`: ижил параметртэй Ламбертын конформ конус проекц. Орон
+    нутгийн хэлбэрийг зөв хадгална.
 
-  - `"utm"`: UTM zone 48N (EPSG:32648), the usual choice for Ulaanbaatar
-    and central Mongolia.
+  - `"utm"`: UTM-ийн 48N бүс (EPSG:32648), Улаанбаатар болон төвийн
+    бүсэд түгээмэл хэрэглэдэг.
 
-  - `"wgs84"`: plain longitude and latitude (EPSG:4326).
+  - `"wgs84"`: энгийн уртраг, өргөрөг (EPSG:4326).
 
 ## Value
 
-An
 [`sf::st_crs()`](https://r-spatial.github.io/sf/reference/st_crs.html)
-object.
+объект.
 
 ## See also
 
-Other mapping helpers:
+Газрын зураг зурах бусад функц:
 [`mn_aimag_grid`](https://temuulene.github.io/mongolmaps/mn/reference/mn_aimag_grid.md),
 [`mn_label_points()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_label_points.md),
 [`mn_leaflet()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_leaflet.md),

@@ -1,7 +1,8 @@
-# Interactive maps with leaflet
+# leaflet-ээр интерактив газрын зураг
 
-Shows any map from this package, or your joined data, on an interactive
-web map with a basemap, hover labels and click pop-ups.
+Багцын дурын газрын зураг, эсвэл холбосон өгөгдлийг суурь зурагтай,
+хулганаар заахад нэр гардаг, дарахад мэдээлэл харуулдаг интерактив вэб
+газрын зураг дээр харуулна.
 
 ## Usage
 
@@ -20,38 +21,38 @@ mn_leaflet(
 
 - x:
 
-  An `sf` object; defaults to the aimags.
+  `sf` объект; анхдагч нь аймгууд.
 
 - fill:
 
-  Column to colour by (unquoted), or a single colour.
+  Будах багана (хашилтгүй), эсвэл нэг өнгө.
 
 - popup:
 
-  Column with pop-up text (unquoted). By default the pop-up shows the
-  English and Mongolian names, the code and the `fill` value.
+  Цонхонд харуулах бичвэрийн багана (хашилтгүй). Анхдагч цонх англи,
+  монгол нэр, код, `fill` утгыг харуулна.
 
 - lang:
 
-  Language of the hover labels: `"en"`, `"mn"` or `"mns"`.
+  Хулганаар заахад гарах нэрийн хэл: `"en"`, `"mn"` эсвэл `"mns"`.
 
 - tiles:
 
-  A basemap from
-  [leaflet::providers](https://rstudio.github.io/leaflet/reference/providers.html),
-  such as `"CartoDB.Positron"` (default) or `"OpenStreetMap"`.
+  [leaflet::providers](https://rstudio.github.io/leaflet/reference/providers.html)-оос
+  суурь зураг, жишээ нь `"CartoDB.Positron"` (анхдагч) эсвэл
+  `"OpenStreetMap"`.
 
 - opacity:
 
-  Fill opacity between 0 and 1.
+  Будгийн тунгалаг бус байдал, 0-ээс 1.
 
 ## Value
 
-A `leaflet` htmlwidget.
+`leaflet` htmlwidget.
 
 ## See also
 
-Other mapping helpers:
+Газрын зураг зурах бусад функц:
 [`mn_aimag_grid`](https://temuulene.github.io/mongolmaps/mn/reference/mn_aimag_grid.md),
 [`mn_crs()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_crs.md),
 [`mn_label_points()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_label_points.md),

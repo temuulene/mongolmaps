@@ -5,53 +5,53 @@
 Засаг захиргааны бүх түвшний газрын зураг, ижил баганатай.
 
 - [`mn_admin()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_admin.md)
-  : Administrative boundaries of Mongolia at any level
+  : Монгол Улсын засаг захиргааны хил, дурын түвшинд
 - [`mn_country()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_country.md)
   [`mn_regions()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_country.md)
-  : Mongolia and its economic regions
+  : Монгол Улс ба эдийн засгийн бүсүүд
 - [`mn_aimags()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_aimags.md)
-  : Aimags (provinces) of Mongolia
+  : Монгол Улсын аймгууд
 - [`mn_soums()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_soums.md)
-  : Soums of Mongolia and districts of Ulaanbaatar
+  : Монгол Улсын сумд ба Улаанбаатарын дүүргүүд
 - [`mn_ub()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_ub.md)
   [`mn_ub_districts()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_ub.md)
   [`mn_khoroos()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_ub.md)
-  : Ulaanbaatar: city, districts and khoroos
+  : Улаанбаатар: хот, дүүрэг, хороо
 - [`mn_bags()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_bags.md)
   [`mn_read_bags()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_bags.md)
-  : Bags: the smallest rural units
+  : Баг: хөдөөгийн хамгийн жижиг нэгж
 
 ## Нэр ба код
 
 - [`mn_match()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_match.md)
-  : Match place names and codes to Mongolian administrative units
+  : Газрын нэр, кодыг Монголын засаг захиргааны нэгжтэй тааруулах
 - [`mn_codes()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_codes.md)
-  : Codes and names of Mongolian administrative units
+  : Монголын засаг захиргааны нэгжийн код ба нэр
 - [`mn_translit()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_translit.md)
-  : Transliterate Mongolian Cyrillic to Latin script
+  : Монгол кирилийг латин үсэгт буулгах
 
 ## Өгөгдөл холбох
 
 - [`mn_join()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_join.md)
-  : Join your data to a map of Mongolia
+  : Өөрийн өгөгдлийг Монголын газрын зурагтай холбох
 - [`mn_example_population`](https://temuulene.github.io/mongolmaps/mn/reference/mn_example_population.md)
-  : Mid-year resident population of Mongolia (example data)
+  : Монгол Улсын жилийн дундаж хүн ам (жишээ өгөгдөл)
 
 ## Сэдэвчилсэн давхарга
 
 - [`mn_settlements()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_settlements.md)
-  : Settlements: the capital, aimag centres and soum centres
+  : Суурин: нийслэл, аймгийн төв, сумын төв
 - [`mn_neighbours()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_neighbours.md)
   [`mn_rivers()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_neighbours.md)
   [`mn_lakes()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_neighbours.md)
-  : Map context: neighbouring countries, rivers and lakes
+  : Газрын зургийн орчин: хөрш орнууд, гол мөрөн, нуур
 - [`mn_roads()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_roads.md)
   [`mn_railways()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_roads.md)
   [`mn_airports()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_roads.md)
   [`mn_places()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_roads.md)
-  : Roads, railways, airports and places from OpenStreetMap
+  : OpenStreetMap-аас авто зам, төмөр зам, нисэх буудал, суурин
 - [`mn_protected_areas()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_protected_areas.md)
-  : Protected areas
+  : Тусгай хамгаалалттай газар
 
 ## Растер давхарга
 
@@ -59,43 +59,43 @@
 
 - [`mn_elevation()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_elevation.md)
   [`mn_hillshade()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_elevation.md)
-  : Elevation and hillshade
+  : Өндөршил ба рельефийн сүүдэр
 - [`mn_landcover()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_landcover.md)
-  : Land cover
+  : Газрын бүрхэвч
 - [`mn_population()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_population.md)
-  : Population grids
+  : Хүн амын тор
 - [`mn_zonal()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_zonal.md)
-  : Summarise a raster over map units
+  : Растерийг газрын зургийн нэгжээр нэгтгэх
 
 ## Газрын зураг зурах
 
 - [`mn_map()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_map.md)
-  : Quick maps of Mongolia with ggplot2
+  : ggplot2-оор Монголын газрын зургийг хурдан зурах
 - [`theme_mn()`](https://temuulene.github.io/mongolmaps/mn/reference/theme_mn.md)
-  : A clean map theme
+  : Газрын зургийн цэвэр загвар
 - [`mn_leaflet()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_leaflet.md)
-  : Interactive maps with leaflet
+  : leaflet-ээр интерактив газрын зураг
 - [`mn_label_points()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_label_points.md)
-  : Label points for map units
+  : Газрын зургийн нэгжийн нэр тавих цэг
 - [`mn_crs()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_crs.md)
-  : Coordinate reference systems suited to Mongolia
+  : Монголд тохирсон координатын систем
 - [`mn_aimag_grid`](https://temuulene.github.io/mongolmaps/mn/reference/mn_aimag_grid.md)
-  : A grid layout of the aimags for small-multiple maps
+  : Олон жижиг газрын зурагт зориулсан аймгийн торон байрлал
 
 ## Өгөгдлийн эх сурвалж, кэш
 
 - [`mn_sources()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_sources.md)
   [`mn_citation()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_sources.md)
-  : Data sources, licences and citations
+  : Өгөгдлийн эх сурвалж, лиценз, иш татах
 - [`mn_cache_dir()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_cache_dir.md)
   [`mn_cache_list()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_cache_dir.md)
   [`mn_cache_clear()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_cache_dir.md)
   [`mn_download()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_cache_dir.md)
-  : Manage downloaded map data
+  : Татаж авсан газрын зургийн өгөгдлийг удирдах
 
 ## Багц
 
 - [`mongolmaps`](https://temuulene.github.io/mongolmaps/mn/reference/mongolmaps-package.md)
   [`mongolmaps-package`](https://temuulene.github.io/mongolmaps/mn/reference/mongolmaps-package.md)
-  : mongolmaps: Maps and Administrative Boundaries of Mongolia and
-  Ulaanbaatar
+  : mongolmaps: Монгол Улс, Улаанбаатарын газрын зураг, засаг захиргааны
+  хил

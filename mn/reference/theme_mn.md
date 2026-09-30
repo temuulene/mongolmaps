@@ -1,7 +1,7 @@
-# A clean map theme
+# Газрын зургийн цэвэр загвар
 
-A minimal ggplot2 theme for maps: no axes or grid, legend at the right,
-small grey caption.
+Газрын зурагт зориулсан энгийн ggplot2 загвар: тэнхлэг, тор байхгүй,
+тайлбар баруун талд, эх сурвалжийн жижиг саарал бичвэр.
 
 ## Usage
 
@@ -13,19 +13,19 @@ theme_mn(base_size = 11, base_family = "")
 
 - base_size:
 
-  Base font size.
+  Үндсэн бичгийн хэмжээ.
 
 - base_family:
 
-  Base font family.
+  Үндсэн фонт.
 
 ## Value
 
-A ggplot2 theme.
+ggplot2 загвар.
 
 ## See also
 
-Other mapping helpers:
+Газрын зураг зурах бусад функц:
 [`mn_aimag_grid`](https://temuulene.github.io/mongolmaps/mn/reference/mn_aimag_grid.md),
 [`mn_crs()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_crs.md),
 [`mn_label_points()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_label_points.md),

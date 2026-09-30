@@ -32,7 +32,8 @@ mn_population(
 
 - within:
 
-  Area to return (names or codes). Required for `"90m"`.
+  Area to return (names or codes). Required for the online resolutions:
+  `"90m"` elevation and `"10m"` land cover.
 
 - mask:
 

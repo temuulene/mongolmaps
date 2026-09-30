@@ -1,10 +1,9 @@
-# Protected areas
+# Тусгай хамгаалалттай газар
 
-National parks, nature reserves and other protected and conserved areas
-of Mongolia from the World Database on Protected Areas (WDPA). The data
-are downloaded from UNEP-WCMC the first time and refreshed after 90
-days; they may not be redistributed, so they never ship with the
-package.
+Дэлхийн тусгай хамгаалалттай газрын мэдээллийн сангаас (WDPA) Монгол
+Улсын байгалийн цогцолборт газар, дархан цаазат газар болон бусад
+хамгаалалттай газар. Өгөгдлийг анх удаа UNEP-WCMC-ээс татаж, 90 хоногийн
+дараа шинэчилнэ; дахин тараах эрхгүй тул багцад хэзээ ч орохгүй.
 
 ## Usage
 
@@ -16,36 +15,37 @@ mn_protected_areas(within = NULL, refresh = FALSE, crs = NULL)
 
 - within:
 
-  Keep only areas inside these places (names or codes).
+  Зөвхөн эдгээр газар доторх хэсгийг үлдээнэ (нэр эсвэл код).
 
 - refresh:
 
-  If `TRUE`, download again now.
+  `TRUE` бол одоо дахин татна.
 
 - crs:
 
-  Coordinate reference system of the result. `NULL` (default) keeps
-  longitude/latitude (EPSG:4326). Use `"albers"`, `"lcc"` or `"utm"` for
-  a projection suited to Mongolia (see
-  [`mn_crs()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_crs.md)),
-  or any value accepted by
-  [`sf::st_crs()`](https://r-spatial.github.io/sf/reference/st_crs.html).
+  Үр дүнгийн координатын систем. `NULL` (анхдагч) бол уртраг, өргөрөг
+  (EPSG:4326) хэвээр. Монголд тохирсон проекцод `"albers"`, `"lcc"`
+  эсвэл `"utm"`-ийг
+  ([`mn_crs()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_crs.md)-ийг
+  үзнэ үү), эсвэл
+  [`sf::st_crs()`](https://r-spatial.github.io/sf/reference/st_crs.html)-ийн
+  хүлээн авах дурын утгыг өгнө.
 
 ## Value
 
-An `sf` tibble with the WDPA attributes, including `name_eng`,
-`desig_eng` (designation), `iucn_cat` and `status_yr`.
+WDPA-гийн шинжүүдтэй `sf` tibble, үүнд `name_eng`, `desig_eng`
+(ангилал), `iucn_cat`, `status_yr` багтана.
 
-## Terms of use
+## Ашиглах нөхцөл
 
 UNEP-WCMC and IUCN, Protected Planet: The World Database on Protected
-Areas (WDPA), Cambridge, UK. See
-<https://www.protectedplanet.net/en/legal>. The WDPA may be used for
-non-commercial purposes with attribution; it may not be redistributed.
+Areas (WDPA), Cambridge, UK.
+<https://www.protectedplanet.net/en/legal>-ийг үзнэ үү. WDPA-г арилжааны
+бус зорилгоор эх сурвалжийг дурдан ашиглаж болно; дахин тарааж болохгүй.
 
 ## See also
 
-Other thematic layers:
+Сэдэвчилсэн бусад давхарга:
 [`mn_neighbours()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_neighbours.md),
 [`mn_roads()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_roads.md),
 [`mn_settlements()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_settlements.md)

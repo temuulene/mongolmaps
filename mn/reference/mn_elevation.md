@@ -1,6 +1,6 @@
-# Elevation and hillshade
+# Өндөршил ба рельефийн сүүдэр
 
-Terrain rasters for Mongolia from the Copernicus DEM GLO-90.
+Copernicus DEM GLO-90-ээс Монгол Улсын гадаргуугийн растер.
 
 ## Usage
 
@@ -26,56 +26,57 @@ mn_hillshade(
 
 - resolution:
 
-  `"1km"` or `"90m"`.
+  `"1km"` эсвэл `"90m"`.
 
 - within:
 
-  Area to return (names or codes). Required for `"90m"`.
+  Буцаах газар (нэр эсвэл код). Онлайнаар уншдаг нарийвчлалд заавал
+  өгнө: өндөршилд `"90m"`, газрын бүрхэвчид `"10m"`.
 
 - mask:
 
-  If `TRUE` (default), cells outside Mongolia (or outside `within`) are
-  set to `NA`.
+  `TRUE` (анхдагч) бол Монголоос (эсвэл `within`-ээс) гадуурх нүдийг
+  `NA` болгоно.
 
 - crs:
 
-  Coordinate reference system of the result. `NULL` (default) keeps
-  longitude/latitude (EPSG:4326). Use `"albers"`, `"lcc"` or `"utm"` for
-  a projection suited to Mongolia (see
-  [`mn_crs()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_crs.md)),
-  or any value accepted by
-  [`sf::st_crs()`](https://r-spatial.github.io/sf/reference/st_crs.html).
+  Үр дүнгийн координатын систем. `NULL` (анхдагч) бол уртраг, өргөрөг
+  (EPSG:4326) хэвээр. Монголд тохирсон проекцод `"albers"`, `"lcc"`
+  эсвэл `"utm"`-ийг
+  ([`mn_crs()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_crs.md)-ийг
+  үзнэ үү), эсвэл
+  [`sf::st_crs()`](https://r-spatial.github.io/sf/reference/st_crs.html)-ийн
+  хүлээн авах дурын утгыг өгнө.
 
 - angle, direction:
 
-  Sun elevation and direction (degrees) for the hillshade.
+  Рельефийн сүүдрийн нарны өндөр, чиглэл (градус).
 
 ## Value
 
-A `terra` SpatRaster: elevation in metres, or hillshade values between 0
-and 1.
+`terra` SpatRaster: метрээр илэрхийлсэн өндөршил, эсвэл 0-ээс 1-ийн
+хоорондох рельефийн сүүдрийн утга.
 
 ## Details
 
-- `resolution = "1km"` (default): a national grid in the Albers
-  projection, downloaded once (about 5 MB) and cached.
+- `resolution = "1km"` (анхдагч): Альберсийн проекц дахь улсын тор, нэг
+  удаа (ойролцоогоор 5 МБ) татаж хадгална.
 
-- `resolution = "90m"`: the original 90 m data, read directly from the
-  cloud for the area in `within` (an aimag or smaller). Nothing is
-  cached.
+- `resolution = "90m"`: анхны 90 м-ийн өгөгдөл, `within` дахь газарт
+  (аймаг эсвэл түүнээс жижиг) үүлнээс шууд уншина. Юу ч хадгалахгүй.
 
-`mn_hillshade()` computes shaded relief from the elevation, for a
-background under other layers.
+`mn_hillshade()` өндөршлөөс рельефийн сүүдэр тооцоолно; бусад давхаргын
+дэвсгэрт тохиромжтой.
 
-## Source
+## Эх сурвалж
 
 Copernicus DEM GLO-90, (c) DLR e.V. 2010-2014 and (c) Airbus Defence and
 Space GmbH 2014-2018, provided under COPERNICUS by the European Union
-and ESA. Free to use with attribution.
+and ESA. Эх сурвалжийг дурдан чөлөөтэй ашиглана.
 
 ## See also
 
-Other raster layers:
+Растерийн бусад давхарга:
 [`mn_landcover()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_landcover.md),
 [`mn_population()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_population.md),
 [`mn_zonal()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_zonal.md)
