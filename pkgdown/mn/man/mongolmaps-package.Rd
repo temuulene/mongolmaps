@@ -1,6 +1,8 @@
-% source: man/mongolmaps-package.Rd md5 2d6e8229c9cb5145a481eb447aa83f31
+% source: man/mongolmaps-package.Rd md5 f41b0a7447c020150f3fb2fd00e1d2ad
 \title{mongolmaps: Монгол Улс, Улаанбаатарын газрын зураг, засаг захиргааны хил}
 \description{
+\if{html}{\figure{logo.svg}{options: style='float: right' alt='logo' width='120'}}
+
 Монгол Улсын нээлттэй байгаа засаг захиргааны бүх түвшний бэлэн 'sf'
 газрын зураг: улс, эдийн засгийн бүс, аймаг, сум ба Улаанбаатарын дүүрэг,
 Улаанбаатарын хороо, мөн бүх багийн код, нэр. Англи, кирил нэр, түгээмэл
