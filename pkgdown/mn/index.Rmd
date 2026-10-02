@@ -15,7 +15,7 @@ knitr::opts_chunk$set(
 options(mongolmaps.lang = "mn")
 ```
 
-# mongolmaps
+# mongolmaps <a href="https://temuulene.github.io/mongolmaps/mn/"><img src="man/figures/logo.svg" align="right" height="139" alt="mongolmaps вэбсайт" /></a>
 
 **Монгол Улс, Улаанбаатар хотын газрын зураг R програмд — нээлттэй
 байгаа засаг захиргааны бүх түвшинд.** Нэг багц, эхлэхэд юу ч татах
