@@ -15,8 +15,10 @@ dest <- file.path(root, "docs", "mn")
 tmp <- file.path(tempdir(), "mongolmaps-mn")
 unlink(tmp, recursive = TRUE)
 dir.create(tmp)
-skip <- c(".git", "docs", "vignettes", "README.Rmd", "README.md", "_pkgdown.yml", "data-raw", "tests", ".github", ".claude")
+skip <- c("docs", "vignettes", "README.Rmd", "README.md", "_pkgdown.yml", "data-raw", "tests")
 entries <- setdiff(list.files(root, all.files = TRUE, no.. = TRUE), skip)
+# Hidden folders (version control, CI, local editor settings) are not part of the site
+entries <- entries[!(startsWith(entries, ".") & dir.exists(file.path(root, entries)))]
 file.copy(file.path(root, entries), tmp, recursive = TRUE)
 
 file.copy(file.path(src, "_pkgdown.yml"), file.path(tmp, "_pkgdown.yml"))

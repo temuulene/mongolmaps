@@ -1,14 +1,10 @@
+^\.
 ^README\.Rmd$
 ^LICENSE\.md$
 ^pkgdown$
 ^_pkgdown\.yml$
 ^docs$
-^\.github$
-^\.vscode$
-^\.Rproj\.user$
-^\.Rhistory$
 ^.*\.Rproj$
-^\.lintr$
 ^data-raw$
 ^dev$
 ^tools$
@@ -18,5 +14,4 @@
 ^README\.html$
 ^doc$
 ^Meta$
-^\.claude$
 ^air\.toml$
