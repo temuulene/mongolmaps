@@ -93,6 +93,14 @@ with a message (see `drop_other_levels`). Join NSO tables by their code
 column (such as `Region`) rather than the label column: labels such as
 "Ulaanbaatar" name both a region and an aimag.
 
+**Ulaanbaatar.** The Ulaanbaatar region (NSO code `5`) and the capital
+(`511`) cover the same area. Many NSO tables, health tables in
+particular, give the capital's figures only on the region row and leave
+`511` empty or out. At the aimag level, when the region rows hold more
+values than the `511` rows, they are used for Ulaanbaatar, with a
+message. A few tables use `511` for something else (for example
+"Other"); check the labels of such tables before joining.
+
 **Several rows per unit.** Data with several rows per place (for example
 one per year) give several copies of that place's polygon, ready for
 [`ggplot2::facet_wrap()`](https://ggplot2.tidyverse.org/reference/facet_wrap.html).

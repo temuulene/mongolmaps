@@ -33,7 +33,9 @@
   romanises Mongolian Cyrillic (MNS 5217 or NSO style).
 - [`mn_join()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_join.md)
   joins data to boundaries in one step, detecting the level and dropping
-  totals from NSO tables.
+  totals from NSO tables. Ulaanbaatar’s values come from the Ulaanbaatar
+  region row (code 5) when a table leaves the capital’s own row
+  511. empty or out, as many NSO health tables do.
 - Mapping:
   [`mn_map()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_map.md)
   and
