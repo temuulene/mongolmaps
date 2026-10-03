@@ -12,7 +12,9 @@
   codes, ISO 3166-2 codes and P-codes; `mn_codes()` lists every unit;
   `mn_translit()` romanises Mongolian Cyrillic (MNS 5217 or NSO style).
 * `mn_join()` joins data to boundaries in one step, detecting the level and
-  dropping totals from NSO tables.
+  dropping totals from NSO tables. Ulaanbaatar's values come from the
+  Ulaanbaatar region row (code 5) when a table leaves the capital's own row
+  (511) empty or out, as many NSO health tables do.
 * Mapping: `mn_map()` and `theme_mn()` for ggplot2, `mn_leaflet()` for
   interactive maps, `mn_label_points()`, `mn_crs()` and the `mn_aimag_grid`
   layout for geofacet.

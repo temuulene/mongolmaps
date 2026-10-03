@@ -13,6 +13,14 @@
 #' (such as `Region`) rather than the label column: labels such as
 #' "Ulaanbaatar" name both a region and an aimag.
 #'
+#' **Ulaanbaatar.** The Ulaanbaatar region (NSO code `5`) and the capital
+#' (`511`) cover the same area. Many NSO tables, health tables in
+#' particular, give the capital's figures only on the region row and leave
+#' `511` empty or out. At the aimag level, when the region rows hold more
+#' values than the `511` rows, they are used for Ulaanbaatar, with a
+#' message. A few tables use `511` for something else (for example "Other");
+#' check the labels of such tables before joining.
+#'
 #' **Several rows per unit.** Data with several rows per place (for
 #' example one per year) give several copies of that place's polygon, ready
 #' for `ggplot2::facet_wrap()`.
@@ -85,10 +93,41 @@ mn_join <- function(data,
   # totals (larger units) or details (smaller units), not errors.
   failed <- which(res$status %in% c("unmatched", "ambiguous"))
   other <- rep(NA_character_, length(values))
+  other_pcode <- rep(NA_character_, length(values))
   if (length(failed)) {
     alt <- .mm_match_df(values[failed], levels = setdiff(.mm_levels, level), fuzzy = FALSE)
     hit <- alt$status %in% c("code", "exact")
+    other_pcode[failed[hit]] <- alt$pcode[hit]
     other[failed[hit]] <- .mm_units$level[match(alt$pcode[hit], .mm_units$pcode)]
+  }
+
+  # The Ulaanbaatar region (NSO code 5) and the capital (511) are the same
+  # place. Many NSO tables fill only the region row, so use it when the
+  # capital's own rows are missing or hold less data.
+  if (level == "aimag") {
+    from_region <- which(other_pcode == "MNR5")
+    from_city <- which(res$pcode %in% "MN11")
+    keep <- setdiff(names(data), c(by, by_parent))
+    n_filled <- function(rows) sum(!is.na(data[rows, keep, drop = FALSE]))
+    if (length(from_region) && n_filled(from_region) > n_filled(from_city)) {
+      ub_city <- unique(values[from_city])
+      res$pcode[from_region] <- "MN11"
+      res$status[from_region] <- "code"
+      other[from_region] <- NA
+      res$pcode[from_city] <- NA
+      res$status[from_city] <- "other_level"
+      .mm_inform(
+        c("i" = paste0(
+          "Using the Ulaanbaatar region ({.val {unique(values[from_region])}}) for Ulaanbaatar: ",
+          if (length(ub_city)) {
+            "the rows for the capital itself ({.val {ub_city}}) have fewer values."
+          } else {
+            "the data have no rows for the capital itself."
+          }
+        )),
+        class = "ub_from_region"
+      )
+    }
   }
   if (drop_other_levels && any(!is.na(other))) {
     rank <- match(other, .mm_levels) - match(level, .mm_levels)

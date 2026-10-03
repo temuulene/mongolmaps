@@ -53,6 +53,61 @@ test_that("mn_join() validates its inputs", {
   expect_snapshot(mn_join(pop, "Region", by_parent = "Aimag"), error = TRUE)
 })
 
+# An NSO-style table: national total, a region, two aimags and Ulaanbaatar
+# as both a region (code 5) and the capital (511).
+nso_ub <- function(ub_region, ub_city, month = "2026-08") {
+  df <- data.frame(
+    Region = c("0", "1", "181", "182", "5", "511"),
+    Month = month,
+    value = c(10, 9, 8, 7, ub_region, ub_city)
+  )
+  df[!is.na(df$Region), ]
+}
+
+test_that("mn_join() takes Ulaanbaatar from code 5 when 511 is empty", {
+  df <- nso_ub(15, NA)
+  expect_snapshot(out <- mn_join(df, "Region", level = "aimag"))
+  expect_equal(nrow(out), 22)
+  expect_equal(out$value[out$pcode == "MN11"], 15)
+  expect_equal(out$Region[out$pcode == "MN11"], "5")
+})
+
+test_that("mn_join() takes Ulaanbaatar from code 5 when 511 is absent", {
+  df <- nso_ub(15, NA)
+  df <- df[df$Region != "511", ]
+  expect_snapshot(out <- mn_join(df, "Region", level = "aimag"))
+  expect_equal(out$value[out$pcode == "MN11"], 15)
+})
+
+test_that("mn_join() keeps 511 when both Ulaanbaatar codes have data", {
+  df <- nso_ub(15, 14)
+  expect_snapshot(out <- mn_join(df, "Region", level = "aimag"))
+  expect_equal(out$value[out$pcode == "MN11"], 14)
+  expect_equal(nrow(out), 22)
+})
+
+test_that("mn_join() takes every period of Ulaanbaatar from code 5", {
+  df <- rbind(nso_ub(15, NA, "2026-07"), nso_ub(16, NA, "2026-08"))
+  out <- suppressMessages(mn_join(df, "Region", level = "aimag"))
+  # Two months for the two aimags and Ulaanbaatar, one row for the rest
+  expect_equal(nrow(out), 22 + 3)
+  ub <- out[out$pcode == "MN11", ]
+  expect_equal(ub$value[order(ub$Month)], c(15, 16))
+})
+
+test_that("mn_join() takes Ulaanbaatar from code 5 when other levels are kept", {
+  df <- nso_ub(15, NA)
+  # Only the total and the region are reported as unmatched, not code 5
+  expect_snapshot(out <- mn_join(df, "Region", level = "aimag", drop_other_levels = FALSE))
+  expect_equal(out$value[out$pcode == "MN11"], 15)
+})
+
+test_that("mn_join() leaves code 5 as a region at the region level", {
+  df <- nso_ub(15, NA)
+  out <- suppressMessages(mn_join(df, "Region", level = "region"))
+  expect_equal(out$value[out$pcode == "MNR5"], 15)
+})
+
 test_that(".mm_detect_level() picks the most common level", {
   expect_equal(.mm_detect_level(c("0", "183", "184", "511")), "aimag")
   expect_equal(.mm_detect_level(c("Khovd", "18401", "18404")), "soum")
