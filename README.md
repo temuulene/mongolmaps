@@ -5,6 +5,8 @@
 
 <!-- badges: start -->
 
+[![CRAN
+status](https://www.r-pkg.org/badges/version/mongolmaps)](https://CRAN.R-project.org/package=mongolmaps)
 [![Lifecycle:
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 <!-- badges: end -->
@@ -29,6 +31,12 @@ English and Mongolian names, parent units, area), so maps at different
 levels work the same way.
 
 ## Installation
+
+``` r
+install.packages("mongolmaps")
+```
+
+The development version is on GitHub:
 
 ``` r
 # install.packages("pak")

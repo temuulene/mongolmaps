@@ -1,3 +1,12 @@
+# mongolmaps (development version)
+
+* `mn_join()` no longer leaves Ulaanbaatar blank for NSO tables that give the
+  capital's figures only on the Ulaanbaatar region row (code 5) and leave the
+  capital's own row (511) empty or out, as many health tables do. At the
+  aimag level the region rows are used for Ulaanbaatar when they hold more
+  values than the 511 rows.
+* The package has a hex logo.
+
 # mongolmaps 0.1.0
 
 * First CRAN release.
@@ -12,9 +21,7 @@
   codes, ISO 3166-2 codes and P-codes; `mn_codes()` lists every unit;
   `mn_translit()` romanises Mongolian Cyrillic (MNS 5217 or NSO style).
 * `mn_join()` joins data to boundaries in one step, detecting the level and
-  dropping totals from NSO tables. Ulaanbaatar's values come from the
-  Ulaanbaatar region row (code 5) when a table leaves the capital's own row
-  (511) empty or out, as many NSO health tables do.
+  dropping totals from NSO tables.
 * Mapping: `mn_map()` and `theme_mn()` for ggplot2, `mn_leaflet()` for
   interactive maps, `mn_label_points()`, `mn_crs()` and the `mn_aimag_grid`
   layout for geofacet.

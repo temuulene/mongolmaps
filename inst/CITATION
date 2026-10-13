@@ -4,5 +4,6 @@ bibentry(
   author = person("Temuulen", "Enebish"),
   year = if (is.null(meta$Date)) format(Sys.Date(), "%Y") else sub("-.*", "", meta$Date),
   note = paste("R package version", meta$Version),
+  doi = "10.32614/CRAN.package.mongolmaps",
   url = "https://github.com/temuulene/mongolmaps"
 )
