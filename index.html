@@ -123,13 +123,16 @@
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"mongolmaps"</span><span class="op">)</span></span></code></pre></div>
+<p>The development version is on GitHub:</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># install.packages("pak")</span></span>
 <span><span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://pak.r-lib.org/reference/pak.html" class="external-link">pak</a></span><span class="op">(</span><span class="st">"temuulene/mongolmaps"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="your-first-map">Your first map<a class="anchor" aria-label="anchor" href="#your-first-map"></a>
 </h2>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/temuulene/mongolmaps" class="external-link">mongolmaps</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="reference/mn_map.html">mn_map</a></span><span class="op">(</span>label <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
@@ -140,7 +143,7 @@
 <h2 id="your-data-on-a-map">Your data on a map<a class="anchor" aria-label="anchor" href="#your-data-on-a-map"></a>
 </h2>
 <p><code><a href="reference/mn_join.html">mn_join()</a></code> attaches a data frame to the boundaries. The place column can use any spelling, Cyrillic, or the codes used in National Statistics Office (NSO) tables. Totals and other levels in NSO tables are dropped for you.</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">pop</span> <span class="op">&lt;-</span> <span class="va">mn_example_population</span><span class="op">[</span><span class="va">mn_example_population</span><span class="op">$</span><span class="va">Year</span> <span class="op">==</span> <span class="fl">2025</span>, <span class="op">]</span></span>
 <span></span>
 <span><span class="va">pop_map</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/mn_join.html">mn_join</a></span><span class="op">(</span><span class="va">pop</span>, by <span class="op">=</span> <span class="st">"Region"</span>, level <span class="op">=</span> <span class="st">"aimag"</span><span class="op">)</span></span>
@@ -154,7 +157,7 @@
 <div class="section level2">
 <h2 id="ulaanbaatar-down-to-khoroos">Ulaanbaatar down to khoroos<a class="anchor" aria-label="anchor" href="#ulaanbaatar-down-to-khoroos"></a>
 </h2>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># The six central districts, by their usual abbreviations</span></span>
 <span><span class="va">central</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"BGD"</span>, <span class="st">"BZD"</span>, <span class="st">"ChD"</span>, <span class="st">"KhUD"</span>, <span class="st">"SKhD"</span>, <span class="st">"SBD"</span><span class="op">)</span></span>
 <span><span class="va">khoroo_pop</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/mn_join.html">mn_join</a></span><span class="op">(</span><span class="va">pop</span>, by <span class="op">=</span> <span class="st">"Region"</span>, level <span class="op">=</span> <span class="st">"bag"</span>, within <span class="op">=</span> <span class="va">central</span><span class="op">)</span></span>
@@ -165,14 +168,14 @@
 <span>       title <span class="op">=</span> <span class="st">"People per km2 by khoroo, central Ulaanbaatar, 2025"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="reference/figures/README-ub-1.png" alt="" width="100%"></p>
 <p>Khoroos are labelled with their number; districts and other units with their name, in English or Mongolian:</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/mn_map.html">mn_map</a></span><span class="op">(</span><span class="fu"><a href="reference/mn_ub.html">mn_ub_districts</a></span><span class="op">(</span><span class="op">)</span>, label <span class="op">=</span> <span class="cn">TRUE</span>, lang <span class="op">=</span> <span class="st">"mn"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="reference/figures/README-ub-labels-1.png" alt="" width="100%"></p>
 </div>
 <div class="section level2">
 <h2 id="names-in-any-spelling">Names in any spelling<a class="anchor" aria-label="anchor" href="#names-in-any-spelling"></a>
 </h2>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/mn_match.html">mn_match</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Khuvsgul"</span>, <span class="st">"Hovsgol"</span>, <span class="st">"Khövsgöl"</span>, <span class="st">"Хөвсгөл"</span>, <span class="st">"MN-041"</span>, <span class="st">"267"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "MN67" "MN67" "MN67" "MN67" "MN67" "MN67"</span></span>
 <span></span>
@@ -322,6 +325,7 @@
   </main><aside class="col-md-3"><div class="links">
 <h2 data-toc-skip>Links</h2>
 <ul class="list-unstyled">
+<li><a href="https://cloud.r-project.org/package=mongolmaps" class="external-link">View on CRAN</a></li>
 <li><a href="https://github.com/temuulene/mongolmaps/" class="external-link">Browse source code</a></li>
 <li><a href="https://github.com/temuulene/mongolmaps/issues" class="external-link">Report a bug</a></li>
 </ul>

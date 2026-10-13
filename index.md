@@ -23,6 +23,13 @@ levels work the same way.
 
 ``` r
 
+install.packages("mongolmaps")
+```
+
+The development version is on GitHub:
+
+``` r
+
 # install.packages("pak")
 pak::pak("temuulene/mongolmaps")
 ```

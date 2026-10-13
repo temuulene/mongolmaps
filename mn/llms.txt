@@ -21,6 +21,13 @@
 
 ``` r
 
+install.packages("mongolmaps")
+```
+
+Хөгжүүлэлтийн хувилбар GitHub дээр бий:
+
+``` r
+
 # install.packages("pak")
 pak::pak("temuulene/mongolmaps")
 ```

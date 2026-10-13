@@ -1,6 +1,18 @@
 # Changelog
 
+## mongolmaps (development version)
+
+- [`mn_join()`](https://temuulene.github.io/mongolmaps/reference/mn_join.md)
+  no longer leaves Ulaanbaatar blank for NSO tables that give the
+  capital’s figures only on the Ulaanbaatar region row (code 5) and
+  leave the capital’s own row (511) empty or out, as many health tables
+  do. At the aimag level the region rows are used for Ulaanbaatar when
+  they hold more values than the 511 rows.
+- The package has a hex logo.
+
 ## mongolmaps 0.1.0
+
+CRAN release: 2026-10-10
 
 - First CRAN release.
 - Boundaries at every open level, with a shared set of columns:
@@ -33,9 +45,7 @@
   romanises Mongolian Cyrillic (MNS 5217 or NSO style).
 - [`mn_join()`](https://temuulene.github.io/mongolmaps/reference/mn_join.md)
   joins data to boundaries in one step, detecting the level and dropping
-  totals from NSO tables. Ulaanbaatar’s values come from the Ulaanbaatar
-  region row (code 5) when a table leaves the capital’s own row
-  511. empty or out, as many NSO health tables do.
+  totals from NSO tables.
 - Mapping:
   [`mn_map()`](https://temuulene.github.io/mongolmaps/reference/mn_map.md)
   and
