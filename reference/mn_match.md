@@ -18,7 +18,8 @@ mn_match(
     "type"),
   fuzzy = TRUE,
   max_dist = NULL,
-  quiet = FALSE
+  quiet = FALSE,
+  details = FALSE
 )
 ```
 
@@ -62,6 +63,11 @@ mn_match(
 
   If `TRUE`, suppresses the message listing fuzzy matches. Warnings
   about ambiguous or unmatched values are always shown.
+
+- details:
+
+  If `TRUE`, return a diagnostic tibble with the input, normalized key,
+  parent, matched code, method, edit distance and candidates.
 
 ## Value
 

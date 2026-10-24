@@ -71,19 +71,19 @@ mn_cache_list()
 #> # A tibble: 14 × 7
 #>    data_version file        size_mb path  modified            layer has_checksum
 #>    <chr>        <chr>         <dbl> <chr> <dttm>              <chr> <lgl>       
-#>  1 data-v1      admin_high…    3.72 /hom… 2026-10-24 06:20:55 admi… TRUE        
-#>  2 data-v1      admin_high…    6.37 /hom… 2026-10-24 06:20:55 NA    TRUE        
-#>  3 data-v1      elevation_…    4.09 /hom… 2026-10-24 06:20:57 elev… TRUE        
-#>  4 data-v1      landcover_…    0.33 /hom… 2026-10-24 06:21:10 land… TRUE        
-#>  5 data-v1      osm_places…    0.06 /hom… 2026-10-24 06:24:38 osm_… TRUE        
-#>  6 data-v1      osm_places…    0.23 /hom… 2026-10-24 06:24:38 NA    TRUE        
-#>  7 data-v1      osm_roads.…   29.2  /hom… 2026-10-24 06:24:32 osm_… TRUE        
-#>  8 data-v1      osm_roads/…   54.6  /hom… 2026-10-24 06:24:33 NA    TRUE        
-#>  9 data-v1      osm_transp…    0.47 /hom… 2026-10-24 06:24:38 osm_… TRUE        
-#> 10 data-v1      osm_transp…    1.01 /hom… 2026-10-24 06:24:38 NA    TRUE        
-#> 11 data-v1      osm_water.…   19.9  /hom… 2026-10-24 06:21:21 osm_… TRUE        
-#> 12 data-v1      osm_water/…   31.9  /hom… 2026-10-24 06:21:21 NA    TRUE        
-#> 13 upstream     mng_pop_20…    0.39 /hom… 2026-10-24 06:21:34 worl… TRUE        
-#> 14 upstream     wdpa_mng.g…    1.09 /hom… 2026-10-24 06:24:31 wdpa  TRUE        
+#>  1 data-v1      admin_high…    3.72 /hom… 2026-10-24 06:55:29 admi… TRUE        
+#>  2 data-v1      admin_high…    6.37 /hom… 2026-10-24 06:55:29 NA    TRUE        
+#>  3 data-v1      elevation_…    4.09 /hom… 2026-10-24 06:55:31 elev… TRUE        
+#>  4 data-v1      landcover_…    0.33 /hom… 2026-10-24 06:55:42 land… TRUE        
+#>  5 data-v1      osm_places…    0.06 /hom… 2026-10-24 06:59:12 osm_… TRUE        
+#>  6 data-v1      osm_places…    0.23 /hom… 2026-10-24 06:59:12 NA    TRUE        
+#>  7 data-v1      osm_roads.…   29.2  /hom… 2026-10-24 06:59:06 osm_… TRUE        
+#>  8 data-v1      osm_roads/…   54.6  /hom… 2026-10-24 06:59:06 NA    TRUE        
+#>  9 data-v1      osm_transp…    0.47 /hom… 2026-10-24 06:59:12 osm_… TRUE        
+#> 10 data-v1      osm_transp…    1.01 /hom… 2026-10-24 06:59:12 NA    TRUE        
+#> 11 data-v1      osm_water.…   19.9  /hom… 2026-10-24 06:55:54 osm_… TRUE        
+#> 12 data-v1      osm_water/…   31.9  /hom… 2026-10-24 06:55:54 NA    TRUE        
+#> 13 upstream     mng_pop_20…    0.39 /hom… 2026-10-24 06:56:03 worl… TRUE        
+#> 14 upstream     wdpa_mng.g…    1.09 /hom… 2026-10-24 06:59:05 wdpa  TRUE        
 mn_download("admin_high")
 ```

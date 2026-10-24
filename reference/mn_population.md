@@ -51,7 +51,12 @@ mn_population(
 
 ## Value
 
-A `terra` SpatRaster of people per cell.
+A `terra` SpatRaster of people per cell. Reprojection uses weighted-sum
+remapping normalized to the retained native-grid total. This preserves
+that total but assumes a new local allocation. The
+`mongolmaps_remapping` attribute records the adjustment. Prefer
+extraction in the native grid for analysis; clipping and changing grids
+introduce allocation assumptions. Validate totals for the target extent.
 
 ## Source
 

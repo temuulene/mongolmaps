@@ -61,7 +61,7 @@ spelling, Cyrillic, or the codes used in National Statistics Office
 pop <- mn_example_population[mn_example_population$Year == 2025, ]
 
 pop_map <- mn_join(pop, by = "Region", level = "aimag")
-#> ℹ Joining at the aimag level; dropped 6 rows for larger units ("country" and
+#> ℹ Joining at the aimag level; dropped 5 rows for larger units ("country" and
 #>   "region") and 2196 rows for smaller units ("soum" and "bag").
 
 mn_map(pop_map, fill = value, trans = "log10", context = TRUE,
@@ -161,6 +161,28 @@ mn_codes("soum", within = "Khovd")
   [`mn_protected_areas()`](https://temuulene.github.io/mongolmaps/reference/mn_protected_areas.md).
 - Small multiples: `mn_aimag_grid` for
   [`geofacet::facet_geo()`](https://hafen.github.io/geofacet/reference/facet_geo.html).
+
+## Auditable workflows and inset maps
+
+[`mn_join_audit()`](https://temuulene.github.io/mongolmaps/reference/mn_join_audit.md)
+records the outcome of every input row; `mn_match(details = TRUE)`
+exposes candidate matches. Use `strict = TRUE`, `fuzzy = FALSE` and
+explicit `strata` for checked analytical joins.
+[`mn_provenance()`](https://temuulene.github.io/mongolmaps/reference/mn_provenance.md)
+and
+[`mn_vintages()`](https://temuulene.github.io/mongolmaps/reference/mn_provenance.md)
+describe the available source snapshots and authority.
+
+Optional `patchwork` helpers
+[`mn_inset_ub()`](https://temuulene.github.io/mongolmaps/reference/mn_inset_ub.md)
+and
+[`mn_map_ub()`](https://temuulene.github.io/mongolmaps/reference/mn_inset_ub.md)
+enlarge the capital and separate its detached districts without moving
+analytical geometry.
+[`mn_map()`](https://temuulene.github.io/mongolmaps/reference/mn_map.md)
+accepts shared `limits`/`breaks`, `bins` and `midpoint`. See the
+[audited workflows
+guide](https://temuulene.github.io/mongolmaps/articles/audited-workflows.html).
 
 ## Data sources
 

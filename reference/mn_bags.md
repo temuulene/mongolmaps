@@ -19,7 +19,12 @@ mn_bags(
   crs = NULL
 )
 
-mn_read_bags(path, code_col = NULL, check_nesting = TRUE)
+mn_read_bags(
+  path,
+  code_col = NULL,
+  check_nesting = TRUE,
+  nesting_tolerance = 0.001
+)
 ```
 
 ## Arguments
@@ -36,10 +41,8 @@ mn_read_bags(path, code_col = NULL, check_nesting = TRUE)
 
 - resolution:
 
-  `"low"` (default) uses simplified boundaries that ship with the
-  package and suit most maps. `"high"` uses full-resolution boundaries,
-  downloaded once (about 10 MB) and cached; see
-  [`mn_cache_dir()`](https://temuulene.github.io/mongolmaps/reference/mn_cache_dir.md).
+  Validated for consistency with other getters; the supplied bag
+  geometry is retained at both settings.
 
 - lang:
 
@@ -63,7 +66,14 @@ mn_read_bags(path, code_col = NULL, check_nesting = TRUE)
 
 - check_nesting:
 
-  If `TRUE` (default), stop when a bag lies outside its soum.
+  If `TRUE` (default), stop when a bag lies outside its soum. Up to
+  `nesting_tolerance` of its area may fall outside the simplified parent
+  boundary.
+
+- nesting_tolerance:
+
+  Maximum fraction of bag area outside its parent, from 0 to 1. Defaults
+  to 0.001 (0.1%). Duplicate codes are dissolved.
 
 ## Value
 

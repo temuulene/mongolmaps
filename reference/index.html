@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">mongolmaps</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -22,6 +22,7 @@
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/ulaanbaatar.html">Maps of Ulaanbaatar</a></li>
     <li><a class="dropdown-item" href="../articles/joining-data.html">Putting your data on a map</a></li>
     <li><a class="dropdown-item" href="../articles/names-and-codes.html">Names and codes</a></li>
+    <li><a class="dropdown-item" href="../articles/audited-workflows.html">Auditable joins and comparable maps</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><a class="dropdown-item" href="../articles/index.html">More articles...</a></li>
   </ul></li>
@@ -140,6 +141,13 @@
 
         <dt>
 
+          <code><a href="mn_join_audit.html">mn_join_audit()</a></code>
+
+        </dt>
+        <dd>Inspect the input records behind a map join</dd>
+
+        <dt>
+
           <code><a href="mn_example_population.html">mn_example_population</a></code>
 
         </dt>
@@ -237,6 +245,20 @@
 
         <dt>
 
+          <code><a href="mn_inset_ub.html">mn_inset_ub()</a></code> <code><a href="mn_inset_ub.html">mn_map_ub()</a></code>
+
+        </dt>
+        <dd>National and urban maps with Ulaanbaatar inset panels</dd>
+
+        <dt>
+
+          <code><a href="mn_erase_water.html">mn_erase_water()</a></code>
+
+        </dt>
+        <dd>Remove water from display geometry</dd>
+
+        <dt>
+
           <code><a href="theme_mn.html">theme_mn()</a></code>
 
         </dt>
@@ -269,6 +291,13 @@
 
         </dt>
         <dd>A grid layout of the aimags for small-multiple maps</dd>
+
+        <dt>
+
+          <code><a href="mn_ub_grid.html">mn_ub_grid</a></code>
+
+        </dt>
+        <dd>A geographic small-multiple grid for Ulaanbaatar districts</dd>
       </dl></div><div class="section level2">
       <h2 id="data-sources-and-cache">Data sources and cache<a class="anchor" aria-label="anchor" href="#data-sources-and-cache"></a></h2>
 
@@ -288,7 +317,14 @@
 
         <dt>
 
-          <code><a href="mn_cache_dir.html">mn_cache_dir()</a></code> <code><a href="mn_cache_dir.html">mn_cache_list()</a></code> <code><a href="mn_cache_dir.html">mn_cache_clear()</a></code> <code><a href="mn_cache_dir.html">mn_download()</a></code>
+          <code><a href="mn_provenance.html">mn_provenance()</a></code> <code><a href="mn_provenance.html">mn_vintages()</a></code>
+
+        </dt>
+        <dd>Inspect source provenance and available boundary revisions</dd>
+
+        <dt>
+
+          <code><a href="mn_cache_dir.html">mn_cache_dir()</a></code> <code><a href="mn_cache_dir.html">mn_cache_list()</a></code> <code><a href="mn_cache_dir.html">mn_cache_clear()</a></code> <code><a href="mn_cache_dir.html">mn_download()</a></code> <code><a href="mn_cache_dir.html">mn_assets()</a></code> <code><a href="mn_cache_dir.html">mn_cache_verify()</a></code>
 
         </dt>
         <dd>Manage downloaded map data</dd>

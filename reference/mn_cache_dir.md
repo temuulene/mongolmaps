@@ -14,6 +14,10 @@ mn_cache_list()
 mn_cache_clear(layers = NULL, old_versions = FALSE)
 
 mn_download(layers = "all")
+
+mn_assets()
+
+mn_cache_verify(layers = NULL)
 ```
 
 ## Arguments
@@ -24,7 +28,9 @@ mn_download(layers = "all")
   [`mn_sources()`](https://temuulene.github.io/mongolmaps/reference/mn_sources.md)),
   such as `"admin_high"` or `"osm"`. `NULL` (the default for
   `mn_cache_clear()`) means all; `"all"` (the default for
-  `mn_download()`) means every downloadable layer.
+  `mn_download()`) means every fixed-file downloadable layer. WorldPop
+  is opt-in: use `"worldpop"` for every year/resolution, or an id such
+  as `"worldpop_2025_1km"`.
 
 - old_versions:
 
@@ -44,7 +50,13 @@ invisibly.
 
 - `mn_cache_list()` lists what is cached.
 
-- `mn_cache_clear()` deletes cached files.
+- `mn_cache_clear()` deletes cached files. Old revisions are retained
+  unless explicitly removed with `old_versions = TRUE`.
+
+- `mn_cache_verify()` hashes downloaded assets to check their integrity.
+
+- `mn_assets()` lists concrete assets, including WorldPop
+  years/resolutions.
 
 - `mn_download()` downloads layers now, for example before fieldwork
   without internet. See
@@ -54,6 +66,7 @@ invisibly.
 ## See also
 
 Other data sources and cache:
+[`mn_provenance()`](https://temuulene.github.io/mongolmaps/reference/mn_provenance.md),
 [`mn_sources()`](https://temuulene.github.io/mongolmaps/reference/mn_sources.md)
 
 ## Examples
@@ -62,8 +75,9 @@ Other data sources and cache:
 mn_cache_dir()
 #> [1] "/home/runner/.cache/R/mongolmaps"
 mn_cache_list()
-#> # A tibble: 0 × 4
-#> # ℹ 4 variables: data_version <chr>, file <chr>, size_mb <dbl>, path <chr>
+#> # A tibble: 0 × 7
+#> # ℹ 7 variables: data_version <chr>, file <chr>, size_mb <dbl>, path <chr>,
+#> #   modified <dttm>, layer <chr>, has_checksum <lgl>
 mn_download("admin_high")
 #> ℹ Downloading Full-resolution administrative boundaries (3.7 MB); this happens
 #>   once.

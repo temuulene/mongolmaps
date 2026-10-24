@@ -26,7 +26,7 @@
 
     <a class="navbar-brand me-2" href="index.html">mongolmaps</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -43,6 +43,7 @@
 <li><a class="dropdown-item" href="articles/ulaanbaatar.html">Maps of Ulaanbaatar</a></li>
     <li><a class="dropdown-item" href="articles/joining-data.html">Putting your data on a map</a></li>
     <li><a class="dropdown-item" href="articles/names-and-codes.html">Names and codes</a></li>
+    <li><a class="dropdown-item" href="articles/audited-workflows.html">Auditable joins and comparable maps</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><a class="dropdown-item" href="articles/index.html">More articles...</a></li>
   </ul>
@@ -147,7 +148,7 @@
 <code class="sourceCode R"><span><span class="va">pop</span> <span class="op">&lt;-</span> <span class="va">mn_example_population</span><span class="op">[</span><span class="va">mn_example_population</span><span class="op">$</span><span class="va">Year</span> <span class="op">==</span> <span class="fl">2025</span>, <span class="op">]</span></span>
 <span></span>
 <span><span class="va">pop_map</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/mn_join.html">mn_join</a></span><span class="op">(</span><span class="va">pop</span>, by <span class="op">=</span> <span class="st">"Region"</span>, level <span class="op">=</span> <span class="st">"aimag"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ℹ Joining at the aimag level; dropped 6 rows for larger units ("country" and</span></span>
+<span><span class="co">#&gt; ℹ Joining at the aimag level; dropped 5 rows for larger units ("country" and</span></span>
 <span><span class="co">#&gt;   "region") and 2196 rows for smaller units ("soum" and "bag").</span></span>
 <span></span>
 <span><span class="fu"><a href="reference/mn_map.html">mn_map</a></span><span class="op">(</span><span class="va">pop_map</span>, fill <span class="op">=</span> <span class="va">value</span>, trans <span class="op">=</span> <span class="st">"log10"</span>, context <span class="op">=</span> <span class="cn">TRUE</span>,</span>
@@ -221,6 +222,12 @@
 <li>Protected areas: <code><a href="reference/mn_protected_areas.html">mn_protected_areas()</a></code>.</li>
 <li>Small multiples: <code>mn_aimag_grid</code> for <code><a href="https://hafen.github.io/geofacet/reference/facet_geo.html" class="external-link">geofacet::facet_geo()</a></code>.</li>
 </ul>
+</div>
+<div class="section level2">
+<h2 id="auditable-workflows-and-inset-maps">Auditable workflows and inset maps<a class="anchor" aria-label="anchor" href="#auditable-workflows-and-inset-maps"></a>
+</h2>
+<p><code><a href="reference/mn_join_audit.html">mn_join_audit()</a></code> records the outcome of every input row; <code>mn_match(details = TRUE)</code> exposes candidate matches. Use <code>strict = TRUE</code>, <code>fuzzy = FALSE</code> and explicit <code>strata</code> for checked analytical joins. <code><a href="reference/mn_provenance.html">mn_provenance()</a></code> and <code><a href="reference/mn_provenance.html">mn_vintages()</a></code> describe the available source snapshots and authority.</p>
+<p>Optional <code>patchwork</code> helpers <code><a href="reference/mn_inset_ub.html">mn_inset_ub()</a></code> and <code><a href="reference/mn_inset_ub.html">mn_map_ub()</a></code> enlarge the capital and separate its detached districts without moving analytical geometry. <code><a href="reference/mn_map.html">mn_map()</a></code> accepts shared <code>limits</code>/<code>breaks</code>, <code>bins</code> and <code>midpoint</code>. See the <a href="https://temuulene.github.io/mongolmaps/articles/audited-workflows.html">audited workflows guide</a>.</p>
 </div>
 <div class="section level2">
 <h2 id="data-sources">Data sources<a class="anchor" aria-label="anchor" href="#data-sources"></a>

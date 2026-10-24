@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">mongolmaps</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -22,6 +22,7 @@
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/ulaanbaatar.html">Maps of Ulaanbaatar</a></li>
     <li><a class="dropdown-item" href="../articles/joining-data.html">Putting your data on a map</a></li>
     <li><a class="dropdown-item" href="../articles/names-and-codes.html">Names and codes</a></li>
+    <li><a class="dropdown-item" href="../articles/audited-workflows.html">Auditable joins and comparable maps</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><a class="dropdown-item" href="../articles/index.html">More articles...</a></li>
   </ul></li>
@@ -42,10 +43,18 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="development version" id="mongolmaps-development-version">mongolmaps (development version)<a class="anchor" aria-label="anchor" href="#mongolmaps-development-version"></a></h2>
-<ul><li>
-<code><a href="../reference/mn_join.html">mn_join()</a></code> no longer leaves Ulaanbaatar blank for NSO tables that give the capital’s figures only on the Ulaanbaatar region row (code 5) and leave the capital’s own row (511) empty or out, as many health tables do. At the aimag level the region rows are used for Ulaanbaatar when they hold more values than the 511 rows.</li>
-<li>The package has a hex logo.</li>
+<h2 class="pkg-version" data-toc-text="0.2.0" id="mongolmaps-020">mongolmaps 0.2.0<a class="anchor" aria-label="anchor" href="#mongolmaps-020"></a></h2>
+<ul><li><p>Raster summaries now use fractional cell coverage by default; empty coverage returns NA. Median extraction explicitly requires exact = FALSE. Population export reprojection preserves the retained native-grid total and records its normalization; native-grid extraction remains recommended for analysis.</p></li>
+<li><p>Joins respect global geographic scope during matching and level detection. Ulaanbaatar region/capital records are reconciled within statistical strata, with explicit value columns, conflict policies and inspectable row decisions.</p></li>
+<li><p>Added strict joins, duplicate-key controls, detailed name matching and <code><a href="../reference/mn_join_audit.html">mn_join_audit()</a></code>.</p></li>
+<li><p>Bag imports dissolve multipart records, measure areas, check whole-polygon nesting and refresh after file changes. Registered bags also work as clipping targets and appear as available in the code dictionary.</p></li>
+<li><p>Added <code><a href="../reference/mn_provenance.html">mn_provenance()</a></code>, <code><a href="../reference/mn_provenance.html">mn_vintages()</a></code> and boundary-version validation. The catalog reports the available snapshot honestly; no historical geometry has been added. Thematic captions and leaflet credits use source metadata.</p></li>
+<li><p>Cache downloads are verified and replaced with rollback on publication failure. Failed protected-area refreshes retain valid cached data. Archive extraction is checked; old revisions are retained until explicitly cleared.</p></li>
+<li><p>Added <code><a href="../reference/mn_cache_dir.html">mn_assets()</a></code>, WorldPop asset prefetch/clearing and <code><a href="../reference/mn_cache_dir.html">mn_cache_verify()</a></code>. Partial cloud-tile coverage errors by default.</p></li>
+<li><p>Added <code><a href="../reference/mn_inset_ub.html">mn_inset_ub()</a></code>, <code><a href="../reference/mn_inset_ub.html">mn_map_ub()</a></code>, shared map limits/breaks, binned and diverging polygon scales, <code>mn_ub_grid</code> and <code><a href="../reference/mn_erase_water.html">mn_erase_water()</a></code>. Insets preserve analytical coordinates, and large raster maps limit display work before reprojection.</p></li>
+<li><p>Added an audited-workflows guide and corrected boundary source, CRS and generalized land-cover descriptions. The minimum dplyr version is 1.1.1.</p></li>
+<li><p><code><a href="../reference/mn_join.html">mn_join()</a></code> fills missing Ulaanbaatar values from NSO region code 5 when capital code 511 is empty or absent. Conflicting values prefer the capital row by default with a warning; <code>ub_policy</code> makes the decision explicit.</p></li>
+<li><p>The package has a hex logo.</p></li>
 </ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.1.0" id="mongolmaps-010">mongolmaps 0.1.0<a class="anchor" aria-label="anchor" href="#mongolmaps-010"></a></h2><p class="text-muted">CRAN release: 2026-10-10</p>

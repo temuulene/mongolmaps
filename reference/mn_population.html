@@ -13,7 +13,7 @@ Use mn_zonal() to sum it over aimags, soums or khoroos."><meta property="og:imag
 
     <a class="navbar-brand me-2" href="../index.html">mongolmaps</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -28,6 +28,7 @@ Use mn_zonal() to sum it over aimags, soums or khoroos."><meta property="og:imag
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/ulaanbaatar.html">Maps of Ulaanbaatar</a></li>
     <li><a class="dropdown-item" href="../articles/joining-data.html">Putting your data on a map</a></li>
     <li><a class="dropdown-item" href="../articles/names-and-codes.html">Names and codes</a></li>
+    <li><a class="dropdown-item" href="../articles/audited-workflows.html">Auditable joins and comparable maps</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><a class="dropdown-item" href="../articles/index.html">More articles...</a></li>
   </ul></li>
@@ -98,7 +99,12 @@ value accepted by <code><a href="https://r-spatial.github.io/sf/reference/st_crs
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A <code>terra</code> SpatRaster of people per cell.</p>
+    <p>A <code>terra</code> SpatRaster of people per cell. Reprojection uses
+weighted-sum remapping normalized to the retained native-grid total.
+This preserves that total but assumes a new local allocation. The
+<code>mongolmaps_remapping</code> attribute records the adjustment. Prefer extraction
+in the native grid for analysis; clipping and changing grids introduce
+allocation assumptions. Validate totals for the target extent.</p>
     </div>
     <div class="section level2">
     <h2 id="source">Source<a class="anchor" aria-label="anchor" href="#source"></a></h2>

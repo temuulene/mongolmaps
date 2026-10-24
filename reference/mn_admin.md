@@ -19,7 +19,8 @@ mn_admin(
   within = NULL,
   resolution = c("low", "high"),
   lang = NULL,
-  crs = NULL
+  crs = NULL,
+  boundary_version = NULL
 )
 ```
 
@@ -72,6 +73,13 @@ mn_admin(
   [`mn_crs()`](https://temuulene.github.io/mongolmaps/reference/mn_crs.md)),
   or any value accepted by
   [`sf::st_crs()`](https://r-spatial.github.io/sf/reference/st_crs.html).
+
+- boundary_version:
+
+  An available data revision, currently only `"data-v1"`. `NULL` uses
+  that revision. See
+  [`mn_vintages()`](https://temuulene.github.io/mongolmaps/reference/mn_provenance.md);
+  statistical years do not imply matching historical boundaries.
 
 ## Value
 

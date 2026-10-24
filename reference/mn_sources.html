@@ -13,7 +13,7 @@ put under a map; mn_map() adds it as a caption automatically."><meta property="o
 
     <a class="navbar-brand me-2" href="../index.html">mongolmaps</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -28,6 +28,7 @@ put under a map; mn_map() adds it as a caption automatically."><meta property="o
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/ulaanbaatar.html">Maps of Ulaanbaatar</a></li>
     <li><a class="dropdown-item" href="../articles/joining-data.html">Putting your data on a map</a></li>
     <li><a class="dropdown-item" href="../articles/names-and-codes.html">Names and codes</a></li>
+    <li><a class="dropdown-item" href="../articles/audited-workflows.html">Auditable joins and comparable maps</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><a class="dropdown-item" href="../articles/index.html">More articles...</a></li>
   </ul></li>
@@ -68,7 +69,8 @@ put under a map; <code><a href="mn_map.html">mn_map()</a></code> adds it as a ca
 
 <dl><dt id="arg-layer-layers">layer, layers<a class="anchor" aria-label="anchor" href="#arg-layer-layers"></a></dt>
 <dd><p>Layer ids, such as <code>"admin"</code>, <code>"khoroos"</code> or
-<code>"settlements"</code>. <code>NULL</code> lists all layers.</p></dd>
+<code>"settlements"</code>. <code>NULL</code> lists all layers. <code>mn_citation()</code> also accepts
+a tagged map or raster, using its attached source provenance.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -76,7 +78,8 @@ put under a map; <code><a href="mn_map.html">mn_map()</a></code> adds it as a ca
     <p><code>mn_sources()</code>: a tibble with columns <code>id</code>, <code>title</code>, <code>group</code>,
 <code>delivery</code> (<code>"bundled"</code>, <code>"release"</code> or <code>"upstream"</code>), <code>provider</code>,
 <code>license</code>, <code>license_url</code>, <code>valid_on</code>, <code>source_url</code>, <code>attribution</code> and
-<code>notes</code>. <code>mn_citation()</code>: a single string.</p>
+<code>notes</code>, plus source revision, code/geometry vintages, authority and
+effective date where known. <code>mn_citation()</code>: a single string.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
@@ -86,13 +89,14 @@ under licences that require attribution (CC BY, ODbL).</p>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p>Other data sources and cache:
-<code><a href="mn_cache_dir.html">mn_cache_dir()</a></code></p></div>
+<code><a href="mn_cache_dir.html">mn_cache_dir()</a></code>,
+<code><a href="mn_provenance.html">mn_provenance()</a></code></p></div>
     </div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">mn_sources</span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 16 × 11</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 16 × 17</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    id      title group delivery provider license license_url valid_on source_url</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> admin   Admi… admin bundled  Nationa… CC BY-… https://cr… 2020-10… https://d…</span>
@@ -111,7 +115,9 @@ under licences that require attribution (CC BY, ODbL).</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">14</span> worldc… Land… rast… upstream ESA Wor… CC BY … https://cr… 2021     https://e…</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">15</span> worldp… Popu… rast… upstream WorldPo… CC BY … https://cr… R2025A   https://w…</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">16</span> wdpa    Prot… envi… upstream UNEP-WC… WDPA t… https://ww… <span style="color: #BB0000;">NA</span>       https://w…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 2 more variables: attribution &lt;chr&gt;, notes &lt;chr&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 8 more variables: attribution &lt;chr&gt;, notes &lt;chr&gt;, data_version &lt;chr&gt;,</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   source_revision &lt;chr&gt;, geometry_vintage &lt;chr&gt;, code_vintage &lt;chr&gt;,</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   effective_date &lt;chr&gt;, authority &lt;chr&gt;</span></span>
 <span class="r-in"><span><span class="fu">mn_citation</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"admin"</span>, <span class="st">"khoroos"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Boundaries: NSO Mongolia &amp; OCHA (COD-AB), CC BY-IGO; Khoroos: khoroo-map (0BSD), unofficial"</span>
 </code></pre></div>

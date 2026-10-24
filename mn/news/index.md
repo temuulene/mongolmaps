@@ -1,6 +1,6 @@
 # Changelog
 
-## mongolmaps (development version)
+## mongolmaps 0.2.0
 
 - Raster summaries now use fractional cell coverage by default; empty
   coverage returns NA. Median extraction explicitly requires exact =
@@ -53,11 +53,9 @@
   1.1.1.
 
 - [`mn_join()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_join.md)
-  no longer leaves Ulaanbaatar blank for NSO tables that give the
-  capital’s figures only on the Ulaanbaatar region row (code 5) and
-  leave the capital’s own row (511) empty or out, as many health tables
-  do. At the aimag level the region rows are used for Ulaanbaatar when
-  they hold more values than the 511 rows.
+  fills missing Ulaanbaatar values from NSO region code 5 when capital
+  code 511 is empty or absent. Conflicting values prefer the capital row
+  by default with a warning; `ub_policy` makes the decision explicit.
 
 - The package has a hex logo.
 

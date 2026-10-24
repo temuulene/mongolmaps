@@ -42,7 +42,8 @@ retrieved 2026-09-29.
 ## See also
 
 Other joining data:
-[`mn_join()`](https://temuulene.github.io/mongolmaps/reference/mn_join.md)
+[`mn_join()`](https://temuulene.github.io/mongolmaps/reference/mn_join.md),
+[`mn_join_audit()`](https://temuulene.github.io/mongolmaps/reference/mn_join_audit.md)
 
 ## Examples
 

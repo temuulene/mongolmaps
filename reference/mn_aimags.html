@@ -9,7 +9,7 @@ status (type = "capital").'><meta property="og:image" content="https://temuulene
 
     <a class="navbar-brand me-2" href="../index.html">mongolmaps</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -24,6 +24,7 @@ status (type = "capital").'><meta property="og:image" content="https://temuulene
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/ulaanbaatar.html">Maps of Ulaanbaatar</a></li>
     <li><a class="dropdown-item" href="../articles/joining-data.html">Putting your data on a map</a></li>
     <li><a class="dropdown-item" href="../articles/names-and-codes.html">Names and codes</a></li>
+    <li><a class="dropdown-item" href="../articles/audited-workflows.html">Auditable joins and comparable maps</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><a class="dropdown-item" href="../articles/index.html">More articles...</a></li>
   </ul></li>
@@ -55,7 +56,8 @@ status (<code>type = "capital"</code>).</p>
 <span>  region <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  resolution <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"low"</span>, <span class="st">"high"</span><span class="op">)</span>,</span>
 <span>  lang <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  crs <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  crs <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  boundary_version <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -87,6 +89,12 @@ tables), <code>"mn"</code> (Cyrillic) or <code>"mns"</code> (Latin with diacriti
 keeps longitude/latitude (EPSG:4326). Use <code>"albers"</code>, <code>"lcc"</code> or
 <code>"utm"</code> for a projection suited to Mongolia (see <code><a href="mn_crs.html">mn_crs()</a></code>), or any
 value accepted by <code><a href="https://r-spatial.github.io/sf/reference/st_crs.html" class="external-link">sf::st_crs()</a></code>.</p></dd>
+
+
+<dt id="arg-boundary-version">boundary_version<a class="anchor" aria-label="anchor" href="#arg-boundary-version"></a></dt>
+<dd><p>An available data revision, currently only
+<code>"data-v1"</code>. <code>NULL</code> uses that revision. See <code><a href="mn_provenance.html">mn_vintages()</a></code>; statistical
+years do not imply matching historical boundaries.</p></dd>
 
 </dl></div>
     <div class="section level2">

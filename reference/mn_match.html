@@ -17,7 +17,7 @@ Values that still do not match are tried with a small edit distance.'><meta prop
 
     <a class="navbar-brand me-2" href="../index.html">mongolmaps</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -32,6 +32,7 @@ Values that still do not match are tried with a small edit distance.'><meta prop
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/ulaanbaatar.html">Maps of Ulaanbaatar</a></li>
     <li><a class="dropdown-item" href="../articles/joining-data.html">Putting your data on a map</a></li>
     <li><a class="dropdown-item" href="../articles/names-and-codes.html">Names and codes</a></li>
+    <li><a class="dropdown-item" href="../articles/audited-workflows.html">Auditable joins and comparable maps</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><a class="dropdown-item" href="../articles/index.html">More articles...</a></li>
   </ul></li>
@@ -71,7 +72,8 @@ Values that still do not match are tried with a small edit distance.</p>
 <span>    <span class="st">"type"</span><span class="op">)</span>,</span>
 <span>  fuzzy <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  max_dist <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  quiet <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span>  quiet <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  details <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -117,6 +119,11 @@ long names).</p></dd>
 <dt id="arg-quiet">quiet<a class="anchor" aria-label="anchor" href="#arg-quiet"></a></dt>
 <dd><p>If <code>TRUE</code>, suppresses the message listing fuzzy matches.
 Warnings about ambiguous or unmatched values are always shown.</p></dd>
+
+
+<dt id="arg-details">details<a class="anchor" aria-label="anchor" href="#arg-details"></a></dt>
+<dd><p>If <code>TRUE</code>, return a diagnostic tibble with the input,
+normalized key, parent, matched code, method, edit distance and candidates.</p></dd>
 
 </dl></div>
     <div class="section level2">

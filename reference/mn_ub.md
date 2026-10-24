@@ -11,15 +11,26 @@ Maps of the capital at three levels:
 ## Usage
 
 ``` r
-mn_ub(resolution = c("low", "high"), lang = NULL, crs = NULL)
+mn_ub(
+  resolution = c("low", "high"),
+  lang = NULL,
+  crs = NULL,
+  boundary_version = NULL
+)
 
-mn_ub_districts(resolution = c("low", "high"), lang = NULL, crs = NULL)
+mn_ub_districts(
+  resolution = c("low", "high"),
+  lang = NULL,
+  crs = NULL,
+  boundary_version = NULL
+)
 
 mn_khoroos(
   district = NULL,
   resolution = c("low", "high"),
   lang = NULL,
-  crs = NULL
+  crs = NULL,
+  boundary_version = NULL
 )
 ```
 
@@ -46,6 +57,13 @@ mn_khoroos(
   [`mn_crs()`](https://temuulene.github.io/mongolmaps/reference/mn_crs.md)),
   or any value accepted by
   [`sf::st_crs()`](https://r-spatial.github.io/sf/reference/st_crs.html).
+
+- boundary_version:
+
+  An available data revision, currently only `"data-v1"`. `NULL` uses
+  that revision. See
+  [`mn_vintages()`](https://temuulene.github.io/mongolmaps/reference/mn_provenance.md);
+  statistical years do not imply matching historical boundaries.
 
 - district:
 
@@ -75,9 +93,11 @@ area was reassigned, and 97% of khoroos changed area by less than 1%.
 Khoroo codes and names follow NSO.
 
 The district lines are the unions of their khoroos. They follow the
-current city layout and can differ slightly from the 2020 district lines
-in
-[`mn_soums()`](https://temuulene.github.io/mongolmaps/reference/mn_soums.md).
+source layout.
+[`mn_soums()`](https://temuulene.github.io/mongolmaps/reference/mn_soums.md)
+also uses these derived district lines; independent national/urban
+simplification can create small differences. Neither getter is an
+official historical district snapshot.
 
 ## See also
 

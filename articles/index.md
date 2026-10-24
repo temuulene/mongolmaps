@@ -10,6 +10,8 @@
   map](https://temuulene.github.io/mongolmaps/articles/joining-data.md):
 - [Names and
   codes](https://temuulene.github.io/mongolmaps/articles/names-and-codes.md):
+- [Auditable joins and comparable
+  maps](https://temuulene.github.io/mongolmaps/articles/audited-workflows.md):
 
 ### More
 
