@@ -84,20 +84,24 @@ mn_places <- function(type = c("city", "town", "village"), within = NULL, lang =
   sf::st_geometry(x) <- "geometry"
   x$name <- x$name_en
   x <- x[c("osm_id", "name", setdiff(names(x), c("osm_id", "name")))]
-  .mm_transform(x, crs, call = call)
+  .mm_tag(.mm_transform(x, crs, call = call), id)
 }
 
 # The union of the (simplified) boundaries of `targets`.
-.mm_target_geometry <- function(targets, call = rlang::caller_env()) {
+.mm_target_geometry <- function(targets, call = rlang::caller_env(), resolution = "low") {
   u <- .mm_units[match(targets, .mm_units$pcode), ]
   layer <- c(country = "country", region = "region", aimag = "aimag", soum = "soum", bag = "khoroo")[u$level]
+  layer[u$type %in% "district"] <- "ub_district"
   geoms <- purrr::map2(targets, layer, function(p, l) {
-    g <- .mm_bundled(.mm_low[[l]])
+    g <- .mm_geom(l, resolution)
+    if (l == "khoroo" && !p %in% g$pcode && !is.null(getOption("mongolmaps.bags_path"))) {
+      g <- .mm_add_bags(g, p)
+    }
     sf::st_geometry(g)[g$pcode == p]
   })
-  geoms <- geoms[lengths(geoms) > 0]
-  if (!length(geoms)) {
-    .mm_abort("{.arg within} names places without a boundary: {.val {targets}}.", "input", call = call)
+  missing <- targets[lengths(geoms) == 0]
+  if (length(missing)) {
+    .mm_abort("{.arg within} names places without a boundary: {.val {missing}}.", "input", call = call)
   }
   sf::st_union(do.call(c, geoms))
 }

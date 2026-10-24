@@ -10,19 +10,30 @@
 
 # The same for a manifest-like row built at run time (for example one
 # WorldPop year).
-.mm_asset_row <- function(row, call = rlang::caller_env()) {
+.mm_asset_row <- function(row, call = rlang::caller_env(), refresh = FALSE, allow_stale = FALSE) {
   dir <- file.path(mn_cache_dir(), row$data_version)
   dest <- file.path(dir, row$file)
-  if (!.mm_cached_ok(dest, row)) {
-    .mm_fetch(row, dest, call = call)
+  valid <- .mm_cached_ok(dest, row)
+  if (refresh || !valid) {
+    tryCatch(
+      .mm_fetch(row, dest, call = call),
+      mongolmaps_error = function(e) {
+        if (!allow_stale || !valid) stop(e)
+        .mm_warn("Refresh failed; using the previously cached {.field {row$title}}. {conditionMessage(e)}", "stale_cache")
+      }
+    )
   }
   .mm_unpacked(row, dest)
 }
 
-.mm_cached_ok <- function(dest, row) {
+.mm_cached_ok <- function(dest, row, verify = getOption("mongolmaps.verify_cache", TRUE)) {
   side <- paste0(dest, ".sha256")
-  file.exists(dest) && file.exists(side) &&
-    (is.na(row$sha256) || isTRUE(readLines(side, warn = FALSE)[1] == row$sha256))
+  if (!file.exists(dest) || !file.exists(side)) return(FALSE)
+  sha <- tryCatch(readLines(side, warn = FALSE)[1], error = function(e) NA_character_)
+  if (is.na(sha) || !grepl("^[0-9a-f]{64}$", sha)) return(FALSE)
+  expected <- row$sha256
+  if (!is.na(expected) && !identical(sha, expected)) return(FALSE)
+  !isTRUE(verify) || identical(.mm_sha256(dest), sha)
 }
 
 .mm_fetch <- function(row, dest, call = rlang::caller_env()) {
@@ -31,67 +42,100 @@
       c(
         "Can't download {.field {row$title}}: offline mode is on.",
         "i" = "Turn it off with {.code options(mongolmaps.offline = FALSE)}, or prefetch layers with {.fn mn_download}."
-      ),
-      "offline",
-      call = call
-    )
-  }
-  if (!curl::has_internet()) {
-    .mm_abort(
-      c(
-        "Can't download {.field {row$title}}: no internet connection.",
-        "i" = "Layers are downloaded once and cached; prefetch them with {.fn mn_download} while online."
-      ),
-      "offline",
-      call = call
+      ), "offline", call = call
     )
   }
   dir.create(dirname(dest), recursive = TRUE, showWarnings = FALSE)
-  size <- if (is.na(row$bytes)) "" else sprintf(" (%.1f MB)", as.numeric(row$bytes) / 1024^2) # nolint object_usage_linter. Used in the cli message.
+  lock <- .mm_lock_cache(dest)
+  on.exit(unlink(lock, recursive = TRUE), add = TRUE)
+  size <- if (is.na(row$bytes)) "" else sprintf(" (%.1f MB)", as.numeric(row$bytes) / 1024^2) # nolint object_usage_linter.
   .mm_inform(c("i" = "Downloading {.field {row$title}}{size}; this happens once."), class = "download")
-  tmp <- paste0(dest, ".part")
-  on.exit(unlink(tmp), add = TRUE)
+  tmp <- tempfile(pattern = ".mongolmaps-", tmpdir = dirname(dest), fileext = ".part")
+  side <- paste0(tmp, ".sha256")
+  on.exit(unlink(c(tmp, side)), add = TRUE)
   urls <- stats::na.omit(c(.mm_asset_url(row), row$fallback_url))
-  ok <- FALSE
-  for (url in urls) {
-    ok <- tryCatch(
-      {
-        .mm_http_download(url, tmp)
-        TRUE
-      },
-      mongolmaps_http_error = function(e) {
-        if (url == urls[length(urls)]) rlang::cnd_signal(e)
-        FALSE
-      }
-    )
+  for (i in seq_along(urls)) {
+    ok <- tryCatch({
+      .mm_http_download(urls[i], tmp)
+      TRUE
+    }, mongolmaps_http_error = function(e) {
+      if (i == length(urls)) stop(e)
+      FALSE
+    })
     if (ok) break
   }
+  if (!file.exists(tmp)) .mm_abort("The download did not produce a file.", "http", call = call)
   sha <- .mm_sha256(tmp)
   if (!is.na(row$sha256) && !identical(sha, row$sha256)) {
     if (row$delivery == "release") {
       .mm_abort(
-        c(
-          "The download of {.field {row$title}} is corrupt (checksum mismatch).",
-          "i" = "Try again; if it keeps failing, report it at {.url https://github.com/temuulene/mongolmaps/issues}."
-        ),
-        "checksum",
-        call = call
+        c("The download of {.field {row$title}} is corrupt (checksum mismatch).",
+          "i" = "Try again; if it keeps failing, report it at {.url https://github.com/temuulene/mongolmaps/issues}."),
+        "checksum", call = call
       )
     }
     .mm_warn(
-      c(
-        "{.field {row$title}} changed upstream since this package version (checksum mismatch).",
-        "i" = "Using it anyway; results may differ from the documented data."
-      ),
+      c("{.field {row$title}} changed upstream since this package version (checksum mismatch).",
+        "i" = "Using it anyway; results may differ from the documented data."),
       class = "checksum_warning"
     )
   }
-  file.rename(tmp, dest)
-  writeLines(sha, paste0(dest, ".sha256"))
-  # Prune relative to the package's data version, never the downloaded
-  # row's: upstream files live in their own folder.
-  .mm_prune_versions(.mm_data_version)
+  .mm_validate_download(row, tmp)
+  writeLines(sha, side)
+  .mm_publish_files(c(tmp, side), c(dest, paste0(dest, ".sha256")))
+  .mm_invalidate_memory()
+  if (isTRUE(getOption("mongolmaps.prune_old_versions", FALSE))) .mm_prune_versions(.mm_data_version)
   invisible(dest)
+}
+
+# Publish a checked file and checksum together; preserve old files on failure.
+.mm_move_file <- function(from, to) file.rename(from, to)
+
+.mm_publish_files <- function(from, to) {
+  backups <- vapply(to, function(p) tempfile(".backup-", tmpdir = dirname(p)), character(1))
+  old_moved <- new_moved <- rep(FALSE, length(to))
+  err <- tryCatch({
+    for (i in seq_along(to)) {
+      if (file.exists(to[i])) {
+        if (!.mm_move_file(to[i], backups[i])) stop("Cannot stage previous cache file.")
+        old_moved[i] <- TRUE
+      }
+    }
+    for (i in seq_along(to)) {
+      if (!.mm_move_file(from[i], to[i])) stop("Cannot publish replacement cache file.")
+      new_moved[i] <- TRUE
+    }
+    NULL
+  }, error = identity)
+  if (!is.null(err)) {
+    unlink(to[new_moved], recursive = TRUE)
+    restored <- vapply(which(old_moved), function(i) .mm_move_file(backups[i], to[i]), logical(1))
+    if (!all(restored)) {
+      .mm_abort("Cache replacement failed. Previous files remain at {.path {backups[file.exists(backups)]}}.", "cache", parent = err)
+    }
+    .mm_abort("Cache replacement failed; previous cached files were preserved.", "cache", parent = err)
+  }
+  unlink(backups, recursive = TRUE)
+  invisible(to)
+}
+
+.mm_validate_download <- function(row, path) {
+  if (row$id != "wdpa") return(invisible(TRUE))
+  text <- paste(readLines(path, warn = FALSE), collapse = "")
+  if (grepl('"exceededTransferLimit"[[:space:]]*:[[:space:]]*true', text)) {
+    .mm_abort("The protected-area service returned an incomplete page; cached data were not replaced.", "http")
+  }
+  x <- tryCatch(sf::st_read(path, quiet = TRUE), error = function(e) NULL)
+  if (is.null(x) || !nrow(x) || !all(c("name_eng", "desig_eng") %in% tolower(names(x)))) {
+    .mm_abort("The protected-area download has no usable records or an unexpected schema.", "http")
+  }
+  invisible(TRUE)
+}
+
+.mm_invalidate_memory <- function() {
+  keys <- grep("^(high_|bags_)", ls(.mm_env), value = TRUE)
+  if (length(keys)) rm(list = keys, envir = .mm_env)
+  invisible()
 }
 
 .mm_http_download <- function(url, path) {
@@ -123,16 +167,44 @@
 
 # Extracts zip files next to the download; returns the path to use.
 .mm_unpacked <- function(row, dest) {
-  if (!grepl("\\.zip$", dest)) {
-    return(dest)
-  }
+  if (!grepl("\\.zip$", dest)) return(dest)
   out_dir <- file.path(dirname(dest), row$id)
   inner <- sub("\\.zip$", "", basename(dest))
   target <- file.path(out_dir, inner)
-  if (!file.exists(target)) {
-    dir.create(out_dir, showWarnings = FALSE)
-    utils::unzip(dest, exdir = out_dir)
+  marker <- file.path(out_dir, ".archive.sha256")
+  sha <- .mm_sha256(dest)
+  ready <- file.exists(marker) && identical(readLines(marker, warn = FALSE)[1], sha)
+  if (ready && file.exists(target)) {
+    content_side <- paste0(target, ".sha256")
+    if (file.exists(content_side) && identical(readLines(content_side, warn = FALSE)[1], .mm_sha256(target))) return(target)
+    ready <- FALSE
   }
+  if (ready && dir.exists(out_dir) && !file.exists(target)) return(out_dir)
+  lock <- .mm_lock_cache(paste0(dest, ".extract"))
+  on.exit(unlink(lock, recursive = TRUE), add = TRUE)
+  stage <- tempfile(".extract-", tmpdir = dirname(dest))
+  dir.create(stage)
+  on.exit(if (dir.exists(stage)) unlink(stage, recursive = TRUE), add = TRUE)
+  members <- tryCatch(utils::unzip(dest, list = TRUE)$Name, error = function(e) character())
+  if (!length(members) || any(grepl("(^[/\\\\]|^[A-Za-z]:|(^|[/\\\\])\\.\\.([/\\\\]|$))", members))) {
+    .mm_abort("The downloaded archive is empty, unreadable or contains unsafe paths.", "cache")
+  }
+  files <- tryCatch(
+    withCallingHandlers(utils::unzip(dest, exdir = stage), warning = function(w) stop(w)),
+    error = function(e) .mm_abort("Could not extract the downloaded archive.", "cache", parent = e)
+  )
+  if (!length(files) || !all(file.exists(files))) .mm_abort("Archive extraction is incomplete.", "cache")
+  staged_target <- file.path(stage, inner)
+  if (identical(row$format, "gpkg")) {
+    layers <- tryCatch(sf::st_layers(staged_target)$name, error = function(e) character())
+    if (!length(layers)) .mm_abort("The extracted GeoPackage has no readable layers.", "cache")
+    if (row$id == "admin_high" && !all(c("country", "region", "aimag", "soum", "ub", "ub_district", "khoroo") %in% layers)) {
+      .mm_abort("The boundary GeoPackage is missing expected layers.", "cache")
+    }
+  }
+  writeLines(sha, file.path(stage, ".archive.sha256"))
+  if (file.exists(staged_target)) writeLines(.mm_sha256(staged_target), paste0(staged_target, ".sha256"))
+  .mm_publish_files(stage, out_dir)
   if (file.exists(target)) target else out_dir
 }
 
@@ -147,4 +219,19 @@
     .mm_inform(c("i" = "Removed cached data from older versions ({sprintf('%.1f', mb)} MB)."), class = "cache")
   }
   invisible(old)
+}
+
+
+
+# Atomic directory creation prevents two sessions publishing the same asset.
+.mm_lock_cache <- function(path) {
+  lock <- paste0(path, ".lock")
+  if (!dir.create(lock, showWarnings = FALSE)) {
+    .mm_abort(
+      c("Cache asset is busy: {.path {path}}. Retry after the other session finishes.",
+        "i" = "Remove an abandoned .lock directory only when no session is using it."),
+      "cache_busy"
+    )
+  }
+  lock
 }

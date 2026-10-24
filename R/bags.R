@@ -24,7 +24,12 @@
 #' @param code_col Name of the column holding bag codes: 7-digit NSO codes
 #'   (`"1830151"`) or P-codes (`"MN830151"`). `NULL` detects it.
 #' @param check_nesting If `TRUE` (default), stop when a bag lies outside
-#'   its soum.
+#'   its soum. Up to `nesting_tolerance` of its area may fall outside the
+#'   simplified parent boundary.
+#' @param nesting_tolerance Maximum fraction of bag area outside its parent,
+#'   from 0 to 1. Defaults to 0.001 (0.1%). Duplicate codes are dissolved.
+#' @param resolution Validated for consistency with other getters; the
+#'   supplied bag geometry is retained at both settings.
 #' @inheritParams mn_admin
 #' @return An `sf` tibble; see [mn_admin()] for the columns.
 #' @family admin boundaries
@@ -42,6 +47,7 @@
 #' }
 mn_bags <- function(aimag = NULL, soum = NULL, path = getOption("mongolmaps.bags_path"),
                     resolution = c("low", "high"), lang = NULL, crs = NULL) {
+  .mm_arg_resolution(resolution)
   lang <- .mm_arg_lang(lang)
   if (is.null(path)) {
     .mm_abort(
@@ -64,8 +70,12 @@ mn_bags <- function(aimag = NULL, soum = NULL, path = getOption("mongolmaps.bags
 
 #' @rdname mn_bags
 #' @export
-mn_read_bags <- function(path, code_col = NULL, check_nesting = TRUE) {
+mn_read_bags <- function(path, code_col = NULL, check_nesting = TRUE, nesting_tolerance = 0.001) {
   .mm_check_string(path)
+  if (!is.numeric(nesting_tolerance) || length(nesting_tolerance) != 1 || is.na(nesting_tolerance) ||
+        nesting_tolerance < 0 || nesting_tolerance > 1) {
+    .mm_abort("{.arg nesting_tolerance} must be a number from 0 to 1.", "input")
+  }
   if (!file.exists(path)) {
     .mm_abort("Can't find the bag file {.path {path}}.", "input")
   }
@@ -105,10 +115,17 @@ mn_read_bags <- function(path, code_col = NULL, check_nesting = TRUE) {
       "input"
     )
   }
-  geom <- sf::st_sf(pcode = pcode, geometry = sf::st_cast(sf::st_geometry(x), "MULTIPOLYGON"))
-  geom <- geom[!duplicated(geom$pcode), ]
-  if (check_nesting) .mm_check_bag_nesting(geom)
-  geom
+  if (any(sf::st_is_empty(x)) || !all(sf::st_geometry_type(x) %in% c("POLYGON", "MULTIPOLYGON"))) {
+    .mm_abort("Bag boundaries must be nonempty polygons.", "input")
+  }
+  geom <- sf::st_sf(pcode = pcode, geometry = sf::st_geometry(x)) |>
+    sf::st_transform(.mm_albers) |>
+    dplyr::group_by(.data$pcode) |>
+    dplyr::summarise(.groups = "drop") |>
+    sf::st_cast("MULTIPOLYGON") |>
+    sf::st_transform(4326)
+  if (check_nesting) .mm_check_bag_nesting(geom, tolerance = nesting_tolerance)
+  .mm_tag_bags(geom, path)
 }
 
 .mm_detect_code_col <- function(x) {
@@ -124,24 +141,25 @@ mn_read_bags <- function(path, code_col = NULL, check_nesting = TRUE) {
   cols[which.max(share)]
 }
 
-.mm_check_bag_nesting <- function(geom, call = rlang::caller_env()) {
+.mm_check_bag_nesting <- function(geom, tolerance = 0.001, call = rlang::caller_env()) {
   soum_pcode <- .mm_units$soum_pcode[match(geom$pcode, .mm_units$pcode)]
-  soums <- .mm_bundled(.mm_low$soum)
-  pts <- suppressWarnings(sf::st_point_on_surface(sf::st_geometry(geom)))
-  poly <- sf::st_geometry(soums)[match(soum_pcode, soums$pcode)]
-  has_poly <- !is.na(match(soum_pcode, soums$pcode))
-  inside <- rep(TRUE, length(pts))
-  inside[has_poly] <- purrr::map_lgl(which(has_poly), \(i) lengths(sf::st_intersects(pts[i], poly[i])) > 0)
-  if (!all(inside)) {
-    bad <- geom$pcode[!inside]
+  soums <- sf::st_transform(.mm_bundled(.mm_low$soum), .mm_albers)
+  bags <- sf::st_transform(geom, .mm_albers)
+  share <- purrr::map_dbl(seq_len(nrow(bags)), function(i) {
+    parent <- soums[soums$pcode %in% soum_pcode[i], ]
+    if (!nrow(parent)) return(1)
+    outside <- suppressWarnings(sf::st_difference(sf::st_geometry(bags)[i], sf::st_geometry(parent)))
+    sum(as.numeric(sf::st_area(outside))) / as.numeric(sf::st_area(bags[i, ]))
+  })
+  bad <- geom$pcode[!is.finite(share) | share > tolerance]
+  if (length(bad)) {
     .mm_abort(
       c(
-        "{length(bad)} bag{?s} lie{?s/} outside {?its/their} soum:",
+        "{length(bad)} bag{?s} lie{?s/} outside {?its/their} soum beyond the area tolerance:",
         .mm_bullets(.mm_describe_each(bad)),
-        "i" = "Check the codes, or skip this check with {.code check_nesting = FALSE}."
+        "i" = "Check codes and boundary vintages, or use {.code check_nesting = FALSE}."
       ),
-      "input",
-      call = call
+      "input", call = call
     )
   }
   invisible(TRUE)
@@ -149,10 +167,15 @@ mn_read_bags <- function(path, code_col = NULL, check_nesting = TRUE) {
 
 .mm_bags_cached <- function(path) {
   key <- paste0("bags_", normalizePath(path, mustWork = FALSE))
-  if (is.null(.mm_env[[key]])) {
-    .mm_env[[key]] <- mn_read_bags(path)
+  info <- file.info(path)
+  fingerprint <- paste(info$size, as.numeric(info$mtime))
+  cached <- .mm_env[[key]]
+  if (is.null(cached) || !identical(attr(cached, "file_fingerprint"), fingerprint)) {
+    cached <- mn_read_bags(path)
+    attr(cached, "file_fingerprint") <- fingerprint
+    .mm_env[[key]] <- cached
   }
-  .mm_env[[key]]
+  cached
 }
 
 # Adds registered bags to the khoroo layer for mn_admin("bag").
@@ -174,5 +197,6 @@ mn_read_bags <- function(path, code_col = NULL, check_nesting = TRUE) {
     return(geom)
   }
   bags <- .mm_bags_cached(path)
-  rbind(geom, bags[!bags$pcode %in% geom$pcode, names(geom)])
+  out <- rbind(geom, bags[!bags$pcode %in% geom$pcode, names(geom)])
+  .mm_set_provenance(out, .mm_combine_provenance(geom, bags))
 }

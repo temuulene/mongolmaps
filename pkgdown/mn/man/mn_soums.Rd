@@ -1,4 +1,4 @@
-% source: man/mn_soums.Rd md5 c0dfbb5d8e08d8774f413fe9f19215c4
+% source: man/mn_soums.Rd md5 dfa0466c11dacb98047e44e9146f5dcb
 \title{Монгол Улсын сумд ба Улаанбаатарын дүүргүүд}
 \description{
 330 сумыг Улаанбаатарын 9 дүүргийн хамт буцаана; дүүрэг нь сумтай ижил
@@ -20,6 +20,7 @@
 өргөрөг (EPSG:4326) хэвээр. Монголд тохирсон проекцод \code{"albers"},
 \code{"lcc"} эсвэл \code{"utm"}-ийг (\code{\link[=mn_crs]{mn_crs()}}-ийг үзнэ үү), эсвэл
 \code{\link[sf:st_crs]{sf::st_crs()}}-ийн хүлээн авах дурын утгыг өгнө.}
+\item{boundary_version}{Хилийн өгөгдлийн хувилбар. Одоогоор зөвхөн \code{"data-v1"} бий. \code{NULL} нь энэ хувилбарыг ашиглана. Статистикийн он нь түүхэн хилийг сонгохгүй; \code{mn_vintages()}-ийг үзнэ үү.}
 }
 \value{
 \code{sf} tibble; баганыг \code{\link[=mn_admin]{mn_admin()}}-аас үзнэ үү.

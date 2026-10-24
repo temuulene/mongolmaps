@@ -19,5 +19,5 @@
     Condition
       Error in `mn_download()`:
       ! Unknown downloadable layer: "nope".
-      i Downloadable layers: "admin_high", "osm_roads", "osm_transport", "osm_water", "osm_places", "elevation_1km", "landcover_1km", and "wdpa".
+      i Downloadable layers: "admin_high", "osm_roads", "osm_transport", "osm_water", "osm_places", "elevation_1km", "landcover_1km", "wdpa", "worldpop_2015_1km", "worldpop_2015_100m", "worldpop_2016_1km", "worldpop_2016_100m", "worldpop_2017_1km", "worldpop_2017_100m", "worldpop_2018_1km", "worldpop_2018_100m", "worldpop_2019_1km", "worldpop_2019_100m", ..., "worldpop_2030_1km", and "worldpop_2030_100m".
 

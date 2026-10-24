@@ -1,4 +1,4 @@
-% source: man/mn_country.Rd md5 2383295da121c479978581b96402b5ee
+% source: man/mn_country.Rd md5 f21e4c7328a97645484e83b5e6b7ec82
 \title{Монгол Улс ба эдийн засгийн бүсүүд}
 \description{
 \code{mn_country()} Монгол Улсын хилийг буцаана. \code{mn_regions()} ҮСХ-ны
@@ -19,6 +19,7 @@
 өргөрөг (EPSG:4326) хэвээр. Монголд тохирсон проекцод \code{"albers"},
 \code{"lcc"} эсвэл \code{"utm"}-ийг (\code{\link[=mn_crs]{mn_crs()}}-ийг үзнэ үү), эсвэл
 \code{\link[sf:st_crs]{sf::st_crs()}}-ийн хүлээн авах дурын утгыг өгнө.}
+\item{boundary_version}{Хилийн өгөгдлийн хувилбар. Одоогоор зөвхөн \code{"data-v1"} бий. \code{NULL} нь энэ хувилбарыг ашиглана. Статистикийн он нь түүхэн хилийг сонгохгүй; \code{mn_vintages()}-ийг үзнэ үү.}
 }
 \value{
 \code{sf} tibble; баганыг \code{\link[=mn_admin]{mn_admin()}}-аас үзнэ үү.

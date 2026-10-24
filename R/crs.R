@@ -10,8 +10,8 @@
 
 #' Coordinate reference systems suited to Mongolia
 #'
-#' Returns a projection that keeps Mongolia's shape and area true. Maps of
-#' the whole country look best in an equal-area Albers or Lambert conic
+#' Returns an equal-area or conformal projection suited to Mongolia. Maps of
+#' the whole country can use Albers equal-area or Lambert conformal conic
 #' projection centred on Mongolia; maps of Ulaanbaatar look best in UTM
 #' zone 48N.
 #'

@@ -5,6 +5,8 @@
 \alias{mn_cache_list}
 \alias{mn_cache_clear}
 \alias{mn_download}
+\alias{mn_assets}
+\alias{mn_cache_verify}
 \title{Manage downloaded map data}
 \usage{
 mn_cache_dir()
@@ -14,12 +16,17 @@ mn_cache_list()
 mn_cache_clear(layers = NULL, old_versions = FALSE)
 
 mn_download(layers = "all")
+
+mn_assets()
+
+mn_cache_verify(layers = NULL)
 }
 \arguments{
 \item{layers}{Layer ids or groups (see \code{\link[=mn_sources]{mn_sources()}}), such as
 \code{"admin_high"} or \code{"osm"}. \code{NULL} (the default for \code{mn_cache_clear()})
 means all; \code{"all"} (the default for \code{mn_download()}) means every
-downloadable layer.}
+fixed-file downloadable layer. WorldPop is opt-in: use \code{"worldpop"}
+for every year/resolution, or an id such as \code{"worldpop_2025_1km"}.}
 
 \item{old_versions}{If \code{TRUE}, \code{mn_cache_clear()} removes only data left
 by older versions of the package.}
@@ -39,7 +46,10 @@ work offline.
 \item \code{mn_cache_dir()} returns the cache folder. Change it with
 \code{options(mongolmaps.cache_dir = "path")}.
 \item \code{mn_cache_list()} lists what is cached.
-\item \code{mn_cache_clear()} deletes cached files.
+\item \code{mn_cache_clear()} deletes cached files. Old revisions are retained
+unless explicitly removed with \code{old_versions = TRUE}.
+\item \code{mn_cache_verify()} hashes downloaded assets to check their integrity.
+\item \code{mn_assets()} lists concrete assets, including WorldPop years/resolutions.
 \item \code{mn_download()} downloads layers now, for example before fieldwork
 without internet. See \code{\link[=mn_sources]{mn_sources()}} for the layer ids.
 }
@@ -53,6 +63,7 @@ mn_download("admin_high")
 }
 \seealso{
 Other data sources and cache:
+\code{\link[=mn_provenance]{mn_provenance()}},
 \code{\link[=mn_sources]{mn_sources()}}
 }
 \concept{data sources and cache}

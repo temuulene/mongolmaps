@@ -65,7 +65,14 @@ mn_aimag_grid <- tibble::tribble(
   as.data.frame()
 check(nrow(mn_aimag_grid) == 22 && !anyDuplicated(mn_aimag_grid[c("row", "col")]), "Aimag grid is malformed")
 
-usethis::use_data(mn_example_population, mn_aimag_grid, overwrite = TRUE, compress = "xz")
+mn_ub_grid <- data.frame(
+  row = c(1L, 2L, 2L, 2L, 2L, 3L, 3L, 3L, 4L),
+  col = c(4L, 1L, 2L, 3L, 4L, 1L, 2L, 4L, 4L),
+  code = c("MN1101", "MN1116", "MN1125", "MN1119", "MN1110", "MN1107", "MN1122", "MN1113", "MN1104")
+)
+mn_ub_grid$name <- units$name_en[match(mn_ub_grid$code, units$pcode)]
+check(!anyNA(mn_ub_grid$name) && nrow(mn_ub_grid) == 9, "UB grid codes are invalid")
+usethis::use_data(mn_example_population, mn_aimag_grid, mn_ub_grid, overwrite = TRUE, compress = "xz")
 
 # Full-resolution release asset.
 release_dir <- build_path("release")

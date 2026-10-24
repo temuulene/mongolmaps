@@ -1,4 +1,4 @@
-% source: man/mn_example_population.Rd md5 d8a25cc9b22ee1bee27f264d8bc5058d
+% source: man/mn_example_population.Rd md5 6ad0ba076a36063df4de3213297b5ac5
 \title{Монгол Улсын жилийн дундаж хүн ам (жишээ өгөгдөл)}
 \description{
 2015, 2020, 2025 оны засаг захиргааны нэгжээрх хүн ам, Үндэсний статистикийн

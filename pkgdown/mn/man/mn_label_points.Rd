@@ -1,4 +1,4 @@
-% source: man/mn_label_points.Rd md5 d08e1b7620c7d2c040df99e53cc302c2
+% source: man/mn_label_points.Rd md5 5859cd41dd064579e2da24cb8cb5ca3b
 \title{Газрын зургийн нэгжийн нэр тавих цэг}
 \description{
 Нэгж бүрт олигоныхоо гүнд байрлах нэг цэг буцаана (муруй хэлбэрийн

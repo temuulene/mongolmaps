@@ -1,4 +1,4 @@
-% source: man/mn_admin.Rd md5 71408da3cf7f08a8c7f33af3462824c0
+% source: man/mn_admin.Rd md5 11b49e682a3c1c2d92239ace2594ce4c
 \title{Монгол Улсын засаг захиргааны хил, дурын түвшинд}
 \description{
 \code{\link[=mn_country]{mn_country()}}, \code{\link[=mn_regions]{mn_regions()}}, \code{\link[=mn_aimags]{mn_aimags()}},
@@ -38,6 +38,7 @@
 өргөрөг (EPSG:4326) хэвээр. Монголд тохирсон проекцод \code{"albers"},
 \code{"lcc"} эсвэл \code{"utm"}-ийг (\code{\link[=mn_crs]{mn_crs()}}-ийг үзнэ үү), эсвэл
 \code{\link[sf:st_crs]{sf::st_crs()}}-ийн хүлээн авах дурын утгыг өгнө.}
+\item{boundary_version}{Хилийн өгөгдлийн хувилбар. Одоогоор зөвхөн \code{"data-v1"} бий. \code{NULL} нь энэ хувилбарыг ашиглана. Статистикийн он нь түүхэн хилийг сонгохгүй; \code{mn_vintages()}-ийг үзнэ үү.}
 }
 \value{
 Нэгж бүрт нэг мөртэй, дараах баганатай \code{sf} tibble:

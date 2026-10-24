@@ -13,7 +13,14 @@ mn_join(
   drop_other_levels = TRUE,
   resolution = c("low", "high"),
   lang = NULL,
-  crs = NULL
+  crs = NULL,
+  fuzzy = TRUE,
+  max_dist = NULL,
+  strict = FALSE,
+  strata = NULL,
+  value_cols = NULL,
+  ub_policy = c("prefer_city", "prefer_region", "error", "none"),
+  duplicates = c("allow", "warn", "error")
 )
 }
 \arguments{
@@ -49,11 +56,31 @@ tables), \code{"mn"} (Cyrillic) or \code{"mns"} (Latin with diacritics, MNS
 keeps longitude/latitude (EPSG:4326). Use \code{"albers"}, \code{"lcc"} or
 \code{"utm"} for a projection suited to Mongolia (see \code{\link[=mn_crs]{mn_crs()}}), or any
 value accepted by \code{\link[sf:st_crs]{sf::st_crs()}}.}
+
+\item{fuzzy, max_dist}{Passed to \code{\link[=mn_match]{mn_match()}}.}
+
+\item{strict}{If \code{TRUE}, reject missing, unmatched, ambiguous or fuzzy
+keys, missing boundaries, duplicate statistical keys and UB conflicts.
+Deliberately excluded levels and geographic areas are allowed.}
+
+\item{strata}{Character vector of statistical key columns, such as
+\code{c("Year", "Sex")}. \code{NULL} recognizes common dimension names.
+Supply this explicitly for other dimensions or repeated records.}
+
+\item{value_cols}{Columns to reconcile for Ulaanbaatar. \code{NULL} uses
+numeric columns except keys and recognized dimensions.}
+
+\item{ub_policy}{\code{"prefer_city"} (default), \code{"prefer_region"},
+\code{"error"} on conflicting values, or \code{"none"} to disable reconciliation.}
+
+\item{duplicates}{\code{"allow"} (default), \code{"warn"} or \code{"error"} for repeated
+pcode/stratum keys. Strict mode always rejects duplicates.}
 }
 \value{
 An \code{sf} tibble: the boundaries of every unit at the level, with
 the columns of \code{data} added. Columns of \code{data} whose names clash with
-boundary columns get the suffix \code{.data}.
+boundary columns get the suffix \code{.data}. \code{\link[=mn_join_audit]{mn_join_audit()}} returns
+one diagnostic record per original input row.
 }
 \description{
 Attaches a data frame to boundaries in one step. The column in \code{by} can
@@ -72,10 +99,11 @@ a message (see \code{drop_other_levels}). Join NSO tables by their code column
 \strong{Ulaanbaatar.} The Ulaanbaatar region (NSO code \code{5}) and the capital
 (\code{511}) cover the same area. Many NSO tables, health tables in
 particular, give the capital's figures only on the region row and leave
-\code{511} empty or out. At the aimag level, when the region rows hold more
-values than the \code{511} rows, they are used for Ulaanbaatar, with a
-message. A few tables use \code{511} for something else (for example "Other");
-check the labels of such tables before joining.
+\code{511} empty or out. At the aimag level, missing capital values are filled
+from the region within each statistical stratum. Conflicts are reported;
+\code{ub_policy} controls which source wins. A few tables use \code{511} for
+something else (for example "Other"); check their metadata first.
+Use \code{ub_policy = "none"} for tables where this equivalence is invalid.
 
 \strong{Several rows per unit.} Data with several rows per place (for
 example one per year) give several copies of that place's polygon, ready
@@ -98,6 +126,7 @@ mn_join(df, aimag)
 }
 \seealso{
 Other joining data:
-\code{\link{mn_example_population}}
+\code{\link{mn_example_population}},
+\code{\link[=mn_join_audit]{mn_join_audit()}}
 }
 \concept{joining data}

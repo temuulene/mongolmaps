@@ -11,13 +11,15 @@ mn_citation(layers = "admin")
 }
 \arguments{
 \item{layer, layers}{Layer ids, such as \code{"admin"}, \code{"khoroos"} or
-\code{"settlements"}. \code{NULL} lists all layers.}
+\code{"settlements"}. \code{NULL} lists all layers. \code{mn_citation()} also accepts
+a tagged map or raster, using its attached source provenance.}
 }
 \value{
 \code{mn_sources()}: a tibble with columns \code{id}, \code{title}, \code{group},
 \code{delivery} (\code{"bundled"}, \code{"release"} or \code{"upstream"}), \code{provider},
 \code{license}, \code{license_url}, \code{valid_on}, \code{source_url}, \code{attribution} and
-\code{notes}. \code{mn_citation()}: a single string.
+\code{notes}, plus source revision, code/geometry vintages, authority and
+effective date where known. \code{mn_citation()}: a single string.
 }
 \description{
 \code{mn_sources()} lists every data layer in the package: who provides it,
@@ -35,6 +37,7 @@ mn_citation(c("admin", "khoroos"))
 }
 \seealso{
 Other data sources and cache:
-\code{\link[=mn_cache_dir]{mn_cache_dir()}}
+\code{\link[=mn_cache_dir]{mn_cache_dir()}},
+\code{\link[=mn_provenance]{mn_provenance()}}
 }
 \concept{data sources and cache}

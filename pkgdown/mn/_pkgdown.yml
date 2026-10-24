@@ -116,6 +116,7 @@ reference:
   - title: Өгөгдөл холбох
     contents:
       - mn_join
+      - mn_join_audit
       - mn_example_population
   - title: Сэдэвчилсэн давхарга
     contents:
@@ -133,14 +134,18 @@ reference:
   - title: Газрын зураг зурах
     contents:
       - mn_map
+      - mn_inset_ub
+      - mn_erase_water
       - theme_mn
       - mn_leaflet
       - mn_label_points
       - mn_crs
       - mn_aimag_grid
+      - mn_ub_grid
   - title: Өгөгдлийн эх сурвалж, кэш
     contents:
       - mn_sources
+      - mn_provenance
       - mn_cache_dir
   - title: Багц
     contents:

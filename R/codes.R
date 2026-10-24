@@ -55,6 +55,15 @@ mn_codes <- function(level = NULL, within = NULL, aliases = FALSE, lang = NULL) 
     a$name_en <- u$name_en[match(a$pcode, u$pcode)]
     return(tibble::as_tibble(a[c("pcode", "level", "name_en", "alias", "source")]))
   }
+  path <- getOption("mongolmaps.bags_path")
+  if (!is.null(path)) {
+    bags <- .mm_bags_cached(path)
+    idx <- match(u$pcode, bags$pcode)
+    found <- !is.na(idx)
+    u$has_geometry[found] <- TRUE
+    areas <- as.numeric(sf::st_area(sf::st_transform(bags, .mm_albers))) / 1e6
+    u$area_km2[found] <- areas[idx[found]]
+  }
   u$name <- .mm_name_for_lang(u, lang)
   tibble::as_tibble(u[c(.mm_schema, "has_geometry")])
 }

@@ -11,13 +11,15 @@
 #' @examples
 #' mn_country()
 #' mn_regions()
-mn_country <- function(resolution = c("low", "high"), lang = NULL, crs = NULL) {
+mn_country <- function(resolution = c("low", "high"), lang = NULL, crs = NULL, boundary_version = NULL) {
+  .mm_check_boundary_version(boundary_version)
   mn_admin("country", resolution = resolution, lang = lang, crs = crs)
 }
 
 #' @rdname mn_country
 #' @export
-mn_regions <- function(resolution = c("low", "high"), lang = NULL, crs = NULL) {
+mn_regions <- function(resolution = c("low", "high"), lang = NULL, crs = NULL, boundary_version = NULL) {
+  .mm_check_boundary_version(boundary_version)
   mn_admin("region", resolution = resolution, lang = lang, crs = crs)
 }
 
@@ -38,7 +40,8 @@ mn_regions <- function(resolution = c("low", "high"), lang = NULL, crs = NULL) {
 #' aimags
 #' mn_aimags(region = "Western")
 #' mn_aimags(lang = "mn")
-mn_aimags <- function(region = NULL, resolution = c("low", "high"), lang = NULL, crs = NULL) {
+mn_aimags <- function(region = NULL, resolution = c("low", "high"), lang = NULL, crs = NULL, boundary_version = NULL) {
+  .mm_check_boundary_version(boundary_version)
   mn_admin("aimag", within = region, resolution = resolution, lang = lang, crs = crs)
 }
 
@@ -57,7 +60,8 @@ mn_aimags <- function(region = NULL, resolution = c("low", "high"), lang = NULL,
 #' mn_soums()
 #' mn_soums(aimag = "Khovd")
 #' mn_soums(aimag = c("Uvs", "Zavkhan"), lang = "mn")
-mn_soums <- function(aimag = NULL, resolution = c("low", "high"), lang = NULL, crs = NULL) {
+mn_soums <- function(aimag = NULL, resolution = c("low", "high"), lang = NULL, crs = NULL, boundary_version = NULL) {
+  .mm_check_boundary_version(boundary_version)
   targets <- .mm_resolve_within(aimag, levels = c("aimag", "region", "country"), arg = "aimag")
   resolution <- .mm_arg_resolution(resolution)
   .mm_finish(.mm_geom("soum", resolution), targets, .mm_arg_lang(lang), crs)
@@ -83,8 +87,9 @@ mn_soums <- function(aimag = NULL, resolution = c("low", "high"), lang = NULL, c
 #' follow NSO.
 #'
 #' The district lines are the unions of their khoroos. They follow the
-#' current city layout and can differ slightly from the 2020 district lines
-#' in [mn_soums()].
+#' source layout. [mn_soums()] also uses these derived district lines;
+#' independent national/urban simplification can create small differences.
+#' Neither getter is an official historical district snapshot.
 #'
 #' @param district Keep only khoroos in these districts (names or codes,
 #'   such as `"Bayangol"`, `"BGD"` or `"MN1107"`).
@@ -98,21 +103,24 @@ mn_soums <- function(aimag = NULL, resolution = c("low", "high"), lang = NULL, c
 #' mn_ub_districts()
 #' mn_khoroos(district = "Bayangol")
 #' mn_khoroos(lang = "mn", crs = "utm")
-mn_ub <- function(resolution = c("low", "high"), lang = NULL, crs = NULL) {
+mn_ub <- function(resolution = c("low", "high"), lang = NULL, crs = NULL, boundary_version = NULL) {
+  .mm_check_boundary_version(boundary_version)
   resolution <- .mm_arg_resolution(resolution)
   .mm_finish(.mm_geom("ub", resolution), NULL, .mm_arg_lang(lang), crs)
 }
 
 #' @rdname mn_ub
 #' @export
-mn_ub_districts <- function(resolution = c("low", "high"), lang = NULL, crs = NULL) {
+mn_ub_districts <- function(resolution = c("low", "high"), lang = NULL, crs = NULL, boundary_version = NULL) {
+  .mm_check_boundary_version(boundary_version)
   resolution <- .mm_arg_resolution(resolution)
   .mm_finish(.mm_geom("ub_district", resolution), NULL, .mm_arg_lang(lang), crs)
 }
 
 #' @rdname mn_ub
 #' @export
-mn_khoroos <- function(district = NULL, resolution = c("low", "high"), lang = NULL, crs = NULL) {
+mn_khoroos <- function(district = NULL, resolution = c("low", "high"), lang = NULL, crs = NULL, boundary_version = NULL) {
+  .mm_check_boundary_version(boundary_version)
   targets <- .mm_resolve_within(district, levels = "soum", parent = "MN11", arg = "district")
   resolution <- .mm_arg_resolution(resolution)
   .mm_finish(.mm_geom("khoroo", resolution), targets, .mm_arg_lang(lang), crs)

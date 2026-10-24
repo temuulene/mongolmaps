@@ -1,4 +1,4 @@
-% source: man/theme_mn.Rd md5 ed7e63babd4b0de44310115f0f015aab
+% source: man/theme_mn.Rd md5 83c29a3f04c4dc5cfbeb90f53876aed5
 \title{Газрын зургийн цэвэр загвар}
 \description{
 Газрын зурагт зориулсан энгийн ggplot2 загвар: тэнхлэг, тор байхгүй, тайлбар

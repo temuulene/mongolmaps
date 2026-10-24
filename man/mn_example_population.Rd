@@ -34,7 +34,8 @@ head(mn_example_population)
 }
 \seealso{
 Other joining data:
-\code{\link[=mn_join]{mn_join()}}
+\code{\link[=mn_join]{mn_join()}},
+\code{\link[=mn_join_audit]{mn_join_audit()}}
 }
 \concept{joining data}
 \keyword{datasets}

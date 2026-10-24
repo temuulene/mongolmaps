@@ -23,8 +23,8 @@ Ulaanbaatar and central Mongolia.
 An \code{\link[sf:st_crs]{sf::st_crs()}} object.
 }
 \description{
-Returns a projection that keeps Mongolia's shape and area true. Maps of
-the whole country look best in an equal-area Albers or Lambert conic
+Returns an equal-area or conformal projection suited to Mongolia. Maps of
+the whole country can use Albers equal-area or Lambert conformal conic
 projection centred on Mongolia; maps of Ulaanbaatar look best in UTM
 zone 48N.
 }
@@ -35,9 +35,12 @@ sf::st_transform(mn_aimags(), mn_crs("albers"))
 \seealso{
 Other mapping helpers:
 \code{\link{mn_aimag_grid}},
+\code{\link[=mn_erase_water]{mn_erase_water()}},
+\code{\link[=mn_inset_ub]{mn_inset_ub()}},
 \code{\link[=mn_label_points]{mn_label_points()}},
 \code{\link[=mn_leaflet]{mn_leaflet()}},
 \code{\link[=mn_map]{mn_map()}},
+\code{\link{mn_ub_grid}},
 \code{\link[=theme_mn]{theme_mn()}}
 }
 \concept{mapping helpers}

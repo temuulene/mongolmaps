@@ -23,7 +23,7 @@
       mn_read_bags(local_bag_file(shift = TRUE))
     Condition
       Error in `mn_read_bags()`:
-      ! 17 bags lie outside their soum:
+      ! 17 bags lie outside their soum beyond the area tolerance:
       * 1-r bag, Alagtolgoi (MN840151, Jargalant)
       * 1-r bag, Bodonch (MN840451, Altai)
       * 1-r bag, Bayangol (MN840751, Bulgan)
@@ -35,7 +35,7 @@
       * 1-r bag, Takhilt (MN842551, Mankhan)
       * 1-r bag, Alag (MN842851, Munkhkhairkhan)
       * ... and 7 more
-      i Check the codes, or skip this check with `check_nesting = FALSE`.
+      i Check codes and boundary vintages, or use `check_nesting = FALSE`.
 
 ---
 

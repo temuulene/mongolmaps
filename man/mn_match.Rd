@@ -12,7 +12,8 @@ mn_match(
     "type"),
   fuzzy = TRUE,
   max_dist = NULL,
-  quiet = FALSE
+  quiet = FALSE,
+  details = FALSE
 )
 }
 \arguments{
@@ -41,6 +42,9 @@ long names).}
 
 \item{quiet}{If \code{TRUE}, suppresses the message listing fuzzy matches.
 Warnings about ambiguous or unmatched values are always shown.}
+
+\item{details}{If \code{TRUE}, return a diagnostic tibble with the input,
+normalized key, parent, matched code, method, edit distance and candidates.}
 }
 \value{
 A character vector the same length as \code{x}. Values that cannot

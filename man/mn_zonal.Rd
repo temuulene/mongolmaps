@@ -8,7 +8,8 @@ mn_zonal(
   r,
   x = NULL,
   fun = c("sum", "mean", "min", "max", "median"),
-  name = "value"
+  name = "value",
+  exact = TRUE
 )
 }
 \arguments{
@@ -21,6 +22,11 @@ aimags.}
 \code{"max"} or \code{"median"}.}
 
 \item{name}{Name of the new column.}
+
+\item{exact}{If \code{TRUE} (default), weight sums and means by the fraction
+of each cell covered by the polygon. This assumes uniform values within
+cells. Means weight cell fractions, not physical cell areas. Median
+requires \code{exact = FALSE}. Missing coverage returns \code{NA}, not zero.}
 }
 \value{
 \code{x} with a new column.

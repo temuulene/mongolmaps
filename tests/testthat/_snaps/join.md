@@ -3,7 +3,7 @@
     Code
       out <- mn_join(pop, by = "Region", level = "aimag")
     Message
-      i Joining at the aimag level; dropped 6 rows for larger units ("country" and "region") and 2196 rows for smaller units ("soum" and "bag").
+      i Joining at the aimag level; dropped 5 rows for larger units ("country" and "region") and 2196 rows for smaller units ("soum" and "bag").
 
 # mn_join() detects the level and joins khoroos
 
@@ -59,7 +59,7 @@
     Code
       out <- mn_join(df, "Region", level = "aimag")
     Message
-      i Using the Ulaanbaatar region ("5") for Ulaanbaatar: the rows for the capital itself ("511") have fewer values.
+      i Using Ulaanbaatar region values to fill capital data within 1 statistical stratum/strata.
       i Joining at the aimag level; dropped 2 rows for larger units ("country" and "region").
 
 # mn_join() takes Ulaanbaatar from code 5 when 511 is absent
@@ -67,22 +67,25 @@
     Code
       out <- mn_join(df, "Region", level = "aimag")
     Message
-      i Using the Ulaanbaatar region ("5") for Ulaanbaatar: the data have no rows for the capital itself.
+      i Using Ulaanbaatar region values to fill capital data within 1 statistical stratum/strata.
       i Joining at the aimag level; dropped 2 rows for larger units ("country" and "region").
 
 # mn_join() keeps 511 when both Ulaanbaatar codes have data
 
     Code
       out <- mn_join(df, "Region", level = "aimag")
+    Condition
+      Warning:
+      Conflicting Ulaanbaatar region/capital values in "value" (input row 5).
     Message
-      i Joining at the aimag level; dropped 3 rows for larger units ("country" and "region").
+      i Joining at the aimag level; dropped 2 rows for larger units ("country" and "region").
 
 # mn_join() takes Ulaanbaatar from code 5 when other levels are kept
 
     Code
       out <- mn_join(df, "Region", level = "aimag", drop_other_levels = FALSE)
     Message
-      i Using the Ulaanbaatar region ("5") for Ulaanbaatar: the rows for the capital itself ("511") have fewer values.
+      i Using Ulaanbaatar region values to fill capital data within 1 statistical stratum/strata.
     Condition
       Warning:
       2 values could not be matched and became "NA":

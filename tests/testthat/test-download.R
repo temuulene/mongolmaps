@@ -49,10 +49,14 @@ test_that("offline mode stops downloads with a clear error", {
   expect_snapshot(.mm_asset("fake"), error = TRUE)
 })
 
-test_that("no internet stops downloads with a clear error", {
-  local_fake_asset()
-  local_mocked_bindings(has_internet = function() FALSE, .package = "curl")
-  expect_snapshot(.mm_asset("fake"), error = TRUE)
+test_that("a failed connectivity probe does not block reachable downloads", {
+  src <- local_fake_asset()
+  local_mocked_bindings(
+    has_internet = function() FALSE, .package = "curl"
+  )
+  local_mocked_bindings(.mm_http_download = function(url, path) file.copy(src, path))
+  path <- suppressMessages(.mm_asset("fake"))
+  expect_equal(readLines(path), "hello mongolia")
 })
 
 test_that(".mm_http_download() turns HTTP failures into typed errors", {
@@ -76,7 +80,7 @@ test_that("zip assets are unpacked next to the download", {
   inner <- file.path(dir, "layer.gpkg")
   writeLines("x", inner)
   zip <- file.path(dir, "layer.gpkg.zip")
-  withr::with_dir(dir, utils::zip(zip, "layer.gpkg", flags = "-q"))
+  zip::zipr(zip, file.path(dir, "layer.gpkg"), include_directories = FALSE)
   out <- .mm_unpacked(list(id = "layer"), zip)
   expect_equal(basename(out), "layer.gpkg")
   expect_true(file.exists(out))
@@ -116,7 +120,7 @@ test_that("zip files whose content has another name unpack to a folder", {
   dir <- withr::local_tempdir()
   writeLines("x", file.path(dir, "other.gpkg"))
   zip <- file.path(dir, "layer.gpkg.zip")
-  withr::with_dir(dir, utils::zip(zip, "other.gpkg", flags = "-q"))
+  zip::zipr(zip, file.path(dir, "other.gpkg"), include_directories = FALSE)
   out <- .mm_unpacked(list(id = "layer"), zip)
   expect_true(dir.exists(out))
   expect_true(file.exists(file.path(out, "other.gpkg")))

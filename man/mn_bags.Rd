@@ -14,7 +14,12 @@ mn_bags(
   crs = NULL
 )
 
-mn_read_bags(path, code_col = NULL, check_nesting = TRUE)
+mn_read_bags(
+  path,
+  code_col = NULL,
+  check_nesting = TRUE,
+  nesting_tolerance = 0.001
+)
 }
 \arguments{
 \item{aimag, soum}{Keep only bags in these aimags or soums (names or
@@ -23,10 +28,8 @@ codes).}
 \item{path}{Path to a bag boundary file readable by \code{\link[sf:st_read]{sf::st_read()}}.
 Defaults to \code{getOption("mongolmaps.bags_path")}.}
 
-\item{resolution}{\code{"low"} (default) uses simplified boundaries that ship
-with the package and suit most maps. \code{"high"} uses full-resolution
-boundaries, downloaded once (about 10 MB) and cached; see
-\code{\link[=mn_cache_dir]{mn_cache_dir()}}.}
+\item{resolution}{Validated for consistency with other getters; the
+supplied bag geometry is retained at both settings.}
 
 \item{lang}{Language of the \code{name} column: \code{"en"} (English, as in NSO
 tables), \code{"mn"} (Cyrillic) or \code{"mns"} (Latin with diacritics, MNS
@@ -41,7 +44,11 @@ value accepted by \code{\link[sf:st_crs]{sf::st_crs()}}.}
 (\code{"1830151"}) or P-codes (\code{"MN830151"}). \code{NULL} detects it.}
 
 \item{check_nesting}{If \code{TRUE} (default), stop when a bag lies outside
-its soum.}
+its soum. Up to \code{nesting_tolerance} of its area may fall outside the
+simplified parent boundary.}
+
+\item{nesting_tolerance}{Maximum fraction of bag area outside its parent,
+from 0 to 1. Defaults to 0.001 (0.1\%). Duplicate codes are dissolved.}
 }
 \value{
 An \code{sf} tibble; see \code{\link[=mn_admin]{mn_admin()}} for the columns.

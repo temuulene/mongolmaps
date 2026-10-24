@@ -37,6 +37,7 @@ articles:
       - ulaanbaatar
       - joining-data
       - names-and-codes
+      - audited-workflows
   - title: More
     contents:
       - articles/thematic-layers
@@ -60,6 +61,7 @@ reference:
   - title: Joining data
     contents:
       - mn_join
+      - mn_join_audit
       - mn_example_population
   - title: Thematic layers
     contents:
@@ -77,14 +79,18 @@ reference:
   - title: Drawing maps
     contents:
       - mn_map
+      - mn_inset_ub
+      - mn_erase_water
       - theme_mn
       - mn_leaflet
       - mn_label_points
       - mn_crs
       - mn_aimag_grid
+      - mn_ub_grid
   - title: Data sources and cache
     contents:
       - mn_sources
+      - mn_provenance
       - mn_cache_dir
   - title: Package
     contents:

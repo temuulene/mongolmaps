@@ -67,7 +67,7 @@ for you.
 pop <- mn_example_population[mn_example_population$Year == 2025, ]
 
 pop_map <- mn_join(pop, by = "Region", level = "aimag")
-#> ℹ Joining at the aimag level; dropped 6 rows for larger units ("country" and
+#> ℹ Joining at the aimag level; dropped 5 rows for larger units ("country" and
 #>   "region") and 2196 rows for smaller units ("soum" and "bag").
 
 mn_map(pop_map, fill = value, trans = "log10", context = TRUE,
@@ -153,6 +153,18 @@ mn_codes("soum", within = "Khovd")
   `mn_zonal()` to sum them by aimag, soum or khoroo.
 - Protected areas: `mn_protected_areas()`.
 - Small multiples: `mn_aimag_grid` for `geofacet::facet_geo()`.
+
+## Auditable workflows and inset maps
+
+`mn_join_audit()` records the outcome of every input row; `mn_match(details = TRUE)`
+exposes candidate matches. Use `strict = TRUE`, `fuzzy = FALSE` and explicit
+`strata` for checked analytical joins. `mn_provenance()` and `mn_vintages()`
+describe the available source snapshots and authority.
+
+Optional `patchwork` helpers `mn_inset_ub()` and `mn_map_ub()` enlarge the
+capital and separate its detached districts without moving analytical
+geometry. `mn_map()` accepts shared `limits`/`breaks`, `bins` and `midpoint`.
+See the [audited workflows guide](https://temuulene.github.io/mongolmaps/articles/audited-workflows.html).
 
 ## Data sources
 

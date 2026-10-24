@@ -19,6 +19,10 @@
   attrs$pcode <- geom$pcode
   attrs$name <- .mm_name_for_lang(attrs, lang)
   attrs <- tibble::as_tibble(attrs[.mm_schema])
+  missing_area <- is.na(attrs$area_km2)
+  if (any(missing_area)) {
+    attrs$area_km2[missing_area] <- as.numeric(sf::st_area(sf::st_transform(geom[missing_area, ], .mm_albers))) / 1e6
+  }
   attrs$geometry <- sf::st_geometry(geom)
   sf::st_as_sf(attrs, sf_column_name = "geometry")
 }

@@ -30,7 +30,12 @@ keeps longitude/latitude (EPSG:4326). Use \code{"albers"}, \code{"lcc"} or
 value accepted by \code{\link[sf:st_crs]{sf::st_crs()}}.}
 }
 \value{
-A \code{terra} SpatRaster of people per cell.
+A \code{terra} SpatRaster of people per cell. Reprojection uses
+weighted-sum remapping normalized to the retained native-grid total.
+This preserves that total but assumes a new local allocation. The
+\code{mongolmaps_remapping} attribute records the adjustment. Prefer extraction
+in the native grid for analysis; clipping and changing grids introduce
+allocation assumptions. Validate totals for the target extent.
 }
 \description{
 Estimated population per grid cell from WorldPop (2015 to 2030, constrained

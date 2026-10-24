@@ -1,4 +1,4 @@
-% source: man/mn_aimags.Rd md5 e7ba230ab630363ace25d0c4aa9d7091
+% source: man/mn_aimags.Rd md5 76f5bf8f8d3c69f542de56714af94ea3
 \title{Монгол Улсын аймгууд}
 \description{
 21 аймаг ба аймгийн статустай нийслэл Улаанбаатарыг (\code{type = "capital"})
@@ -22,6 +22,7 @@
 өргөрөг (EPSG:4326) хэвээр. Монголд тохирсон проекцод \code{"albers"},
 \code{"lcc"} эсвэл \code{"utm"}-ийг (\code{\link[=mn_crs]{mn_crs()}}-ийг үзнэ үү), эсвэл
 \code{\link[sf:st_crs]{sf::st_crs()}}-ийн хүлээн авах дурын утгыг өгнө.}
+\item{boundary_version}{Хилийн өгөгдлийн хувилбар. Одоогоор зөвхөн \code{"data-v1"} бий. \code{NULL} нь энэ хувилбарыг ашиглана. Статистикийн он нь түүхэн хилийг сонгохгүй; \code{mn_vintages()}-ийг үзнэ үү.}
 }
 \value{
 \code{sf} tibble; баганыг \code{\link[=mn_admin]{mn_admin()}}-аас үзнэ үү.

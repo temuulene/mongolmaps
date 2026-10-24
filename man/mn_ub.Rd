@@ -6,15 +6,26 @@
 \alias{mn_khoroos}
 \title{Ulaanbaatar: city, districts and khoroos}
 \usage{
-mn_ub(resolution = c("low", "high"), lang = NULL, crs = NULL)
+mn_ub(
+  resolution = c("low", "high"),
+  lang = NULL,
+  crs = NULL,
+  boundary_version = NULL
+)
 
-mn_ub_districts(resolution = c("low", "high"), lang = NULL, crs = NULL)
+mn_ub_districts(
+  resolution = c("low", "high"),
+  lang = NULL,
+  crs = NULL,
+  boundary_version = NULL
+)
 
 mn_khoroos(
   district = NULL,
   resolution = c("low", "high"),
   lang = NULL,
-  crs = NULL
+  crs = NULL,
+  boundary_version = NULL
 )
 }
 \arguments{
@@ -31,6 +42,10 @@ tables), \code{"mn"} (Cyrillic) or \code{"mns"} (Latin with diacritics, MNS
 keeps longitude/latitude (EPSG:4326). Use \code{"albers"}, \code{"lcc"} or
 \code{"utm"} for a projection suited to Mongolia (see \code{\link[=mn_crs]{mn_crs()}}), or any
 value accepted by \code{\link[sf:st_crs]{sf::st_crs()}}.}
+
+\item{boundary_version}{An available data revision, currently only
+\code{"data-v1"}. \code{NULL} uses that revision. See \code{\link[=mn_vintages]{mn_vintages()}}; statistical
+years do not imply matching historical boundaries.}
 
 \item{district}{Keep only khoroos in these districts (names or codes,
 such as \code{"Bayangol"}, \code{"BGD"} or \code{"MN1107"}).}
@@ -62,8 +77,9 @@ and 97\% of khoroos changed area by less than 1\%. Khoroo codes and names
 follow NSO.
 
 The district lines are the unions of their khoroos. They follow the
-current city layout and can differ slightly from the 2020 district lines
-in \code{\link[=mn_soums]{mn_soums()}}.
+source layout. \code{\link[=mn_soums]{mn_soums()}} also uses these derived district lines;
+independent national/urban simplification can create small differences.
+Neither getter is an official historical district snapshot.
 }
 
 \examples{

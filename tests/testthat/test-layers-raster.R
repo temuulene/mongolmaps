@@ -81,7 +81,7 @@ test_that("mn_zonal() summarises a raster over polygons", {
   expect_true("cells" %in% names(out))
   expect_gt(out$cells[out$pcode == "MN84"], 100)
   expect_equal(mn_zonal(r, mn_aimags(region = "Western"), fun = "mean")$value[out$pcode == "MN84"], 1)
-  expect_equal(mn_zonal(r, mn_aimags(region = "Western"), fun = "median")$value[out$pcode == "MN84"], 1)
+  expect_equal(mn_zonal(r, mn_aimags(region = "Western"), fun = "median", exact = FALSE)$value[out$pcode == "MN84"], 1)
   expect_snapshot(mn_zonal("r"), error = TRUE)
   expect_snapshot(mn_zonal(r, data.frame(a = 1)), error = TRUE)
 })

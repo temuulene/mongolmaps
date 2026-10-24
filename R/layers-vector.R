@@ -27,7 +27,7 @@ mn_settlements <- function(type = c("capital", "aimag_centre", "soum_centre"), w
   }
   x$name <- .mm_name_for_lang(x, lang)
   x <- x[c("admin_pcode", "soum_pcode", "aimag_pcode", "type", "name", "name_en", "name_mn", "name_mns", "location_source", "geometry")]
-  .mm_transform(x, crs)
+  .mm_tag(.mm_transform(x, crs), "settlements")
 }
 
 #' Map context: neighbouring countries, rivers and lakes
@@ -59,7 +59,7 @@ mn_settlements <- function(type = c("capital", "aimag_centre", "soum_centre"), w
 #' @examplesIf identical(Sys.getenv("NOT_CRAN"), "true") && curl::has_internet()
 #' mn_rivers(detail = "all", within = "Ulaanbaatar")
 mn_neighbours <- function(crs = NULL) {
-  .mm_transform(.mm_bundled(.mm_context$neighbours), crs)
+  .mm_tag(.mm_transform(.mm_bundled(.mm_context$neighbours), crs), "naturalearth")
 }
 
 #' @rdname mn_neighbours
@@ -87,5 +87,5 @@ mn_lakes <- function(detail = c("major", "all"), within = NULL, crs = NULL) {
   if (!is.null(targets)) {
     x <- .mm_clip(x, .mm_target_geometry(targets, call = call))
   }
-  .mm_transform(x, crs, call = call)
+  .mm_tag(.mm_transform(x, crs, call = call), "naturalearth")
 }

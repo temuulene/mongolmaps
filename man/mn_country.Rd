@@ -5,9 +5,19 @@
 \alias{mn_regions}
 \title{Mongolia and its economic regions}
 \usage{
-mn_country(resolution = c("low", "high"), lang = NULL, crs = NULL)
+mn_country(
+  resolution = c("low", "high"),
+  lang = NULL,
+  crs = NULL,
+  boundary_version = NULL
+)
 
-mn_regions(resolution = c("low", "high"), lang = NULL, crs = NULL)
+mn_regions(
+  resolution = c("low", "high"),
+  lang = NULL,
+  crs = NULL,
+  boundary_version = NULL
+)
 }
 \arguments{
 \item{resolution}{\code{"low"} (default) uses simplified boundaries that ship
@@ -23,6 +33,10 @@ tables), \code{"mn"} (Cyrillic) or \code{"mns"} (Latin with diacritics, MNS
 keeps longitude/latitude (EPSG:4326). Use \code{"albers"}, \code{"lcc"} or
 \code{"utm"} for a projection suited to Mongolia (see \code{\link[=mn_crs]{mn_crs()}}), or any
 value accepted by \code{\link[sf:st_crs]{sf::st_crs()}}.}
+
+\item{boundary_version}{An available data revision, currently only
+\code{"data-v1"}. \code{NULL} uses that revision. See \code{\link[=mn_vintages]{mn_vintages()}}; statistical
+years do not imply matching historical boundaries.}
 }
 \value{
 An \code{sf} tibble; see \code{\link[=mn_admin]{mn_admin()}} for the columns.

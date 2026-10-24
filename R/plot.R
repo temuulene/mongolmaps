@@ -28,6 +28,14 @@
 #'   `FALSE` adds none; a string is used as is.
 #' @param title Optional plot title.
 #' @param label_size Text size of labels.
+#' @param limits,breaks Shared fill scale limits and legend breaks. Useful for
+#'   comparing years or inset panels.
+#' @param bins For polygons, either a number of intervals or increasing numeric
+#'   cut points. Values are binned before plotting; `trans` applies only to
+#'   continuous scales.
+#' @param midpoint For continuous polygon values, use a diverging scale around
+#'   this value (for example zero for differences).
+#' @param na_label Caption key for missing polygon values. `NULL` disables it.
 #'
 #' @return A `ggplot` object.
 #' @family mapping helpers
@@ -52,12 +60,18 @@ mn_map <- function(x = NULL,
                    lang = NULL,
                    caption = TRUE,
                    title = NULL,
-                   label_size = 2.6) {
+                   label_size = 2.6,
+                   limits = NULL,
+                   breaks = NULL,
+                   bins = NULL,
+                   midpoint = NULL,
+                   na_label = "No data") {
   rlang::check_installed("ggplot2", reason = "to draw maps with `mn_map()`.")
   lang <- .mm_arg_lang(lang)
   x <- x %||% mn_aimags(lang = lang)
   if (inherits(x, "SpatRaster")) {
-    return(.mm_map_raster(x, trans = trans, crs = crs, caption = caption, title = title))
+    if (!is.null(bins) || !is.null(midpoint)) .mm_abort("Raster maps do not support {.arg bins} or {.arg midpoint}.", "input")
+    return(.mm_map_raster(x, trans = trans, crs = crs, caption = caption, title = title, limits = limits, breaks = breaks))
   }
   if (!inherits(x, "sf")) {
     .mm_abort("{.arg x} must be an {.cls sf} object or a {.cls SpatRaster}, not {.obj_type_friendly {x}}.", "input")
@@ -76,7 +90,7 @@ mn_map <- function(x = NULL,
       ggplot2::geom_sf(data = crop(mn_neighbours()), fill = "grey92", colour = "white", linewidth = 0.3)
     ))
   }
-  layers <- c(layers, .mm_fill_layers(x, fill_q, trans))
+  layers <- c(layers, .mm_fill_layers(x, fill_q, trans, limits, breaks, bins, midpoint))
   if (context) {
     layers <- c(layers, list(
       ggplot2::geom_sf(data = crop(mn_lakes()), fill = "#a6cee3", colour = NA),
@@ -90,6 +104,10 @@ mn_map <- function(x = NULL,
   }
 
   cap <- if (isTRUE(caption)) .mm_caption(x, context) else if (is.character(caption)) caption
+  if (!isFALSE(caption) && !is.null(na_label) && !rlang::quo_is_null(fill_q)) {
+    v <- tryCatch(rlang::eval_tidy(fill_q, sf::st_drop_geometry(x)), error = function(e) NULL)
+    if (anyNA(v)) cap <- paste(c(cap, paste0("Grey: ", na_label)), collapse = "; ")
+  }
   ggplot2::ggplot() +
     layers +
     ggplot2::coord_sf(crs = crs, datum = NA, expand = !context, default = TRUE) +
@@ -170,6 +188,10 @@ mn_label_points <- function(x) {
     pt[!is.na(known)] <- sf::st_geometry(sf::st_transform(ll, crs))
   }
   if (any(is.na(known))) pt[is.na(known)] <- fallback
+  # A known code may have been clipped or moved since its label was built.
+  hit <- suppressWarnings(sf::st_intersects(pt, geom))
+  outside <- !vapply(seq_along(hit), function(i) i %in% hit[[i]], logical(1))
+  if (any(outside)) pt[outside] <- suppressWarnings(sf::st_point_on_surface(geom[outside]))
   sf::st_set_geometry(x, pt)
 }
 
@@ -180,7 +202,7 @@ mn_label_points <- function(x) {
   if (small && central) mn_crs("utm") else mn_crs("albers")
 }
 
-.mm_fill_layers <- function(x, fill_q, trans = "identity") {
+.mm_fill_layers <- function(x, fill_q, trans = "identity", limits = NULL, breaks = NULL, bins = NULL, midpoint = NULL) {
   border <- if (nrow(x) > 150) 0.1 else 0.25
   if (rlang::quo_is_null(fill_q)) {
     return(list(ggplot2::geom_sf(data = x, fill = "grey95", colour = "grey40", linewidth = border)))
@@ -190,15 +212,41 @@ mn_label_points <- function(x) {
     return(list(ggplot2::geom_sf(data = x, fill = expr, colour = "white", linewidth = border)))
   }
   values <- rlang::eval_tidy(fill_q, data = sf::st_drop_geometry(x))
-  scale <- if (is.numeric(values)) {
-    ggplot2::scale_fill_viridis_c(na.value = "grey85", labels = .mm_number_labels, transform = trans)
-  } else {
-    ggplot2::scale_fill_viridis_d(na.value = "grey85")
+  if (!is.null(bins)) {
+    if (!is.numeric(values)) .mm_abort("Binning requires numeric fill values.", "input")
+    cuts <- bins
+    if (length(bins) == 1) {
+      if (!rlang::is_scalar_integerish(bins) || bins < 2) .mm_abort("{.arg bins} must be at least 2.", "input")
+      finite <- values[is.finite(values)]
+      if (!length(finite)) .mm_abort("Cannot derive bins without finite values; supply cut points.", "input")
+      cuts <- unique(c(-Inf, pretty(range(finite), n = bins), Inf))
+    }
+    if (!is.numeric(cuts) || length(cuts) < 2 || anyNA(cuts) || is.unsorted(cuts, strictly = TRUE)) {
+      .mm_abort("Bin cut points must be increasing numeric values.", "input")
+    }
+    x$..fill_bin <- cut(values, cuts, include.lowest = TRUE, ordered_result = TRUE)
+    fill_q <- rlang::new_quosure(quote(..fill_bin), rlang::empty_env())
+    values <- x$..fill_bin
+    limits <- levels(values)
   }
-  list(
-    ggplot2::geom_sf(data = x, ggplot2::aes(fill = !!fill_q), colour = "white", linewidth = border),
-    scale
-  )
+  if (is.numeric(values)) {
+    args <- list(na.value = "grey85", labels = .mm_number_labels, transform = trans)
+    if (!is.null(limits)) args$limits <- limits
+    if (!is.null(breaks)) args$breaks <- breaks
+    if (is.null(midpoint)) {
+      scale <- do.call(ggplot2::scale_fill_viridis_c, args)
+    } else {
+      if (!is.numeric(midpoint) || length(midpoint) != 1 || !is.finite(midpoint)) .mm_abort("{.arg midpoint} must be finite.", "input")
+      scale <- do.call(ggplot2::scale_fill_gradient2,
+                       c(args, list(low = "#2166ac", mid = "#f7f7f7", high = "#b2182b", midpoint = midpoint)))
+    }
+  } else {
+    args <- list(na.value = "grey85", drop = FALSE)
+    if (!is.null(limits)) args$limits <- limits
+    if (!is.null(breaks)) args$breaks <- breaks
+    scale <- do.call(ggplot2::scale_fill_viridis_d, args)
+  }
+  list(ggplot2::geom_sf(data = x, ggplot2::aes(fill = !!fill_q), colour = "white", linewidth = border), scale)
 }
 
 .mm_number_labels <- function(x) {
@@ -236,8 +284,14 @@ mn_label_points <- function(x) {
 }
 
 .mm_caption <- function(x, context) {
+  p <- mn_provenance(x)
+  if (nrow(p)) {
+    cap <- unique(p$attribution)
+    if (context) cap <- c(cap, mn_citation("naturalearth"))
+    return(paste(unique(cap), collapse = "; "))
+  }
+  if (!"pcode" %in% names(x)) return(NULL)
   layers <- "admin"
-  # UB district lines are the unions of khoroos, so credit both.
   if ("type" %in% names(x) && any(x$type %in% c("khoroo", "district"))) layers <- c(layers, "khoroos")
   if (context) layers <- c(layers, "naturalearth")
   mn_citation(layers)
@@ -245,10 +299,16 @@ mn_label_points <- function(x) {
 
 # Raster maps. The first layer is an invisible outline in the map projection,
 # so layers users add later (which reset the coordinate system) stay in it.
-.mm_map_raster <- function(r, trans, crs, caption, title, max_cells = 1e6) {
+.mm_map_raster <- function(r, trans, crs, caption, title, max_cells = 1e6, limits = NULL, breaks = NULL) {
   rlang::check_installed("terra", reason = "to map rasters.")
+  provenance <- mn_provenance(r)
   r <- r[[1]]
   categorical <- terra::is.factor(r)
+  # Bound display work before reprojection; never alter the analytical raster.
+  if (terra::ncell(r) > max_cells) {
+    fact <- ceiling(sqrt(terra::ncell(r) / max_cells))
+    r <- terra::aggregate(r, fact = fact, fun = if (categorical) "modal" else "mean", na.rm = TRUE)
+  }
   crs <- .mm_resolve_crs(crs) %||% if (terra::is.lonlat(r)) .mm_auto_crs(.mm_raster_outline(r)) else sf::st_crs(terra::crs(r))
   if (!identical(sf::st_crs(terra::crs(r)), crs)) {
     r <- terra::project(r, crs$wkt, method = if (categorical) "near" else "bilinear")
@@ -278,9 +338,14 @@ mn_label_points <- function(x) {
   } else if (layer == "hillshade") {
     ggplot2::scale_fill_gradient(low = "grey10", high = "white", guide = "none")
   } else {
-    ggplot2::scale_fill_viridis_c(labels = .mm_number_labels, transform = trans, na.value = "transparent")
+    ggplot2::scale_fill_viridis_c(labels = .mm_number_labels, transform = trans, na.value = "transparent", limits = limits,
+                                  breaks = breaks %||% ggplot2::waiver())
   }
-  cap <- if (isTRUE(caption)) .mm_raster_caption(layer) else if (is.character(caption)) caption
+  cap <- if (isTRUE(caption)) {
+    if (nrow(provenance)) paste(unique(provenance$attribution), collapse = "; ") else .mm_raster_caption(layer)
+  } else if (is.character(caption)) {
+    caption
+  }
   ggplot2::ggplot() +
     ggplot2::geom_sf(data = outline, fill = NA, colour = NA) +
     ggplot2::geom_raster(data = df, ggplot2::aes(x = .data$x, y = .data$y, fill = .data$value)) +

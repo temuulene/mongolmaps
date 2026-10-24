@@ -23,6 +23,9 @@
 #'   with the package and suit most maps. `"high"` uses full-resolution
 #'   boundaries, downloaded once (about 10 MB) and cached; see
 #'   [mn_cache_dir()].
+#' @param boundary_version An available data revision, currently only
+#'   `"data-v1"`. `NULL` uses that revision. See [mn_vintages()]; statistical
+#'   years do not imply matching historical boundaries.
 #' @param lang Language of the `name` column: `"en"` (English, as in NSO
 #'   tables), `"mn"` (Cyrillic) or `"mns"` (Latin with diacritics, MNS
 #'   5217). Defaults to `getOption("mongolmaps.lang", "en")`.
@@ -54,7 +57,9 @@
 #' mn_admin("aimag")
 #' mn_admin("soum", within = "Khovd")
 #' mn_admin("aimag", within = c("Khovd", "Uvs"), lang = "mn")
-mn_admin <- function(level = "aimag", within = NULL, resolution = c("low", "high"), lang = NULL, crs = NULL) {
+mn_admin <- function(level = "aimag", within = NULL, resolution = c("low", "high"), lang = NULL, crs = NULL,
+                     boundary_version = NULL) {
+  .mm_check_boundary_version(boundary_version)
   level <- .mm_arg_level(level)
   resolution <- .mm_arg_resolution(resolution)
   lang <- .mm_arg_lang(lang)
@@ -69,18 +74,19 @@ mn_admin <- function(level = "aimag", within = NULL, resolution = c("low", "high
 
 # Filters by `targets`, attaches attributes and projects.
 .mm_finish <- function(geom, targets, lang, crs, units = .mm_units, call = rlang::caller_env()) {
+  provenance <- mn_provenance(geom)
   if (!is.null(targets)) {
     geom <- geom[.mm_in_targets(geom$pcode, targets, units = units), ]
   }
   out <- .mm_as_mn_sf(geom, lang, units = units)
-  .mm_transform(out, crs, call = call)
+  .mm_set_provenance(.mm_transform(out, crs, call = call), provenance)
 }
 
 .mm_geom <- function(layer, resolution) {
-  if (resolution == "low") {
-    return(.mm_bundled(.mm_low[[layer]]))
-  }
-  .mm_high_layer(layer)
+  x <- if (resolution == "low") .mm_bundled(.mm_low[[layer]]) else .mm_high_layer(layer)
+  ids <- if (layer == "khoroo") c("codes", "khoroos") else "admin"
+  if (layer %in% c("soum", "ub", "ub_district")) ids <- c(ids, "khoroos")
+  .mm_tag(x, ids, resolution)
 }
 
 .mm_env <- new.env(parent = emptyenv())

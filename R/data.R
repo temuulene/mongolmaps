@@ -40,3 +40,19 @@
 #'   geofacet::facet_geo(~code, grid = mn_aimag_grid, label = "name") +
 #'   labs(y = "Population (thousands)")
 "mn_aimag_grid"
+
+#' A geographic small-multiple grid for Ulaanbaatar districts
+#'
+#' Approximate positions of the nine districts, suitable for geofacet.
+#' This layout is a cartographic arrangement, not a coordinate system.
+#'
+#' @format A data frame with nine rows and columns `row`, `col`,
+#'   `code` (district pcode) and `name` (English name).
+#' @family mapping helpers
+#' @examplesIf rlang::is_installed(c("geofacet", "ggplot2"))
+#' data <- mn_ub_grid
+#' data$value <- seq_len(nrow(data))
+#' ggplot2::ggplot(data, ggplot2::aes(1, value)) +
+#'   ggplot2::geom_col() +
+#'   geofacet::facet_geo(~code, grid = mn_ub_grid, label = "name")
+"mn_ub_grid"

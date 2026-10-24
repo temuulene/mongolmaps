@@ -1,4 +1,4 @@
-% source: man/mn_leaflet.Rd md5 ba7aa52a67ed12b9c725c8dcd78457b9
+% source: man/mn_leaflet.Rd md5 1aa1a6d919b9f54eb67df5b1782af55b
 \title{leaflet-ээр интерактив газрын зураг}
 \description{
 Багцын дурын газрын зураг, эсвэл холбосон өгөгдлийг суурь зурагтай,

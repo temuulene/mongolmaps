@@ -24,6 +24,8 @@
 #' @param max_dist Maximum edit distance for fuzzy matching. `NULL` scales
 #'   it with the length of the name (0 for 3 letters or fewer, up to 3 for
 #'   long names).
+#' @param details If `TRUE`, return a diagnostic tibble with the input,
+#'   normalized key, parent, matched code, method, edit distance and candidates.
 #' @param quiet If `TRUE`, suppresses the message listing fuzzy matches.
 #'   Warnings about ambiguous or unmatched values are always shown.
 #'
@@ -49,11 +51,13 @@ mn_match <- function(x,
                      to = c("pcode", "name_en", "name_mn", "name_mns", "iso_code", "nso_code", "level", "type"),
                      fuzzy = TRUE,
                      max_dist = NULL,
-                     quiet = FALSE) {
+                     quiet = FALSE,
+                     details = FALSE) {
   to <- rlang::arg_match(to)
   levels <- .mm_arg_level(level, multiple = TRUE)
   res <- .mm_match_df(x, levels = levels, within = within, fuzzy = fuzzy, max_dist = max_dist)
   .mm_report_match(res, quiet = quiet)
+  if (details) return(.mm_match_details(res))
   if (to == "pcode") {
     return(res$pcode)
   }
@@ -135,13 +139,14 @@ mn_match <- function(x,
 
 # Matches `x` and returns one row per element: the pcode, how it matched,
 # and candidates or suggestions for values that did not match.
-.mm_match_df <- function(x, levels = NULL, within = NULL, fuzzy = TRUE, max_dist = NULL, call = rlang::caller_env()) {
+.mm_match_df <- function(x, levels = NULL, within = NULL, fuzzy = TRUE, max_dist = NULL,
+                         call = rlang::caller_env(), scope = NULL) {
   x <- as.character(x)
   n <- length(x)
   if (n == 0) {
     return(tibble::tibble(
       x = character(), within_pcode = character(), pcode = character(), status = character(),
-      alias = character(), candidates = list(), suggestion = character()
+      alias = character(), candidates = list(), suggestion = character(), distance = integer()
     ))
   }
   if (!is.null(within) && !length(within) %in% c(1L, n)) {
@@ -160,6 +165,7 @@ mn_match <- function(x,
   pairs$alias <- NA_character_
   pairs$candidates <- vector("list", nrow(pairs))
   pairs$suggestion <- NA_character_
+  pairs$distance <- NA_integer_
 
   trimmed <- stringi::stri_trim_both(pairs$x)
   missing <- is.na(trimmed) | trimmed == ""
@@ -174,10 +180,21 @@ mn_match <- function(x,
   code_hit <- !missing & !is.na(code_pc)
   for (i in which(code_hit)) {
     code_hit[i] <- (is.null(levels) || .mm_units$level[match(code_pc[i], .mm_units$pcode)] %in% levels) &&
-      .mm_within_ok(code_pc[i], pairs$within_pcode[i])
+      .mm_within_ok(code_pc[i], pairs$within_pcode[i]) &&
+      (is.null(scope) || .mm_in_targets(code_pc[i], scope))
   }
+  # Known identifiers at a different level must not become numbered bags.
+  # Bare small numbers are allowed as bag numbers only inside a soum/district.
+  number_context <- vapply(pairs$within_pcode, function(p) {
+    targets <- .mm_within_targets(p)
+    length(targets) > 0 && all(.mm_units$level[match(targets, .mm_units$pcode)] == "soum")
+  }, logical(1))
+  wrong_code <- !missing & !is.na(code_pc) & !code_hit &
+    !(is_digits & nchar(trimmed) <= 2 & number_context & (is.null(levels) || "bag" %in% levels))
+  pairs$status[wrong_code] <- "unmatched"
   pairs$pcode[code_hit] <- code_pc[code_hit]
   pairs$status[code_hit] <- "code"
+  pairs$distance[code_hit] <- 0L
 
   priority <- if (is.null(levels)) .mm_level_priority else intersect(.mm_level_priority, levels)
   keys <- .mm_key(pairs$x)
@@ -185,10 +202,11 @@ mn_match <- function(x,
 
   # Names: exact key lookup.
   for (i in which(is.na(pairs$status))) {
-    cand <- .mm_candidates(keys[[i]], priority, pairs$within_pcode[[i]], hints[[i]])
+    cand <- .mm_candidates(keys[[i]], priority, pairs$within_pcode[[i]], hints[[i]], scope)
     if (length(cand) == 1) {
       pairs$pcode[i] <- cand
       pairs$status[i] <- "exact"
+      pairs$distance[i] <- 0L
     } else if (length(cand) > 1) {
       pairs$status[i] <- "ambiguous"
       pairs$candidates[[i]] <- cand
@@ -197,11 +215,12 @@ mn_match <- function(x,
 
   # Names: fuzzy lookup.
   for (i in which(is.na(pairs$status))) {
-    fz <- .mm_fuzzy(keys[[i]], priority, pairs$within_pcode[[i]], hints[[i]], max_dist)
+    fz <- .mm_fuzzy(keys[[i]], priority, pairs$within_pcode[[i]], hints[[i]], max_dist, scope)
     if (fuzzy && length(fz$pcode) == 1) {
       pairs$pcode[i] <- fz$pcode
       pairs$status[i] <- "fuzzy"
       pairs$alias[i] <- fz$alias
+      pairs$distance[i] <- fz$distance
     } else {
       pairs$status[i] <- "unmatched"
       pairs$suggestion[i] <- fz$suggestion
@@ -226,8 +245,9 @@ mn_match <- function(x,
 
 # Aliases in scope: the wanted levels, inside `within`, and of the type the
 # name hints at (when that leaves anything).
-.mm_scope <- function(a, priority, within_pcode, hint) {
+.mm_scope <- function(a, priority, within_pcode, hint, scope = NULL) {
   a <- a[a$level %in% priority, ]
+  if (!is.null(scope)) a <- a[.mm_in_targets(a$pcode, scope), ]
   targets <- .mm_within_targets(within_pcode)
   if (!is.null(targets) && nrow(a)) {
     a <- a[.mm_in_targets(a$pcode, targets, include_self = FALSE), ]
@@ -241,11 +261,11 @@ mn_match <- function(x,
 
 # Distinct pcodes for an exact key, taken from the first level (in priority
 # order) that has any.
-.mm_candidates <- function(key, priority, within_pcode, hint = NULL) {
+.mm_candidates <- function(key, priority, within_pcode, hint = NULL, scope = NULL) {
   if (is.na(key) || key == "") {
     return(character())
   }
-  a <- .mm_scope(.mm_aliases[.mm_aliases$key == key, ], priority, within_pcode, hint)
+  a <- .mm_scope(.mm_aliases[.mm_aliases$key == key, ], priority, within_pcode, hint, scope)
   if (!nrow(a)) {
     return(character())
   }
@@ -253,12 +273,12 @@ mn_match <- function(x,
   unique(a$pcode[a$level == top])
 }
 
-.mm_fuzzy <- function(key, priority, within_pcode, hint, max_dist) {
+.mm_fuzzy <- function(key, priority, within_pcode, hint, max_dist, scope = NULL) {
   none <- list(pcode = character(), alias = NA_character_, suggestion = NA_character_)
   if (is.na(key) || key == "") {
     return(none)
   }
-  a <- .mm_scope(.mm_aliases, priority, within_pcode, hint)
+  a <- .mm_scope(.mm_aliases, priority, within_pcode, hint, scope)
   if (!nrow(a)) {
     return(none)
   }
@@ -283,7 +303,7 @@ mn_match <- function(x,
   if (length(pc) != 1) {
     return(list(pcode = character(), alias = NA_character_, suggestion = .mm_describe(pc)))
   }
-  list(pcode = pc, alias = hits$alias[1], suggestion = NA_character_)
+  list(pcode = pc, alias = hits$alias[1], suggestion = NA_character_, distance = as.integer(best))
 }
 
 # "Khovd (MN84)" style labels for messages.
@@ -335,4 +355,13 @@ mn_match <- function(x,
 
 .mm_describe_each <- function(pcodes) {
   purrr::map_chr(pcodes, .mm_describe)
+}
+
+# A stable public representation; the compact vector API stays unchanged.
+.mm_match_details <- function(res) {
+  out <- tibble::as_tibble(res)
+  out$row <- seq_len(nrow(out))
+  out$key <- .mm_key(out$x)
+  out$name_en <- .mm_units$name_en[match(out$pcode, .mm_units$pcode)]
+  out[c("row", "x", "key", "within_pcode", "pcode", "name_en", "status", "alias", "distance", "candidates", "suggestion")]
 }

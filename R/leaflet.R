@@ -67,6 +67,8 @@ mn_leaflet <- function(x = NULL, fill = NULL, popup = NULL, lang = NULL, tiles =
   if (!is.null(pal)) {
     m <- leaflet::addLegend(m, pal = pal, values = values, title = rlang::as_label(fill_q), opacity = opacity)
   }
+  attribution <- mn_citation(x)
+  if (nzchar(attribution)) m <- leaflet::addControl(m, html = .mm_html_escape(attribution), position = "bottomleft")
   m
 }
 

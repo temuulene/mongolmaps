@@ -38,7 +38,7 @@ mn_elevation <- function(resolution = c("1km", "90m"), within = NULL, mask = TRU
   if (resolution == "1km") {
     r <- terra::rast(.mm_asset("elevation_1km"))
     names(r) <- "elevation"
-    return(.mm_raster_area(r, within, mask, crs))
+    return(.mm_tag(.mm_raster_area(r, within, mask, crs), c("admin", "elevation_1km"), resolution))
   }
   targets <- .mm_need_within(within, "90 m elevation")
   area <- .mm_target_geometry(targets)
@@ -48,7 +48,7 @@ mn_elevation <- function(resolution = c("1km", "90m"), within = NULL, mask = TRU
   names <- sprintf("Copernicus_DSM_COG_30_N%02d_00_E%03d_00_DEM", grid$lat, grid$lon)
   urls <- sprintf("https://copernicus-dem-90m.s3.amazonaws.com/%s/%s.tif", names, names)
   r <- .mm_remote_mosaic(urls, area, "elevation")
-  .mm_raster_area(r, within, mask, crs, targets = targets)
+  .mm_tag(.mm_raster_area(r, within, mask, crs, targets = targets), c("admin", "copernicus_dem"), resolution)
 }
 
 #' @rdname mn_elevation
@@ -60,7 +60,7 @@ mn_hillshade <- function(resolution = c("1km", "90m"), within = NULL, mask = TRU
   shade <- terra::shade(slope, aspect, angle = angle, direction = direction)
   names(shade) <- "hillshade"
   if (mask) shade <- .mm_raster_area(shade, within %||% "MN", TRUE, NULL)
-  shade
+  .mm_set_provenance(shade, mn_provenance(elev))
 }
 
 #' Land cover
@@ -70,8 +70,9 @@ mn_hillshade <- function(resolution = c("1km", "90m"), within = NULL, mask = TRU
 #' raster with class names and the official colours, so `terra::plot()`
 #' draws it with a legend.
 #'
-#' * `resolution = "1km"` (default): national grid, majority class of each
-#'   square kilometre, downloaded once (about 2 MB).
+#' * `resolution = "1km"` (default): national grid generalized from source
+#'   overviews using modal resampling, downloaded once (about 2 MB). It is
+#'   not guaranteed to be the native 10 m majority of each square kilometre.
 #' * `resolution = "10m"`: the original 10 m data for the area in
 #'   `within` (a soum, district or smaller aimag), read from the cloud.
 #'
@@ -109,7 +110,7 @@ mn_landcover <- function(resolution = c("1km", "10m"), within = NULL, mask = TRU
     r <- .mm_remote_mosaic(urls, area, "landcover")
     r <- .mm_raster_area(r, within, mask, crs, targets = targets, method = "near")
   }
-  .mm_landcover_classes(r)
+  .mm_tag(.mm_landcover_classes(r), c("admin", if (resolution == "1km") "landcover_1km" else "worldcover"), resolution)
 }
 
 .mm_landcover_legend <- data.frame(
@@ -143,7 +144,12 @@ mn_landcover <- function(resolution = c("1km", "10m"), within = NULL, mask = TRU
 #'   projections).
 #' @param resolution `"1km"` or `"100m"`.
 #' @inheritParams mn_elevation
-#' @return A `terra` SpatRaster of people per cell.
+#' @return A `terra` SpatRaster of people per cell. Reprojection uses
+#'   weighted-sum remapping normalized to the retained native-grid total.
+#'   This preserves that total but assumes a new local allocation. The
+#'   `mongolmaps_remapping` attribute records the adjustment. Prefer extraction
+#'   in the native grid for analysis; clipping and changing grids introduce
+#'   allocation assumptions. Validate totals for the target extent.
 #' @section Source:
 #' WorldPop (www.worldpop.org), Global 2015-2030 constrained population
 #' counts, release R2025A. CC BY 4.0.
@@ -161,7 +167,14 @@ mn_population <- function(year = 2025, resolution = c("1km", "100m"), within = N
   }
   r <- terra::rast(.mm_asset_row(.mm_worldpop_row(as.integer(year), resolution)))
   names(r) <- paste0("population_", year)
-  .mm_raster_area(r, within, mask, crs)
+  out <- .mm_raster_area(r, within, mask, crs, method = "sum")
+  out <- .mm_tag(out, c("admin", "worldpop"), resolution)
+  p <- mn_provenance(out)
+  remap <- attr(out, "mongolmaps_remapping", exact = TRUE)
+  p$resampling <- if (is.null(remap)) "native grid" else remap$method
+  p$statistical_year <- year
+  p$source_revision[p$id == "worldpop"] <- "R2025A"
+  .mm_set_provenance(out, p)
 }
 
 .mm_worldpop_row <- function(year, resolution) {
@@ -211,20 +224,21 @@ mn_protected_areas <- function(within = NULL, refresh = FALSE, crs = NULL) {
   dest <- file.path(mn_cache_dir(), row$data_version, row$file)
   stale <- !file.exists(dest) || difftime(Sys.time(), file.mtime(dest), units = "days") > 90
   if (refresh || stale) {
-    unlink(c(dest, paste0(dest, ".sha256")))
     .mm_inform(
       c("i" = "The WDPA is for non-commercial use with attribution and may not be redistributed; see {.help mongolmaps::mn_protected_areas}."),
-      class = "terms",
-      .frequency = "once",
-      .frequency_id = "mongolmaps_wdpa_terms"
+      class = "terms", .frequency = "once", .frequency_id = "mongolmaps_wdpa_terms"
     )
   }
-  x <- sf::st_read(.mm_asset_row(row), quiet = TRUE)
+  path <- .mm_asset_row(row, refresh = refresh || stale, allow_stale = !refresh)
+  x <- sf::st_read(path, quiet = TRUE)
   x <- sf::st_make_valid(sf::st_as_sf(tibble::as_tibble(x)))
   sf::st_geometry(x) <- "geometry"
   targets <- .mm_resolve_within(within)
   if (!is.null(targets)) x <- .mm_clip(x, .mm_target_geometry(targets))
-  .mm_transform(x, crs)
+  x <- .mm_tag(.mm_transform(x, crs), "wdpa")
+  p <- mn_provenance(x)
+  p$retrieved_on <- as.character(as.Date(file.info(path)$mtime))
+  .mm_set_provenance(x, p)
 }
 
 #' Summarise a raster over map units
@@ -239,13 +253,17 @@ mn_protected_areas <- function(within = NULL, refresh = FALSE, crs = NULL) {
 #' @param fun Summary function name: `"sum"` (default), `"mean"`, `"min"`,
 #'   `"max"` or `"median"`.
 #' @param name Name of the new column.
+#' @param exact If `TRUE` (default), weight sums and means by the fraction
+#'   of each cell covered by the polygon. This assumes uniform values within
+#'   cells. Means weight cell fractions, not physical cell areas. Median
+#'   requires `exact = FALSE`. Missing coverage returns `NA`, not zero.
 #' @return `x` with a new column.
 #' @family raster layers
 #' @export
 #' @examplesIf identical(Sys.getenv("NOT_CRAN"), "true") && curl::has_internet() && rlang::is_installed("terra")
 #' soum_pop <- mn_zonal(mn_population(2025), mn_soums(), name = "population")
 #' mn_map(soum_pop, fill = population / area_km2, trans = "log10")
-mn_zonal <- function(r, x = NULL, fun = c("sum", "mean", "min", "max", "median"), name = "value") {
+mn_zonal <- function(r, x = NULL, fun = c("sum", "mean", "min", "max", "median"), name = "value", exact = TRUE) {
   .mm_need_terra()
   fun <- rlang::arg_match(fun)
   x <- x %||% mn_aimags()
@@ -255,17 +273,26 @@ mn_zonal <- function(r, x = NULL, fun = c("sum", "mean", "min", "max", "median")
   if (!inherits(x, "sf")) {
     .mm_abort("{.arg x} must be an {.cls sf} object, not {.obj_type_friendly {x}}.", "input")
   }
+  .mm_check_string(name)
+  if (terra::nlyr(r) != 1) .mm_abort("{.arg r} must have exactly one layer.", "input")
+  if (!all(sf::st_geometry_type(x) %in% c("POLYGON", "MULTIPOLYGON"))) {
+    .mm_abort("{.arg x} must contain polygons.", "input")
+  }
+  if (!is.logical(exact) || length(exact) != 1 || is.na(exact)) {
+    .mm_abort("{.arg exact} must be TRUE or FALSE.", "input")
+  }
+  if (exact && fun == "median") .mm_abort("Median requires {.code exact = FALSE}; fractional medians are not supported.", "input")
+  if (!nrow(x)) {
+    x[[name]] <- numeric()
+    return(x)
+  }
   v <- terra::vect(sf::st_transform(x, terra::crs(r)))
-  f <- switch(fun,
-    sum = sum,
-    mean = mean,
-    min = min,
-    max = max,
-    median = stats::median
-  )
-  vals <- terra::extract(r[[1]], v, fun = f, na.rm = TRUE, ID = FALSE)
-  x[[name]] <- vals[[1]]
-  x
+  vals <- terra::extract(r, v, fun = fun, na.rm = TRUE, ID = FALSE, exact = exact)
+  covered <- terra::extract(!is.na(r), v, fun = "sum", na.rm = TRUE, ID = FALSE, exact = exact)
+  value <- vals[[1]]
+  value[is.na(covered[[1]]) | covered[[1]] == 0] <- NA_real_
+  x[[name]] <- value
+  .mm_set_provenance(x, .mm_combine_provenance(x, r))
 }
 
 .mm_need_terra <- function(call = rlang::caller_env()) {
@@ -327,6 +354,14 @@ mn_zonal <- function(r, x = NULL, fun = c("sum", "mean", "min", "max", "median")
   if (!any(ok)) {
     .mm_abort("Can't reach the {name} data online.", "http", call = call)
   }
+  if (any(!ok)) {
+    msg <- "Failed to read {sum(!ok)} of {length(ok)} requested {name} tiles; coverage is incomplete."
+    if (!isTRUE(getOption("mongolmaps.allow_partial_tiles", FALSE))) {
+      .mm_abort(c(msg, "i" = "Retry, or explicitly allow partial coverage with options(mongolmaps.allow_partial_tiles = TRUE)."),
+                "http", call = call)
+    }
+    .mm_warn(msg, "partial_coverage")
+  }
   r <- terra::vrt(sources[ok])
   r <- terra::crop(r, terra::ext(sf::st_bbox(area)[c("xmin", "xmax", "ymin", "ymax")]))
   names(r) <- name
@@ -343,6 +378,30 @@ mn_zonal <- function(r, x = NULL, fun = c("sum", "mean", "min", "max", "median")
     if (mask) r <- terra::mask(r, v)
   }
   crs <- .mm_resolve_crs(crs, call = call)
-  if (!is.null(crs)) r <- terra::project(r, crs$wkt, method = method)
+  if (!is.null(crs) && !identical(sf::st_crs(terra::crs(r)), crs)) {
+    r <- if (method == "sum") .mm_project_counts(r, crs) else terra::project(r, crs$wkt, method = method)
+  }
   r
+}
+
+
+# GDAL weighted sums can lose fractional edge contributions on a new grid.
+# Normalize that display/export allocation to the retained native-grid total.
+# Local allocation remains an assumption; analysis should use the native grid.
+.mm_project_counts <- function(r, crs) {
+  total <- terra::global(r, "sum", na.rm = TRUE)[[1]][1]
+  out <- terra::project(r, crs$wkt, method = "sum")
+  mapped <- terra::global(out, "sum", na.rm = TRUE)[[1]][1]
+  factor <- 1
+  if (is.finite(total) && is.finite(mapped) && mapped > 0) {
+    factor <- total / mapped
+    out <- out * factor
+  } else if (!is.finite(total) || !is.finite(mapped) || total != mapped) {
+    .mm_abort("Population reprojection could not preserve the input total; use the native grid.", "input")
+  }
+  attr(out, "mongolmaps_remapping") <- list(
+    method = "weighted sum normalized to retained native-grid total",
+    source_total = total, unadjusted_total = mapped, normalization_factor = factor
+  )
+  out
 }

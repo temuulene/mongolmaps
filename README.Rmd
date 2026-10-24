@@ -127,6 +127,18 @@ mn_codes("soum", within = "Khovd")
 * Protected areas: `mn_protected_areas()`.
 * Small multiples: `mn_aimag_grid` for `geofacet::facet_geo()`.
 
+## Auditable workflows and inset maps
+
+`mn_join_audit()` records the outcome of every input row; `mn_match(details = TRUE)`
+exposes candidate matches. Use `strict = TRUE`, `fuzzy = FALSE` and explicit
+`strata` for checked analytical joins. `mn_provenance()` and `mn_vintages()`
+describe the available source snapshots and authority.
+
+Optional `patchwork` helpers `mn_inset_ub()` and `mn_map_ub()` enlarge the
+capital and separate its detached districts without moving analytical
+geometry. `mn_map()` accepts shared `limits`/`breaks`, `bins` and `midpoint`.
+See the [audited workflows guide](https://temuulene.github.io/mongolmaps/articles/audited-workflows.html).
+
 ## Data sources
 
 ```{r sources, echo = FALSE}

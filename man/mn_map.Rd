@@ -14,7 +14,12 @@ mn_map(
   lang = NULL,
   caption = TRUE,
   title = NULL,
-  label_size = 2.6
+  label_size = 2.6,
+  limits = NULL,
+  breaks = NULL,
+  bins = NULL,
+  midpoint = NULL,
+  na_label = "No data"
 )
 }
 \arguments{
@@ -49,6 +54,18 @@ small areas in central Mongolia. See \code{\link[=mn_crs]{mn_crs()}}.}
 \item{title}{Optional plot title.}
 
 \item{label_size}{Text size of labels.}
+
+\item{limits, breaks}{Shared fill scale limits and legend breaks. Useful for
+comparing years or inset panels.}
+
+\item{bins}{For polygons, either a number of intervals or increasing numeric
+cut points. Values are binned before plotting; \code{trans} applies only to
+continuous scales.}
+
+\item{midpoint}{For continuous polygon values, use a diverging scale around
+this value (for example zero for differences).}
+
+\item{na_label}{Caption key for missing polygon values. \code{NULL} disables it.}
 }
 \value{
 A \code{ggplot} object.
@@ -79,8 +96,11 @@ mn_map(mn_elevation()) + ggplot2::geom_sf(data = mn_aimags(), fill = NA, colour 
 Other mapping helpers:
 \code{\link{mn_aimag_grid}},
 \code{\link[=mn_crs]{mn_crs()}},
+\code{\link[=mn_erase_water]{mn_erase_water()}},
+\code{\link[=mn_inset_ub]{mn_inset_ub()}},
 \code{\link[=mn_label_points]{mn_label_points()}},
 \code{\link[=mn_leaflet]{mn_leaflet()}},
+\code{\link{mn_ub_grid}},
 \code{\link[=theme_mn]{theme_mn()}}
 }
 \concept{mapping helpers}

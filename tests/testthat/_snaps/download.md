@@ -36,15 +36,6 @@
       ! Can't download Fake layer: offline mode is on.
       i Turn it off with `options(mongolmaps.offline = FALSE)`, or prefetch layers with `mn_download()`.
 
-# no internet stops downloads with a clear error
-
-    Code
-      .mm_asset("fake")
-    Condition
-      Error:
-      ! Can't download Fake layer: no internet connection.
-      i Layers are downloaded once and cached; prefetch them with `mn_download()` while online.
-
 # .mm_http_download() turns HTTP failures into typed errors
 
     Code

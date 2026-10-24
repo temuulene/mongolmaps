@@ -45,8 +45,11 @@ mn_leaflet(mn_khoroos(), fill = area_km2)
 Other mapping helpers:
 \code{\link{mn_aimag_grid}},
 \code{\link[=mn_crs]{mn_crs()}},
+\code{\link[=mn_erase_water]{mn_erase_water()}},
+\code{\link[=mn_inset_ub]{mn_inset_ub()}},
 \code{\link[=mn_label_points]{mn_label_points()}},
 \code{\link[=mn_map]{mn_map()}},
+\code{\link{mn_ub_grid}},
 \code{\link[=theme_mn]{theme_mn()}}
 }
 \concept{mapping helpers}

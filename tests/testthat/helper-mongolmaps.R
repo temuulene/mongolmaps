@@ -20,3 +20,22 @@ local_admin_high_fixture <- function(env = parent.frame()) {
   }
   gpkg
 }
+
+# A synthetic bag file: the soums of Khovd, each standing in for its first bag.
+local_bag_file <- function(env = parent.frame(), code = "nso", shift = FALSE) {
+  soums <- mn_soums(aimag = "Khovd")
+  bags <- mn_codes("bag", within = "Khovd")
+  first <- bags[!duplicated(bags$parent_pcode), ]
+  soums <- soums[soums$pcode %in% first$parent_pcode, ]
+  first <- first[match(soums$pcode, first$parent_pcode), ]
+  geom <- sf::st_geometry(soums)
+  if (shift) geom <- geom + c(20, 0)
+  x <- sf::st_sf(
+    bag_code = if (code == "nso") first$nso_code else first$pcode,
+    bag_name = first$name_mn,
+    geometry = sf::st_set_crs(geom, 4326)
+  )
+  path <- withr::local_tempfile(fileext = ".gpkg", .local_envir = env)
+  sf::st_write(x, path, quiet = TRUE)
+  path
+}
