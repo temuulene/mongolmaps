@@ -1,32 +1,37 @@
-## Submission
+## Update from 0.1.0 to 0.2.0
 
-This is a new release.
+This update adds auditable spatial joins and matching diagnostics, source
+provenance, Ulaanbaatar inset maps, bag-boundary validation and cache-integrity
+helpers. It corrects fractional raster summaries, population-total
+preservation during reprojection and Ulaanbaatar region/capital joins.
+There are no changes to the maintainer, package licence or bundled data licences.
 
-* The package bundles simplified administrative boundaries (about 0.4 MB)
-  and downloads larger layers on request into `tools::R_user_dir("mongolmaps",
-  "cache")`. The cache is managed by `mn_cache_clear()` and old data
-  versions are removed automatically.
-* Examples and tests do not use the network on CRAN: examples that download
-  are wrapped in `@examplesIf` with `NOT_CRAN` and `curl::has_internet()`,
-  and tests mock all downloads.
-* The one `\dontrun{}` example (`mn_bags()`) needs a bag boundary file that
-  the National Statistics Office of Mongolia provides on request; it is not
-  public, so the example cannot run. The same help page runs `mn_bags()`
-  without the file to show its guidance.
-* Data sources and their licences are listed in `inst/COPYRIGHTS`.
-* Words that may be flagged as misspelled in DESCRIPTION are Mongolian
-  administrative units and place names (aimags, soums, khoroos, Ulaanbaatar)
-  or standard terms (crosswalk, subdistricts).
+## Offline checks and downloaded data
 
-## Test environments
+Examples requiring remote data run only when NOT_CRAN is explicitly true.
+CRAN-mode tests use temporary fixtures and mocked downloads. Remote data are
+downloaded only on request into tools::R_user_dir("mongolmaps", "cache");
+mn_cache_list(), mn_cache_verify() and mn_cache_clear() manage the cache.
+Old revisions can be removed explicitly with mn_cache_clear(old_versions = TRUE).
+Sources and their licences are documented in inst/COPYRIGHTS.
 
-* Local: Windows 11, R 4.6.1
-* GitHub Actions: ubuntu-latest (R devel, release, oldrel-1),
-  windows-latest (release), macos-latest (release)
-* win-builder: R-devel
+The mn_bags() file-import example requires boundary data supplied by the
+National Statistics Office of Mongolia on request; it cannot run without
+that file. The help page also runs mn_bags() without a file to show guidance.
+
+## Check environments
+
+The source package was built with R CMD build on Windows with R 4.6.1,
+including all vignettes. GitHub Actions checks cover Linux R-devel, R-release
+and R-oldrel-1, Windows R-release and macOS R-release, with --as-cran and
+NOT_CRAN=false. Incoming feasibility checks are performed by CRAN.
+
+The current CRAN page lists no reverse dependencies. Mongolian terms in
+DESCRIPTION (aimags, soums, khoroos, Ulaanbaatar) and the terms crosswalk and
+subdistricts are intentional.
 
 ## R CMD check results
 
-0 errors | 0 warnings | 1 note
+0 errors | 0 warnings | 0 notes on all five GitHub Actions check jobs.
 
-* This is a new submission.
+Check run: https://github.com/temuulene/mongolmaps/actions/runs/40072467903
