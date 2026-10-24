@@ -38,6 +38,8 @@ navbar:
           href: articles/joining-data.html
         - text: Нэр ба код
           href: articles/names-and-codes.html
+        - text: Өгөгдөл, шинжилгээг шалгах
+          href: articles/audited-workflows.html
         - text: -------
         - text: Зам, ус, суурин
           href: articles/thematic-layers.html
@@ -93,6 +95,7 @@ articles:
       - articles/ulaanbaatar
       - articles/joining-data
       - articles/names-and-codes
+      - articles/audited-workflows
   - title: Бусад давхарга
     contents:
       - articles/thematic-layers
