@@ -1,9 +1,9 @@
 # Coordinate reference systems suited to Mongolia
 
-Returns a projection that keeps Mongolia's shape and area true. Maps of
-the whole country look best in an equal-area Albers or Lambert conic
-projection centred on Mongolia; maps of Ulaanbaatar look best in UTM
-zone 48N.
+Returns an equal-area or conformal projection suited to Mongolia. Maps
+of the whole country can use Albers equal-area or Lambert conformal
+conic projection centred on Mongolia; maps of Ulaanbaatar look best in
+UTM zone 48N.
 
 ## Usage
 
@@ -39,9 +39,12 @@ object.
 
 Other mapping helpers:
 [`mn_aimag_grid`](https://temuulene.github.io/mongolmaps/dev/reference/mn_aimag_grid.md),
+[`mn_erase_water()`](https://temuulene.github.io/mongolmaps/dev/reference/mn_erase_water.md),
+[`mn_inset_ub()`](https://temuulene.github.io/mongolmaps/dev/reference/mn_inset_ub.md),
 [`mn_label_points()`](https://temuulene.github.io/mongolmaps/dev/reference/mn_label_points.md),
 [`mn_leaflet()`](https://temuulene.github.io/mongolmaps/dev/reference/mn_leaflet.md),
 [`mn_map()`](https://temuulene.github.io/mongolmaps/dev/reference/mn_map.md),
+[`mn_ub_grid`](https://temuulene.github.io/mongolmaps/dev/reference/mn_ub_grid.md),
 [`theme_mn()`](https://temuulene.github.io/mongolmaps/dev/reference/theme_mn.md)
 
 ## Examples

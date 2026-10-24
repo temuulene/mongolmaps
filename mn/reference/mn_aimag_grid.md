@@ -18,9 +18,12 @@ mn_aimag_grid
 
 Газрын зураг зурах бусад функц:
 [`mn_crs()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_crs.md),
+[`mn_erase_water()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_erase_water.md),
+[`mn_inset_ub()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_inset_ub.md),
 [`mn_label_points()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_label_points.md),
 [`mn_leaflet()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_leaflet.md),
 [`mn_map()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_map.md),
+[`mn_ub_grid`](https://temuulene.github.io/mongolmaps/mn/reference/mn_ub_grid.md),
 [`theme_mn()`](https://temuulene.github.io/mongolmaps/mn/reference/theme_mn.md)
 
 ## Examples

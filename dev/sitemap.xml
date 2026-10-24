@@ -1,6 +1,7 @@
 <urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
 <url><loc>https://temuulene.github.io/mongolmaps/dev/LICENSE-text.html</loc></url>
 <url><loc>https://temuulene.github.io/mongolmaps/dev/LICENSE.html</loc></url>
+<url><loc>https://temuulene.github.io/mongolmaps/dev/articles/audited-workflows.html</loc></url>
 <url><loc>https://temuulene.github.io/mongolmaps/dev/articles/bags-from-nso.html</loc></url>
 <url><loc>https://temuulene.github.io/mongolmaps/dev/articles/index.html</loc></url>
 <url><loc>https://temuulene.github.io/mongolmaps/dev/articles/joining-data.html</loc></url>
@@ -22,8 +23,11 @@
 <url><loc>https://temuulene.github.io/mongolmaps/dev/reference/mn_country.html</loc></url>
 <url><loc>https://temuulene.github.io/mongolmaps/dev/reference/mn_crs.html</loc></url>
 <url><loc>https://temuulene.github.io/mongolmaps/dev/reference/mn_elevation.html</loc></url>
+<url><loc>https://temuulene.github.io/mongolmaps/dev/reference/mn_erase_water.html</loc></url>
 <url><loc>https://temuulene.github.io/mongolmaps/dev/reference/mn_example_population.html</loc></url>
+<url><loc>https://temuulene.github.io/mongolmaps/dev/reference/mn_inset_ub.html</loc></url>
 <url><loc>https://temuulene.github.io/mongolmaps/dev/reference/mn_join.html</loc></url>
+<url><loc>https://temuulene.github.io/mongolmaps/dev/reference/mn_join_audit.html</loc></url>
 <url><loc>https://temuulene.github.io/mongolmaps/dev/reference/mn_label_points.html</loc></url>
 <url><loc>https://temuulene.github.io/mongolmaps/dev/reference/mn_landcover.html</loc></url>
 <url><loc>https://temuulene.github.io/mongolmaps/dev/reference/mn_leaflet.html</loc></url>
@@ -32,12 +36,14 @@
 <url><loc>https://temuulene.github.io/mongolmaps/dev/reference/mn_neighbours.html</loc></url>
 <url><loc>https://temuulene.github.io/mongolmaps/dev/reference/mn_population.html</loc></url>
 <url><loc>https://temuulene.github.io/mongolmaps/dev/reference/mn_protected_areas.html</loc></url>
+<url><loc>https://temuulene.github.io/mongolmaps/dev/reference/mn_provenance.html</loc></url>
 <url><loc>https://temuulene.github.io/mongolmaps/dev/reference/mn_roads.html</loc></url>
 <url><loc>https://temuulene.github.io/mongolmaps/dev/reference/mn_settlements.html</loc></url>
 <url><loc>https://temuulene.github.io/mongolmaps/dev/reference/mn_soums.html</loc></url>
 <url><loc>https://temuulene.github.io/mongolmaps/dev/reference/mn_sources.html</loc></url>
 <url><loc>https://temuulene.github.io/mongolmaps/dev/reference/mn_translit.html</loc></url>
 <url><loc>https://temuulene.github.io/mongolmaps/dev/reference/mn_ub.html</loc></url>
+<url><loc>https://temuulene.github.io/mongolmaps/dev/reference/mn_ub_grid.html</loc></url>
 <url><loc>https://temuulene.github.io/mongolmaps/dev/reference/mn_zonal.html</loc></url>
 <url><loc>https://temuulene.github.io/mongolmaps/dev/reference/mongolmaps-package.html</loc></url>
 <url><loc>https://temuulene.github.io/mongolmaps/dev/reference/theme_mn.html</loc></url>

@@ -10,6 +10,8 @@
   дээр](https://temuulene.github.io/mongolmaps/mn/articles/joining-data.md):
 - [Нэр ба
   код](https://temuulene.github.io/mongolmaps/mn/articles/names-and-codes.md):
+- [Шалгаж баталгаажуулах нэгтгэл ба харьцуулах
+  зураг](https://temuulene.github.io/mongolmaps/mn/articles/audited-workflows.md):
 
 ### Бусад давхарга
 

@@ -7,9 +7,19 @@ Central, Eastern and Ulaanbaatar.
 ## Usage
 
 ``` r
-mn_country(resolution = c("low", "high"), lang = NULL, crs = NULL)
+mn_country(
+  resolution = c("low", "high"),
+  lang = NULL,
+  crs = NULL,
+  boundary_version = NULL
+)
 
-mn_regions(resolution = c("low", "high"), lang = NULL, crs = NULL)
+mn_regions(
+  resolution = c("low", "high"),
+  lang = NULL,
+  crs = NULL,
+  boundary_version = NULL
+)
 ```
 
 ## Arguments
@@ -35,6 +45,13 @@ mn_regions(resolution = c("low", "high"), lang = NULL, crs = NULL)
   [`mn_crs()`](https://temuulene.github.io/mongolmaps/dev/reference/mn_crs.md)),
   or any value accepted by
   [`sf::st_crs()`](https://r-spatial.github.io/sf/reference/st_crs.html).
+
+- boundary_version:
+
+  An available data revision, currently only `"data-v1"`. `NULL` uses
+  that revision. See
+  [`mn_vintages()`](https://temuulene.github.io/mongolmaps/dev/reference/mn_provenance.md);
+  statistical years do not imply matching historical boundaries.
 
 ## Value
 

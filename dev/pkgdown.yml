@@ -2,6 +2,7 @@ pandoc: 3.8.3
 pkgdown: 2.2.1
 pkgdown_sha: ~
 articles:
+  audited-workflows: audited-workflows.html
   articles/bags-from-nso: bags-from-nso.html
   joining-data: joining-data.html
   mongolmaps: mongolmaps.html
@@ -9,7 +10,7 @@ articles:
   articles/terrain-population: terrain-population.html
   articles/thematic-layers: thematic-layers.html
   ulaanbaatar: ulaanbaatar.html
-last_built: 2026-10-13T04:20Z
+last_built: 2026-10-24T06:20Z
 urls:
   reference: https://temuulene.github.io/mongolmaps/reference
   article: https://temuulene.github.io/mongolmaps/articles

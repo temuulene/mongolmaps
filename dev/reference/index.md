@@ -34,6 +34,8 @@ Maps at every administrative level, all with the same columns.
 
 - [`mn_join()`](https://temuulene.github.io/mongolmaps/dev/reference/mn_join.md)
   : Join your data to a map of Mongolia
+- [`mn_join_audit()`](https://temuulene.github.io/mongolmaps/dev/reference/mn_join_audit.md)
+  : Inspect the input records behind a map join
 - [`mn_example_population`](https://temuulene.github.io/mongolmaps/dev/reference/mn_example_population.md)
   : Mid-year resident population of Mongolia (example data)
 
@@ -71,6 +73,11 @@ Elevation, land cover and population grids (require the terra package).
 
 - [`mn_map()`](https://temuulene.github.io/mongolmaps/dev/reference/mn_map.md)
   : Quick maps of Mongolia with ggplot2
+- [`mn_inset_ub()`](https://temuulene.github.io/mongolmaps/dev/reference/mn_inset_ub.md)
+  [`mn_map_ub()`](https://temuulene.github.io/mongolmaps/dev/reference/mn_inset_ub.md)
+  : National and urban maps with Ulaanbaatar inset panels
+- [`mn_erase_water()`](https://temuulene.github.io/mongolmaps/dev/reference/mn_erase_water.md)
+  : Remove water from display geometry
 - [`theme_mn()`](https://temuulene.github.io/mongolmaps/dev/reference/theme_mn.md)
   : A clean map theme
 - [`mn_leaflet()`](https://temuulene.github.io/mongolmaps/dev/reference/mn_leaflet.md)
@@ -81,16 +88,23 @@ Elevation, land cover and population grids (require the terra package).
   : Coordinate reference systems suited to Mongolia
 - [`mn_aimag_grid`](https://temuulene.github.io/mongolmaps/dev/reference/mn_aimag_grid.md)
   : A grid layout of the aimags for small-multiple maps
+- [`mn_ub_grid`](https://temuulene.github.io/mongolmaps/dev/reference/mn_ub_grid.md)
+  : A geographic small-multiple grid for Ulaanbaatar districts
 
 ## Data sources and cache
 
 - [`mn_sources()`](https://temuulene.github.io/mongolmaps/dev/reference/mn_sources.md)
   [`mn_citation()`](https://temuulene.github.io/mongolmaps/dev/reference/mn_sources.md)
   : Data sources, licences and citations
+- [`mn_provenance()`](https://temuulene.github.io/mongolmaps/dev/reference/mn_provenance.md)
+  [`mn_vintages()`](https://temuulene.github.io/mongolmaps/dev/reference/mn_provenance.md)
+  : Inspect source provenance and available boundary revisions
 - [`mn_cache_dir()`](https://temuulene.github.io/mongolmaps/dev/reference/mn_cache_dir.md)
   [`mn_cache_list()`](https://temuulene.github.io/mongolmaps/dev/reference/mn_cache_dir.md)
   [`mn_cache_clear()`](https://temuulene.github.io/mongolmaps/dev/reference/mn_cache_dir.md)
   [`mn_download()`](https://temuulene.github.io/mongolmaps/dev/reference/mn_cache_dir.md)
+  [`mn_assets()`](https://temuulene.github.io/mongolmaps/dev/reference/mn_cache_dir.md)
+  [`mn_cache_verify()`](https://temuulene.github.io/mongolmaps/dev/reference/mn_cache_dir.md)
   : Manage downloaded map data
 
 ## Package

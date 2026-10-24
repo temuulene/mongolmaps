@@ -29,6 +29,7 @@ mn_soums(), mn_khoroos(), mn_bags() функцүүдийн
     <li><a class="dropdown-item" href="../articles/ulaanbaatar.html">Улаанбаатарын газрын зураг</a></li>
     <li><a class="dropdown-item" href="../articles/joining-data.html">Өгөгдлөө газрын зураг дээр</a></li>
     <li><a class="dropdown-item" href="../articles/names-and-codes.html">Нэр ба код</a></li>
+    <li><a class="dropdown-item" href="../articles/audited-workflows.html">Өгөгдөл, шинжилгээг шалгах</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><a class="dropdown-item" href="../articles/thematic-layers.html">Зам, ус, суурин</a></li>
     <li><a class="dropdown-item" href="../articles/terrain-population.html">Гадаргуу, газрын бүрхэвч, хүн ам</a></li>
@@ -64,7 +65,8 @@ mn_soums(), mn_khoroos(), mn_bags() функцүүдийн
 <span>  within <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  resolution <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"low"</span>, <span class="st">"high"</span><span class="op">)</span>,</span>
 <span>  lang <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  crs <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  crs <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  boundary_version <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -108,6 +110,9 @@ mn_soums(), mn_khoroos(), mn_bags() функцүүдийн
 өргөрөг (EPSG:4326) хэвээр. Монголд тохирсон проекцод <code>"albers"</code>,
 <code>"lcc"</code> эсвэл <code>"utm"</code>-ийг (<code><a href="mn_crs.html">mn_crs()</a></code>-ийг үзнэ үү), эсвэл
 <code><a href="https://r-spatial.github.io/sf/reference/st_crs.html" class="external-link">sf::st_crs()</a></code>-ийн хүлээн авах дурын утгыг өгнө.</p></dd>
+
+<dt id="arg-boundary-version">boundary_version<a class="anchor" aria-label="anchor" href="#arg-boundary-version"></a></dt>
+<dd><p>Хилийн өгөгдлийн хувилбар. Одоогоор зөвхөн <code>"data-v1"</code> бий. <code>NULL</code> нь энэ хувилбарыг ашиглана. Статистикийн он нь түүхэн хилийг сонгохгүй; <code><a href="mn_provenance.html">mn_vintages()</a></code>-ийг үзнэ үү.</p></dd>
 
 </dl></div>
     <div class="section level2">

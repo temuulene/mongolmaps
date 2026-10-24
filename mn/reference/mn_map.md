@@ -20,7 +20,12 @@ mn_map(
   lang = NULL,
   caption = TRUE,
   title = NULL,
-  label_size = 2.6
+  label_size = 2.6,
+  limits = NULL,
+  breaks = NULL,
+  bins = NULL,
+  midpoint = NULL,
+  na_label = "No data"
 )
 ```
 
@@ -88,6 +93,23 @@ mn_map(
 
   Нэрийн бичгийн хэмжээ.
 
+- limits, breaks:
+
+  Он эсвэл салангид зурагт ижил өнгөний хязгаар, тайлбарын таслах цэгийг
+  ашиглана.
+
+- bins:
+
+  Олон өнцөгтийн утгыг ангилах интервалын тоо эсвэл өсөх таслах цэгүүд.
+
+- midpoint:
+
+  Жишээ нь өөрчлөлтийг 0 төвтэй хоёр чиглэлийн өнгөөр харуулна.
+
+- na_label:
+
+  Дутуу утгын саарал өнгийг тайлбарлах бичвэр; `NULL` бол нэмэхгүй.
+
 ## Value
 
 `ggplot` объект.
@@ -97,8 +119,11 @@ mn_map(
 Газрын зураг зурах бусад функц:
 [`mn_aimag_grid`](https://temuulene.github.io/mongolmaps/mn/reference/mn_aimag_grid.md),
 [`mn_crs()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_crs.md),
+[`mn_erase_water()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_erase_water.md),
+[`mn_inset_ub()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_inset_ub.md),
 [`mn_label_points()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_label_points.md),
 [`mn_leaflet()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_leaflet.md),
+[`mn_ub_grid`](https://temuulene.github.io/mongolmaps/mn/reference/mn_ub_grid.md),
 [`theme_mn()`](https://temuulene.github.io/mongolmaps/mn/reference/theme_mn.md)
 
 ## Examples
@@ -113,7 +138,7 @@ mn_map(mn_khoroos(district = "Bayangol"), label = TRUE)
 
 pop <- mn_example_population[mn_example_population$Year == 2025, ]
 pop_map <- mn_join(pop, "Region", level = "aimag")
-#> ℹ Joining at the aimag level; dropped 6 rows for larger units ("country" and
+#> ℹ Joining at the aimag level; dropped 5 rows for larger units ("country" and
 #>   "region") and 2196 rows for smaller units ("soum" and "bag").
 mn_map(pop_map, fill = value, trans = "log10", title = "Population, 2025")
 

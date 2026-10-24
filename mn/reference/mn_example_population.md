@@ -43,7 +43,8 @@ mn_example_population
 ## See also
 
 Өгөгдөл холбох бусад:
-[`mn_join()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_join.md)
+[`mn_join()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_join.md),
+[`mn_join_audit()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_join_audit.md)
 
 ## Examples
 

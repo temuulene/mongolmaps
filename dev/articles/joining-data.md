@@ -77,7 +77,7 @@ head(mn_example_population)
 
 pop_2025 <- mn_example_population[mn_example_population$Year == 2025, ]
 aimag_pop <- mn_join(pop_2025, by = "Region", level = "aimag")
-#> ℹ Joining at the aimag level; dropped 6 rows for larger units ("country" and
+#> ℹ Joining at the aimag level; dropped 5 rows for larger units ("country" and
 #>   "region") and 2196 rows for smaller units ("soum" and "bag").
 mn_map(aimag_pop, fill = value / area_km2, title = "People per km2, 2025")
 ```
@@ -111,7 +111,7 @@ facets:
 ``` r
 
 pop_years <- mn_join(mn_example_population, by = "Region", level = "aimag")
-#> ℹ Joining at the aimag level; dropped 18 rows for larger units ("country" and
+#> ℹ Joining at the aimag level; dropped 15 rows for larger units ("country" and
 #>   "region") and 6588 rows for smaller units ("soum" and "bag").
 mn_map(pop_years, fill = value / 1000) + ggplot2::facet_wrap(~Year, ncol = 2)
 ```

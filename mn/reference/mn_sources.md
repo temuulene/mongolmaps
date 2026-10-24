@@ -1,11 +1,9 @@
 # Өгөгдлийн эх сурвалж, лиценз, иш татах
 
-`mn_sources()` багцын өгөгдлийн давхарга бүрийг жагсаана: хэн
-нийлүүлдэг, ямар лицензтэй, багцад ирдэг эсвэл татдаг, хэр шинэ.
-`mn_citation()` газрын зургийн доор тавих эх сурвалжийн бичвэрийг
-буцаана;
-[`mn_map()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_map.md)
-үүнийг тайлбар мөрөөр автоматаар нэмнэ.
+Эх үүсвэр, үйлчилгээ үзүүлэгч, лиценз, эхийн хувилбар, геометр болон
+кодын үе, эрх бүхий эсэхийг жагсаана. Эхийн авсан огноо нь захиргааны
+хил хүчин төгөлдөр болсон огноотой адил биш. `mn_citation()` нь
+давхаргын id эсвэл мета өгөгдөлтэй объектын эхийг ишлэх текст буцаана.
 
 ## Usage
 
@@ -37,13 +35,14 @@ mn_citation(layers = "admin")
 ## See also
 
 Эх сурвалж, кэшийн бусад функц:
-[`mn_cache_dir()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_cache_dir.md)
+[`mn_cache_dir()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_cache_dir.md),
+[`mn_provenance()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_provenance.md)
 
 ## Examples
 
 ``` r
 mn_sources()
-#> # A tibble: 16 × 11
+#> # A tibble: 16 × 17
 #>    id      title group delivery provider license license_url valid_on source_url
 #>    <chr>   <chr> <chr> <chr>    <chr>    <chr>   <chr>       <chr>    <chr>     
 #>  1 admin   Admi… admin bundled  Nationa… CC BY-… https://cr… 2020-10… https://d…
@@ -62,7 +61,9 @@ mn_sources()
 #> 14 worldc… Land… rast… upstream ESA Wor… CC BY … https://cr… 2021     https://e…
 #> 15 worldp… Popu… rast… upstream WorldPo… CC BY … https://cr… R2025A   https://w…
 #> 16 wdpa    Prot… envi… upstream UNEP-WC… WDPA t… https://ww… NA       https://w…
-#> # ℹ 2 more variables: attribution <chr>, notes <chr>
+#> # ℹ 8 more variables: attribution <chr>, notes <chr>, data_version <chr>,
+#> #   source_revision <chr>, geometry_vintage <chr>, code_vintage <chr>,
+#> #   effective_date <chr>, authority <chr>
 mn_citation(c("admin", "khoroos"))
 #> [1] "Boundaries: NSO Mongolia & OCHA (COD-AB), CC BY-IGO; Khoroos: khoroo-map (0BSD), unofficial"
 ```

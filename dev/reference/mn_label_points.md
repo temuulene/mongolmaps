@@ -26,8 +26,11 @@ An `sf` object of points with the attributes of `x`.
 Other mapping helpers:
 [`mn_aimag_grid`](https://temuulene.github.io/mongolmaps/dev/reference/mn_aimag_grid.md),
 [`mn_crs()`](https://temuulene.github.io/mongolmaps/dev/reference/mn_crs.md),
+[`mn_erase_water()`](https://temuulene.github.io/mongolmaps/dev/reference/mn_erase_water.md),
+[`mn_inset_ub()`](https://temuulene.github.io/mongolmaps/dev/reference/mn_inset_ub.md),
 [`mn_leaflet()`](https://temuulene.github.io/mongolmaps/dev/reference/mn_leaflet.md),
 [`mn_map()`](https://temuulene.github.io/mongolmaps/dev/reference/mn_map.md),
+[`mn_ub_grid`](https://temuulene.github.io/mongolmaps/dev/reference/mn_ub_grid.md),
 [`theme_mn()`](https://temuulene.github.io/mongolmaps/dev/reference/theme_mn.md)
 
 ## Examples

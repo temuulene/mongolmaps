@@ -19,7 +19,12 @@ mn_map(
   lang = NULL,
   caption = TRUE,
   title = NULL,
-  label_size = 2.6
+  label_size = 2.6,
+  limits = NULL,
+  breaks = NULL,
+  bins = NULL,
+  midpoint = NULL,
+  na_label = "No data"
 )
 ```
 
@@ -86,6 +91,26 @@ mn_map(
 
   Text size of labels.
 
+- limits, breaks:
+
+  Shared fill scale limits and legend breaks. Useful for comparing years
+  or inset panels.
+
+- bins:
+
+  For polygons, either a number of intervals or increasing numeric cut
+  points. Values are binned before plotting; `trans` applies only to
+  continuous scales.
+
+- midpoint:
+
+  For continuous polygon values, use a diverging scale around this value
+  (for example zero for differences).
+
+- na_label:
+
+  Caption key for missing polygon values. `NULL` disables it.
+
 ## Value
 
 A `ggplot` object.
@@ -95,8 +120,11 @@ A `ggplot` object.
 Other mapping helpers:
 [`mn_aimag_grid`](https://temuulene.github.io/mongolmaps/dev/reference/mn_aimag_grid.md),
 [`mn_crs()`](https://temuulene.github.io/mongolmaps/dev/reference/mn_crs.md),
+[`mn_erase_water()`](https://temuulene.github.io/mongolmaps/dev/reference/mn_erase_water.md),
+[`mn_inset_ub()`](https://temuulene.github.io/mongolmaps/dev/reference/mn_inset_ub.md),
 [`mn_label_points()`](https://temuulene.github.io/mongolmaps/dev/reference/mn_label_points.md),
 [`mn_leaflet()`](https://temuulene.github.io/mongolmaps/dev/reference/mn_leaflet.md),
+[`mn_ub_grid`](https://temuulene.github.io/mongolmaps/dev/reference/mn_ub_grid.md),
 [`theme_mn()`](https://temuulene.github.io/mongolmaps/dev/reference/theme_mn.md)
 
 ## Examples
@@ -111,7 +139,7 @@ mn_map(mn_khoroos(district = "Bayangol"), label = TRUE)
 
 pop <- mn_example_population[mn_example_population$Year == 2025, ]
 pop_map <- mn_join(pop, "Region", level = "aimag")
-#> ℹ Joining at the aimag level; dropped 6 rows for larger units ("country" and
+#> ℹ Joining at the aimag level; dropped 5 rows for larger units ("country" and
 #>   "region") and 2196 rows for smaller units ("soum" and "bag").
 mn_map(pop_map, fill = value, trans = "log10", title = "Population, 2025")
 

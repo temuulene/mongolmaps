@@ -20,14 +20,16 @@ mn_citation(layers = "admin")
 - layer, layers:
 
   Layer ids, such as `"admin"`, `"khoroos"` or `"settlements"`. `NULL`
-  lists all layers.
+  lists all layers. `mn_citation()` also accepts a tagged map or raster,
+  using its attached source provenance.
 
 ## Value
 
 `mn_sources()`: a tibble with columns `id`, `title`, `group`, `delivery`
 (`"bundled"`, `"release"` or `"upstream"`), `provider`, `license`,
-`license_url`, `valid_on`, `source_url`, `attribution` and `notes`.
-`mn_citation()`: a single string.
+`license_url`, `valid_on`, `source_url`, `attribution` and `notes`, plus
+source revision, code/geometry vintages, authority and effective date
+where known. `mn_citation()`: a single string.
 
 ## Details
 
@@ -37,13 +39,14 @@ under licences that require attribution (CC BY, ODbL).
 ## See also
 
 Other data sources and cache:
-[`mn_cache_dir()`](https://temuulene.github.io/mongolmaps/dev/reference/mn_cache_dir.md)
+[`mn_cache_dir()`](https://temuulene.github.io/mongolmaps/dev/reference/mn_cache_dir.md),
+[`mn_provenance()`](https://temuulene.github.io/mongolmaps/dev/reference/mn_provenance.md)
 
 ## Examples
 
 ``` r
 mn_sources()
-#> # A tibble: 16 × 11
+#> # A tibble: 16 × 17
 #>    id      title group delivery provider license license_url valid_on source_url
 #>    <chr>   <chr> <chr> <chr>    <chr>    <chr>   <chr>       <chr>    <chr>     
 #>  1 admin   Admi… admin bundled  Nationa… CC BY-… https://cr… 2020-10… https://d…
@@ -62,7 +65,9 @@ mn_sources()
 #> 14 worldc… Land… rast… upstream ESA Wor… CC BY … https://cr… 2021     https://e…
 #> 15 worldp… Popu… rast… upstream WorldPo… CC BY … https://cr… R2025A   https://w…
 #> 16 wdpa    Prot… envi… upstream UNEP-WC… WDPA t… https://ww… NA       https://w…
-#> # ℹ 2 more variables: attribution <chr>, notes <chr>
+#> # ℹ 8 more variables: attribution <chr>, notes <chr>, data_version <chr>,
+#> #   source_revision <chr>, geometry_vintage <chr>, code_vintage <chr>,
+#> #   effective_date <chr>, authority <chr>
 mn_citation(c("admin", "khoroos"))
 #> [1] "Boundaries: NSO Mongolia & OCHA (COD-AB), CC BY-IGO; Khoroos: khoroo-map (0BSD), unofficial"
 ```

@@ -11,15 +11,26 @@
 ## Usage
 
 ``` r
-mn_ub(resolution = c("low", "high"), lang = NULL, crs = NULL)
+mn_ub(
+  resolution = c("low", "high"),
+  lang = NULL,
+  crs = NULL,
+  boundary_version = NULL
+)
 
-mn_ub_districts(resolution = c("low", "high"), lang = NULL, crs = NULL)
+mn_ub_districts(
+  resolution = c("low", "high"),
+  lang = NULL,
+  crs = NULL,
+  boundary_version = NULL
+)
 
 mn_khoroos(
   district = NULL,
   resolution = c("low", "high"),
   lang = NULL,
-  crs = NULL
+  crs = NULL,
+  boundary_version = NULL
 )
 ```
 
@@ -54,6 +65,13 @@ mn_khoroos(
   Зөвхөн эдгээр дүүргийн хороодыг үлдээнэ (нэр эсвэл код, жишээ нь
   `"Баянгол"`, `"БГД"` эсвэл `"MN1107"`).
 
+- boundary_version:
+
+  Хилийн өгөгдлийн хувилбар. Одоогоор зөвхөн `"data-v1"` бий. `NULL` нь
+  энэ хувилбарыг ашиглана. Статистикийн он нь түүхэн хилийг сонгохгүй;
+  [`mn_vintages()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_provenance.md)-ийг
+  үзнэ үү.
+
 ## Value
 
 `sf` tibble; баганыг
@@ -75,10 +93,11 @@ mn_khoroos(
 хороодын 97%-ийн талбай 1%-иас бага өөрчлөгдсөн. Хорооны код, нэр ҮСХ-ыг
 дагана.
 
-Дүүргийн хил нь хороодынх нь нийлбэр. Хотын одоогийн хуваарийг дагах
-бөгөөд
+Дүүргийн хил нь хороодынх нь нийлбэр бөгөөд
 [`mn_soums()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_soums.md)
-дахь 2020 оны дүүргийн хилээс бага зэрэг ялгаатай байж болно.
+мөн энэ үүсмэл эхийг ашиглана. Улсын болон хотын давхаргыг тусад нь
+хялбаршуулдаг тул бага зөрүү гарч болно. Аль нь ч албан ёсны түүхэн
+дүүргийн зураг биш.
 
 ## See also
 

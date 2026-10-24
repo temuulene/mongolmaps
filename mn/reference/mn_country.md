@@ -7,9 +7,19 @@
 ## Usage
 
 ``` r
-mn_country(resolution = c("low", "high"), lang = NULL, crs = NULL)
+mn_country(
+  resolution = c("low", "high"),
+  lang = NULL,
+  crs = NULL,
+  boundary_version = NULL
+)
 
-mn_regions(resolution = c("low", "high"), lang = NULL, crs = NULL)
+mn_regions(
+  resolution = c("low", "high"),
+  lang = NULL,
+  crs = NULL,
+  boundary_version = NULL
+)
 ```
 
 ## Arguments
@@ -37,6 +47,13 @@ mn_regions(resolution = c("low", "high"), lang = NULL, crs = NULL)
   үзнэ үү), эсвэл
   [`sf::st_crs()`](https://r-spatial.github.io/sf/reference/st_crs.html)-ийн
   хүлээн авах дурын утгыг өгнө.
+
+- boundary_version:
+
+  Хилийн өгөгдлийн хувилбар. Одоогоор зөвхөн `"data-v1"` бий. `NULL` нь
+  энэ хувилбарыг ашиглана. Статистикийн он нь түүхэн хилийг сонгохгүй;
+  [`mn_vintages()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_provenance.md)-ийг
+  үзнэ үү.
 
 ## Value
 

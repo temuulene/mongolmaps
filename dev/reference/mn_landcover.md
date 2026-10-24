@@ -48,8 +48,10 @@ A categorical `terra` SpatRaster.
 
 ## Details
 
-- `resolution = "1km"` (default): national grid, majority class of each
-  square kilometre, downloaded once (about 2 MB).
+- `resolution = "1km"` (default): national grid generalized from source
+  overviews using modal resampling, downloaded once (about 2 MB). It is
+  not guaranteed to be the native 10 m majority of each square
+  kilometre.
 
 - `resolution = "10m"`: the original 10 m data for the area in `within`
   (a soum, district or smaller aimag), read from the cloud.

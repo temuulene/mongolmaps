@@ -1,9 +1,9 @@
 # Монголд тохирсон координатын систем
 
-Монгол Улсын хэлбэр, талбайг зөв хадгалах проекц буцаана. Улсын
-хэмжээний газрын зураг Монголын төвд тохируулсан Альберсийн тэнцүү
-талбайт эсвэл Ламбертын конус проекцоор, Улаанбаатарын газрын зураг
-UTM-ийн 48N бүсээр хамгийн сайн харагдана.
+Монголд тохирох проекц буцаана. Albers нь талбайг хадгалдаг, Lambert
+conformal conic нь орон нутгийн өнцөг, дүрсийг хадгалдаг. Нэг проекц бүх
+байрлалд талбай болон дүрсийг зэрэг хадгалахгүй. Улаанбаатар, төвийн
+жижиг талбайд UTM 48N ашиглаж болно.
 
 ## Usage
 
@@ -38,9 +38,12 @@ mn_crs(type = c("albers", "lcc", "utm", "wgs84"))
 
 Газрын зураг зурах бусад функц:
 [`mn_aimag_grid`](https://temuulene.github.io/mongolmaps/mn/reference/mn_aimag_grid.md),
+[`mn_erase_water()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_erase_water.md),
+[`mn_inset_ub()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_inset_ub.md),
 [`mn_label_points()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_label_points.md),
 [`mn_leaflet()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_leaflet.md),
 [`mn_map()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_map.md),
+[`mn_ub_grid`](https://temuulene.github.io/mongolmaps/mn/reference/mn_ub_grid.md),
 [`theme_mn()`](https://temuulene.github.io/mongolmaps/mn/reference/theme_mn.md)
 
 ## Examples

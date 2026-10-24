@@ -33,6 +33,7 @@
     <li><a class="dropdown-item" href="../articles/ulaanbaatar.html">Улаанбаатарын газрын зураг</a></li>
     <li><a class="dropdown-item" href="../articles/joining-data.html">Өгөгдлөө газрын зураг дээр</a></li>
     <li><a class="dropdown-item" href="../articles/names-and-codes.html">Нэр ба код</a></li>
+    <li><a class="dropdown-item" href="../articles/audited-workflows.html">Өгөгдөл, шинжилгээг шалгах</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><a class="dropdown-item" href="../articles/thematic-layers.html">Зам, ус, суурин</a></li>
     <li><a class="dropdown-item" href="../articles/terrain-population.html">Гадаргуу, газрын бүрхэвч, хүн ам</a></li>
@@ -73,7 +74,8 @@
 <span>    <span class="st">"type"</span><span class="op">)</span>,</span>
 <span>  fuzzy <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  max_dist <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  quiet <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span>  quiet <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  details <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -118,11 +120,13 @@
 <dd><p><code>TRUE</code> бол ойролцоо тааруулалтын мэдэгдлийг нууна. Давхардсан
 эсвэл тохироогүй утгын анхааруулга үргэлж гарна.</p></dd>
 
+<dt id="arg-details">details<a class="anchor" aria-label="anchor" href="#arg-details"></a></dt>
+<dd><p><code>TRUE</code> бол оролтын утга, хэвийн болгосон түлхүүр, эцэг код, таарсан код, арга, засварын зай болон боломжит нэгжийг агуулсан хүснэгт буцаана.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p><code>x</code>-тэй ижил урттай тэмдэгт мөрийн вектор. Тааруулж чадаагүй, эсвэл хэд
-хэдэн нэгжтэй тохирсон утга <code>NA</code> болж, анхааруулгад жагсагдана.</p>
+    <p>Анхдагчаар оролттой ижил урттай тэмдэгт вектор. <code>details = TRUE</code> үед мөр бүрийн дэлгэрэнгүй оношилгооны хүснэгт. Засварын зай нь зөв таарсан магадлал биш.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

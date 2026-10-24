@@ -34,6 +34,8 @@
 
 - [`mn_join()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_join.md)
   : Өөрийн өгөгдлийг Монголын газрын зурагтай холбох
+- [`mn_join_audit()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_join_audit.md)
+  : Газрын зурагтай нэгтгэсэн мөр бүрийн шийдвэрийг шалгах
 - [`mn_example_population`](https://temuulene.github.io/mongolmaps/mn/reference/mn_example_population.md)
   : Монгол Улсын жилийн дундаж хүн ам (жишээ өгөгдөл)
 
@@ -71,6 +73,11 @@
 
 - [`mn_map()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_map.md)
   : ggplot2-оор Монголын газрын зургийг хурдан зурах
+- [`mn_inset_ub()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_inset_ub.md)
+  [`mn_map_ub()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_inset_ub.md)
+  : Улаанбаатарыг томруулсан үндэсний болон хотын зураг
+- [`mn_erase_water()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_erase_water.md)
+  : Дүрслэх геометрээс усны талбайг хасах
 - [`theme_mn()`](https://temuulene.github.io/mongolmaps/mn/reference/theme_mn.md)
   : Газрын зургийн цэвэр загвар
 - [`mn_leaflet()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_leaflet.md)
@@ -81,16 +88,23 @@
   : Монголд тохирсон координатын систем
 - [`mn_aimag_grid`](https://temuulene.github.io/mongolmaps/mn/reference/mn_aimag_grid.md)
   : Олон жижиг газрын зурагт зориулсан аймгийн торон байрлал
+- [`mn_ub_grid`](https://temuulene.github.io/mongolmaps/mn/reference/mn_ub_grid.md)
+  : Улаанбаатарын дүүргийн жижиг олон зурагт зориулсан тор
 
 ## Өгөгдлийн эх сурвалж, кэш
 
 - [`mn_sources()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_sources.md)
   [`mn_citation()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_sources.md)
   : Өгөгдлийн эх сурвалж, лиценз, иш татах
+- [`mn_provenance()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_provenance.md)
+  [`mn_vintages()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_provenance.md)
+  : Өгөгдлийн гарал үүсэл болон боломжит хилийн хувилбар
 - [`mn_cache_dir()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_cache_dir.md)
   [`mn_cache_list()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_cache_dir.md)
   [`mn_cache_clear()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_cache_dir.md)
   [`mn_download()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_cache_dir.md)
+  [`mn_assets()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_cache_dir.md)
+  [`mn_cache_verify()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_cache_dir.md)
   : Татаж авсан газрын зургийн өгөгдлийг удирдах
 
 ## Багц

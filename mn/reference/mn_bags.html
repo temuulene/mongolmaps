@@ -31,6 +31,7 @@
     <li><a class="dropdown-item" href="../articles/ulaanbaatar.html">Улаанбаатарын газрын зураг</a></li>
     <li><a class="dropdown-item" href="../articles/joining-data.html">Өгөгдлөө газрын зураг дээр</a></li>
     <li><a class="dropdown-item" href="../articles/names-and-codes.html">Нэр ба код</a></li>
+    <li><a class="dropdown-item" href="../articles/audited-workflows.html">Өгөгдөл, шинжилгээг шалгах</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><a class="dropdown-item" href="../articles/thematic-layers.html">Зам, ус, суурин</a></li>
     <li><a class="dropdown-item" href="../articles/terrain-population.html">Гадаргуу, газрын бүрхэвч, хүн ам</a></li>
@@ -71,7 +72,12 @@
 <span>  crs <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">mn_read_bags</span><span class="op">(</span><span class="va">path</span>, code_col <span class="op">=</span> <span class="cn">NULL</span>, check_nesting <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">mn_read_bags</span><span class="op">(</span></span>
+<span>  <span class="va">path</span>,</span>
+<span>  code_col <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  check_nesting <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  nesting_tolerance <span class="op">=</span> <span class="fl">0.001</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -89,10 +95,7 @@
 
 
 <dt id="arg-resolution">resolution<a class="anchor" aria-label="anchor" href="#arg-resolution"></a></dt>
-<dd><p><code>"low"</code> (анхдагч) нь багцтай хамт ирдэг, ихэнх газрын
-зурагт тохирох хялбаршуулсан хилийг ашиглана. <code>"high"</code> нь бүрэн
-нарийвчлалтай хилийг нэг удаа (ойролцоогоор 10 МБ) татаж, хадгална;
-<code><a href="mn_cache_dir.html">mn_cache_dir()</a></code>-ийг үзнэ үү.</p></dd>
+<dd><p>Бусад функцтэй нийцүүлэхээр утгыг шалгана; нийлүүлсэн геометрийг хоёр тохиргоонд хэвээр хадгална.</p></dd>
 
 
 <dt id="arg-lang">lang<a class="anchor" aria-label="anchor" href="#arg-lang"></a></dt>
@@ -114,8 +117,10 @@
 
 
 <dt id="arg-check-nesting">check_nesting<a class="anchor" aria-label="anchor" href="#arg-check-nesting"></a></dt>
-<dd><p><code>TRUE</code> (анхдагч) бол баг сумаасаа гадуур байвал
-зогсоно.</p></dd>
+<dd><p><code>TRUE</code> бол бүх олон өнцөгтийн гадагш гарсан талбайг шалгана. Зөвхөн доторх нэг цэгээр шалгахгүй.</p></dd>
+
+<dt id="arg-nesting-tolerance">nesting_tolerance<a class="anchor" aria-label="anchor" href="#arg-nesting-tolerance"></a></dt>
+<dd><p>Багийн талбайн эцэг сумын хилээс гадагш байх зөвшөөрөгдөх хувь; 0-1 хооронд, анхдагч 0.001 буюу 0.1%. Давхардсан кодын бүх хэсгийг нэгтгэнэ.</p></dd>
 
 </dl></div>
     <div class="section level2">

@@ -11,7 +11,8 @@ mn_zonal(
   r,
   x = NULL,
   fun = c("sum", "mean", "min", "max", "median"),
-  name = "value"
+  name = "value",
+  exact = TRUE
 )
 ```
 
@@ -36,6 +37,13 @@ mn_zonal(
 - name:
 
   Name of the new column.
+
+- exact:
+
+  If `TRUE` (default), weight sums and means by the fraction of each
+  cell covered by the polygon. This assumes uniform values within cells.
+  Means weight cell fractions, not physical cell areas. Median requires
+  `exact = FALSE`. Missing coverage returns `NA`, not zero.
 
 ## Value
 

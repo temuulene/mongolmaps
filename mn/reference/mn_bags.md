@@ -18,7 +18,12 @@ mn_bags(
   crs = NULL
 )
 
-mn_read_bags(path, code_col = NULL, check_nesting = TRUE)
+mn_read_bags(
+  path,
+  code_col = NULL,
+  check_nesting = TRUE,
+  nesting_tolerance = 0.001
+)
 ```
 
 ## Arguments
@@ -35,11 +40,8 @@ mn_read_bags(path, code_col = NULL, check_nesting = TRUE)
 
 - resolution:
 
-  `"low"` (анхдагч) нь багцтай хамт ирдэг, ихэнх газрын зурагт тохирох
-  хялбаршуулсан хилийг ашиглана. `"high"` нь бүрэн нарийвчлалтай хилийг
-  нэг удаа (ойролцоогоор 10 МБ) татаж, хадгална;
-  [`mn_cache_dir()`](https://temuulene.github.io/mongolmaps/mn/reference/mn_cache_dir.md)-ийг
-  үзнэ үү.
+  Бусад функцтэй нийцүүлэхээр утгыг шалгана; нийлүүлсэн геометрийг хоёр
+  тохиргоонд хэвээр хадгална.
 
 - lang:
 
@@ -64,7 +66,14 @@ mn_read_bags(path, code_col = NULL, check_nesting = TRUE)
 
 - check_nesting:
 
-  `TRUE` (анхдагч) бол баг сумаасаа гадуур байвал зогсоно.
+  `TRUE` бол бүх олон өнцөгтийн гадагш гарсан талбайг шалгана. Зөвхөн
+  доторх нэг цэгээр шалгахгүй.
+
+- nesting_tolerance:
+
+  Багийн талбайн эцэг сумын хилээс гадагш байх зөвшөөрөгдөх хувь; 0-1
+  хооронд, анхдагч 0.001 буюу 0.1%. Давхардсан кодын бүх хэсгийг
+  нэгтгэнэ.
 
 ## Value
 

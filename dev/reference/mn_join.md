@@ -19,7 +19,14 @@ mn_join(
   drop_other_levels = TRUE,
   resolution = c("low", "high"),
   lang = NULL,
-  crs = NULL
+  crs = NULL,
+  fuzzy = TRUE,
+  max_dist = NULL,
+  strict = FALSE,
+  strata = NULL,
+  value_cols = NULL,
+  ub_policy = c("prefer_city", "prefer_region", "error", "none"),
+  duplicates = c("allow", "warn", "error")
 )
 ```
 
@@ -78,11 +85,45 @@ mn_join(
   or any value accepted by
   [`sf::st_crs()`](https://r-spatial.github.io/sf/reference/st_crs.html).
 
+- fuzzy, max_dist:
+
+  Passed to
+  [`mn_match()`](https://temuulene.github.io/mongolmaps/dev/reference/mn_match.md).
+
+- strict:
+
+  If `TRUE`, reject missing, unmatched, ambiguous or fuzzy keys, missing
+  boundaries, duplicate statistical keys and UB conflicts. Deliberately
+  excluded levels and geographic areas are allowed.
+
+- strata:
+
+  Character vector of statistical key columns, such as
+  `c("Year", "Sex")`. `NULL` recognizes common dimension names. Supply
+  this explicitly for other dimensions or repeated records.
+
+- value_cols:
+
+  Columns to reconcile for Ulaanbaatar. `NULL` uses numeric columns
+  except keys and recognized dimensions.
+
+- ub_policy:
+
+  `"prefer_city"` (default), `"prefer_region"`, `"error"` on conflicting
+  values, or `"none"` to disable reconciliation.
+
+- duplicates:
+
+  `"allow"` (default), `"warn"` or `"error"` for repeated pcode/stratum
+  keys. Strict mode always rejects duplicates.
+
 ## Value
 
 An `sf` tibble: the boundaries of every unit at the level, with the
 columns of `data` added. Columns of `data` whose names clash with
 boundary columns get the suffix `.data`.
+[`mn_join_audit()`](https://temuulene.github.io/mongolmaps/dev/reference/mn_join_audit.md)
+returns one diagnostic record per original input row.
 
 ## Details
 
@@ -96,10 +137,11 @@ column (such as `Region`) rather than the label column: labels such as
 **Ulaanbaatar.** The Ulaanbaatar region (NSO code `5`) and the capital
 (`511`) cover the same area. Many NSO tables, health tables in
 particular, give the capital's figures only on the region row and leave
-`511` empty or out. At the aimag level, when the region rows hold more
-values than the `511` rows, they are used for Ulaanbaatar, with a
-message. A few tables use `511` for something else (for example
-"Other"); check the labels of such tables before joining.
+`511` empty or out. At the aimag level, missing capital values are
+filled from the region within each statistical stratum. Conflicts are
+reported; `ub_policy` controls which source wins. A few tables use `511`
+for something else (for example "Other"); check their metadata first.
+Use `ub_policy = "none"` for tables where this equivalence is invalid.
 
 **Several rows per unit.** Data with several rows per place (for example
 one per year) give several copies of that place's polygon, ready for
@@ -111,7 +153,8 @@ codes but no boundary; their rows are reported and left out.
 ## See also
 
 Other joining data:
-[`mn_example_population`](https://temuulene.github.io/mongolmaps/dev/reference/mn_example_population.md)
+[`mn_example_population`](https://temuulene.github.io/mongolmaps/dev/reference/mn_example_population.md),
+[`mn_join_audit()`](https://temuulene.github.io/mongolmaps/dev/reference/mn_join_audit.md)
 
 ## Examples
 
@@ -119,7 +162,7 @@ Other joining data:
 # Mid-year population from NSO, by aimag and year
 pop <- mn_example_population[mn_example_population$Year == 2025, ]
 mn_join(pop, by = "Region", level = "aimag")
-#> ℹ Joining at the aimag level; dropped 6 rows for larger units ("country" and
+#> ℹ Joining at the aimag level; dropped 5 rows for larger units ("country" and
 #>   "region") and 2196 rows for smaller units ("soum" and "bag").
 #> Simple feature collection with 22 features and 19 fields
 #> Geometry type: MULTIPOLYGON

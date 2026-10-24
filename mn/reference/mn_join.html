@@ -29,6 +29,7 @@
     <li><a class="dropdown-item" href="../articles/ulaanbaatar.html">Улаанбаатарын газрын зураг</a></li>
     <li><a class="dropdown-item" href="../articles/joining-data.html">Өгөгдлөө газрын зураг дээр</a></li>
     <li><a class="dropdown-item" href="../articles/names-and-codes.html">Нэр ба код</a></li>
+    <li><a class="dropdown-item" href="../articles/audited-workflows.html">Өгөгдөл, шинжилгээг шалгах</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><a class="dropdown-item" href="../articles/thematic-layers.html">Зам, ус, суурин</a></li>
     <li><a class="dropdown-item" href="../articles/terrain-population.html">Гадаргуу, газрын бүрхэвч, хүн ам</a></li>
@@ -68,7 +69,14 @@
 <span>  drop_other_levels <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  resolution <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"low"</span>, <span class="st">"high"</span><span class="op">)</span>,</span>
 <span>  lang <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  crs <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  crs <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  fuzzy <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  max_dist <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  strict <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  strata <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  value_cols <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  ub_policy <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"prefer_city"</span>, <span class="st">"prefer_region"</span>, <span class="st">"error"</span>, <span class="st">"none"</span><span class="op">)</span>,</span>
+<span>  duplicates <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"allow"</span>, <span class="st">"warn"</span>, <span class="st">"error"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -126,38 +134,46 @@
 <code>"lcc"</code> эсвэл <code>"utm"</code>-ийг (<code><a href="mn_crs.html">mn_crs()</a></code>-ийг үзнэ үү), эсвэл
 <code><a href="https://r-spatial.github.io/sf/reference/st_crs.html" class="external-link">sf::st_crs()</a></code>-ийн хүлээн авах дурын утгыг өгнө.</p></dd>
 
+<dt id="arg-fuzzy-max-dist">fuzzy, max_dist<a class="anchor" aria-label="anchor" href="#arg-fuzzy-max-dist"></a></dt>
+<dd><p><code><a href="mn_match.html">mn_match()</a></code>-д дамжуулах ойролцоо тааруулалтын тохиргоо.</p></dd>
+
+
+<dt id="arg-strict">strict<a class="anchor" aria-label="anchor" href="#arg-strict"></a></dt>
+<dd><p><code>TRUE</code> бол дутуу, таараагүй, олон боломжтой, ойролцоо таарсан түлхүүр, хилгүй нэгж, давхардсан статистикийн түлхүүр болон нийслэлийн зөрүүтэй утгад алдаа өгнө.</p></dd>
+
+
+<dt id="arg-strata">strata<a class="anchor" aria-label="anchor" href="#arg-strata"></a></dt>
+<dd><p>Он, сар, хүйс, үзүүлэлт зэрэг статистикийн бүлэглэх баганын нэрс. <code>NULL</code> нь түгээмэл нэрсийг танина; бусад хэмжээсийг тодорхой өгнө.</p></dd>
+
+
+<dt id="arg-value-cols">value_cols<a class="anchor" aria-label="anchor" href="#arg-value-cols"></a></dt>
+<dd><p>Улаанбаатарын утгыг нөхөх хэмжигдэхүүний баганууд. <code>NULL</code> нь түлхүүрээс бусад тоон багануудыг авна.</p></dd>
+
+
+<dt id="arg-ub-policy">ub_policy<a class="anchor" aria-label="anchor" href="#arg-ub-policy"></a></dt>
+<dd><p><code>"prefer_city"</code> нь нийслэлийн дутуу утгыг бүсээс нөхнө; <code>"prefer_region"</code> нь эсрэг дараалалтай; <code>"error"</code> нь зөрүүтэй утгад зогсоно; <code>"none"</code> нь нөхөлтийг идэвхгүй болгоно.</p></dd>
+
+
+<dt id="arg-duplicates">duplicates<a class="anchor" aria-label="anchor" href="#arg-duplicates"></a></dt>
+<dd><p>Нэг газар, статистикийн бүлэгт давхардсан түлхүүрийг <code>"allow"</code>, <code>"warn"</code>, <code>"error"</code> горимоор хянана.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p><code>sf</code> tibble: тухайн түвшний бүх нэгжийн хил, <code>data</code>-гийн баганууд
-нэмэгдсэн. Хилийн баганатай ижил нэртэй <code>data</code>-гийн баганад <code>.data</code>
-дагавар залгана.</p>
+    <p>Бүх зорилтот нэгжийг агуулсан <code>sf</code> хүснэгт. Давхардсан баганын нэрд <code>.data</code> залгана. <code><a href="mn_join_audit.html">mn_join_audit()</a></code> нь анхны оролтын мөр бүрийн тайланг буцаана.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p><strong>Түвшин.</strong> <code>level</code> нь <code>NULL</code> бол хамгийн олон тохирол бүхий түвшнийг
-ашиглана. ҮСХ-ны хүснэгтүүд нэг баганад хэд хэдэн түвшнийг (улсын дүн, бүс,
-аймаг, сум ...) агуулдаг; бусад түвшний мөрийг мэдэгдэлтэйгээр хасна
-(<code>drop_other_levels</code>-ийг үзнэ үү). ҮСХ-ны хүснэгтийг нэрийн бус кодын
-баганаар (жишээ нь <code>Region</code>) холбоно уу: "Улаанбаатар" гэх мэт нэр нь бүс,
-аймгийн аль алиныг заадаг.</p>
-<p><strong>Улаанбаатар.</strong> Улаанбаатар бүс (ҮСХ-ны код <code>5</code>) болон нийслэл
-(<code>511</code>) нь ижил нутаг дэвсгэрийг хамардаг. ҮСХ-ны олон хүснэгт, ялангуяа
-эрүүл мэндийн хүснэгтүүд нийслэлийн тоог зөвхөн бүсийн мөрөнд өгч, <code>511</code>-ийг
-хоосон орхих эсвэл огт оруулдаггүй. Аймгийн түвшинд бүсийн мөрүүд <code>511</code>-ийн
-мөрүүдээс олон утгатай бол тэдгээрийг Улаанбаатарт мэдэгдэлтэйгээр ашиглана.
-Цөөн хүснэгт <code>511</code>-ийг өөр зүйлд (жишээ нь "Бусад") ашигладаг; ийм
-хүснэгтийг холбохоосоо өмнө шошгыг нь шалгана уу.</p>
-<p><strong>Нэг нэгжид олон мөр.</strong> Нэг газарт олон мөр (жишээ нь жил бүрт нэг)
-байвал тухайн газрын олигоныг хэд хэдэн удаа давтаж,
-<code><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html" class="external-link">ggplot2::facet_wrap()</a></code>-д бэлэн болгоно.</p>
-<p><strong>Хилгүй газар.</strong> Тосгон, хөдөөгийн баг ҮСХ-ны кодтой ч хилгүй; тэдгээрийн
-мөрийг мэдэгдээд хасна.</p>
+    <p><strong>Түвшин ба газарзүйн хүрээ.</strong> <code>within</code> нь нэр тааруулах боломжит нэгжийг хязгаарлана. <code>by_parent</code> нь мөр бүрийн эцэг нэгжийг заана. Бусад түвшний нийлбэр мөрийг тусад нь мэдээлнэ.</p>
+<p><strong>Улаанбаатар.</strong> ҮСХ-ны 5 болон 511 код тухайн хүснэгтэд нийслэлийн ижил статистикийг илэрхийлж байгааг мета өгөгдлөөс нягтална. Утгыг нийт хүснэгтээр бус, <code>strata</code>-д өгсөн он, сар, хүйс зэрэг бүлэг тус бүрд нөхнө. Хоёр кодын дутуу бус утга зөрвөл анхааруулга өгнө. Хэмжээс бүрийг тодорхой зааж, буруу утгаар хэрэглэсэн кодыг автоматаар нэгтгэхгүй байх шаардлагатай.</p>
+<p><strong>Шалгалтын мөр.</strong> <code><a href="mn_join_audit.html">mn_join_audit()</a></code> нь оролтын анхны мөр бүрийн үр дүнг хадгална: нэгтгэсэн, нөхсөн, орлуулсан, хүрээнээс гадуур, өөр түвшин, таараагүй эсвэл хилгүй. Мөрийн дугаар нь анхны хүснэгтэд хамаарна. Холимог түвшний нийлбэр болон бүрэлдэхүүн хэсгийг давхар тоолж, нийт хадгалсан хувийг тооцож болохгүй.</p>
+<p>Нэг газар олон он, үзүүлэлттэй байж болно; тэдгээрийг статистикийн түлхүүрт оруулна. Хилгүй баг, тосгоныг тусад нь мэдээлж хасна.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p>Өгөгдөл холбох бусад:
-<code><a href="mn_example_population.html">mn_example_population</a></code></p></div>
+<code><a href="mn_example_population.html">mn_example_population</a></code>,
+<code><a href="mn_join_audit.html">mn_join_audit()</a></code></p></div>
     </div>
 
     <div class="section level2">
@@ -165,7 +181,7 @@
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Mid-year population from NSO, by aimag and year</span></span></span>
 <span class="r-in"><span><span class="va">pop</span> <span class="op">&lt;-</span> <span class="va">mn_example_population</span><span class="op">[</span><span class="va">mn_example_population</span><span class="op">$</span><span class="va">Year</span> <span class="op">==</span> <span class="fl">2025</span>, <span class="op">]</span></span></span>
 <span class="r-in"><span><span class="fu">mn_join</span><span class="op">(</span><span class="va">pop</span>, by <span class="op">=</span> <span class="st">"Region"</span>, level <span class="op">=</span> <span class="st">"aimag"</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Joining at the aimag level; dropped 6 rows for larger units (<span style="color: #0000BB;">"country"</span> and</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Joining at the aimag level; dropped 5 rows for larger units (<span style="color: #0000BB;">"country"</span> and</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>   <span style="color: #0000BB;">"region"</span>) and 2196 rows for smaller units (<span style="color: #0000BB;">"soum"</span> and <span style="color: #0000BB;">"bag"</span>).</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Simple feature collection with 22 features and 19 fields</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Geometry type: MULTIPOLYGON</span>

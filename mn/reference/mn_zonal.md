@@ -10,7 +10,8 @@ mn_zonal(
   r,
   x = NULL,
   fun = c("sum", "mean", "min", "max", "median"),
-  name = "value"
+  name = "value",
+  exact = TRUE
 )
 ```
 
@@ -36,6 +37,12 @@ mn_zonal(
 - name:
 
   Шинэ баганын нэр.
+
+- exact:
+
+  `TRUE` (анхдагч) бол нийлбэр болон дунджийг нүдний олон өнцөгтөд
+  багтсан хувиар жигнэнэ. Нүд дотор утга жигд тархсан гэж үзнэ. Медианд
+  `exact = FALSE` шаардлагатай.
 
 ## Value
 

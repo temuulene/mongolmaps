@@ -28,6 +28,7 @@ is kept, so places without data still appear on the map (with NA)."><meta proper
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/ulaanbaatar.html">Maps of Ulaanbaatar</a></li>
     <li><a class="dropdown-item" href="../articles/joining-data.html">Putting your data on a map</a></li>
     <li><a class="dropdown-item" href="../articles/names-and-codes.html">Names and codes</a></li>
+    <li><a class="dropdown-item" href="../articles/audited-workflows.html">Auditable joins and comparable maps</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><a class="dropdown-item" href="../articles/index.html">More articles...</a></li>
   </ul></li>
@@ -66,7 +67,14 @@ is kept, so places without data still appear on the map (with <code>NA</code>).<
 <span>  drop_other_levels <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  resolution <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"low"</span>, <span class="st">"high"</span><span class="op">)</span>,</span>
 <span>  lang <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  crs <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  crs <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  fuzzy <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  max_dist <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  strict <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  strata <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  value_cols <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  ub_policy <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"prefer_city"</span>, <span class="st">"prefer_region"</span>, <span class="st">"error"</span>, <span class="st">"none"</span><span class="op">)</span>,</span>
+<span>  duplicates <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"allow"</span>, <span class="st">"warn"</span>, <span class="st">"error"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -124,12 +132,44 @@ keeps longitude/latitude (EPSG:4326). Use <code>"albers"</code>, <code>"lcc"</co
 <code>"utm"</code> for a projection suited to Mongolia (see <code><a href="mn_crs.html">mn_crs()</a></code>), or any
 value accepted by <code><a href="https://r-spatial.github.io/sf/reference/st_crs.html" class="external-link">sf::st_crs()</a></code>.</p></dd>
 
+
+<dt id="arg-fuzzy-max-dist">fuzzy, max_dist<a class="anchor" aria-label="anchor" href="#arg-fuzzy-max-dist"></a></dt>
+<dd><p>Passed to <code><a href="mn_match.html">mn_match()</a></code>.</p></dd>
+
+
+<dt id="arg-strict">strict<a class="anchor" aria-label="anchor" href="#arg-strict"></a></dt>
+<dd><p>If <code>TRUE</code>, reject missing, unmatched, ambiguous or fuzzy
+keys, missing boundaries, duplicate statistical keys and UB conflicts.
+Deliberately excluded levels and geographic areas are allowed.</p></dd>
+
+
+<dt id="arg-strata">strata<a class="anchor" aria-label="anchor" href="#arg-strata"></a></dt>
+<dd><p>Character vector of statistical key columns, such as
+<code>c("Year", "Sex")</code>. <code>NULL</code> recognizes common dimension names.
+Supply this explicitly for other dimensions or repeated records.</p></dd>
+
+
+<dt id="arg-value-cols">value_cols<a class="anchor" aria-label="anchor" href="#arg-value-cols"></a></dt>
+<dd><p>Columns to reconcile for Ulaanbaatar. <code>NULL</code> uses
+numeric columns except keys and recognized dimensions.</p></dd>
+
+
+<dt id="arg-ub-policy">ub_policy<a class="anchor" aria-label="anchor" href="#arg-ub-policy"></a></dt>
+<dd><p><code>"prefer_city"</code> (default), <code>"prefer_region"</code>,
+<code>"error"</code> on conflicting values, or <code>"none"</code> to disable reconciliation.</p></dd>
+
+
+<dt id="arg-duplicates">duplicates<a class="anchor" aria-label="anchor" href="#arg-duplicates"></a></dt>
+<dd><p><code>"allow"</code> (default), <code>"warn"</code> or <code>"error"</code> for repeated
+pcode/stratum keys. Strict mode always rejects duplicates.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>An <code>sf</code> tibble: the boundaries of every unit at the level, with
 the columns of <code>data</code> added. Columns of <code>data</code> whose names clash with
-boundary columns get the suffix <code>.data</code>.</p>
+boundary columns get the suffix <code>.data</code>. <code><a href="mn_join_audit.html">mn_join_audit()</a></code> returns
+one diagnostic record per original input row.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
@@ -142,10 +182,11 @@ a message (see <code>drop_other_levels</code>). Join NSO tables by their code co
 <p><strong>Ulaanbaatar.</strong> The Ulaanbaatar region (NSO code <code>5</code>) and the capital
 (<code>511</code>) cover the same area. Many NSO tables, health tables in
 particular, give the capital's figures only on the region row and leave
-<code>511</code> empty or out. At the aimag level, when the region rows hold more
-values than the <code>511</code> rows, they are used for Ulaanbaatar, with a
-message. A few tables use <code>511</code> for something else (for example "Other");
-check the labels of such tables before joining.</p>
+<code>511</code> empty or out. At the aimag level, missing capital values are filled
+from the region within each statistical stratum. Conflicts are reported;
+<code>ub_policy</code> controls which source wins. A few tables use <code>511</code> for
+something else (for example "Other"); check their metadata first.
+Use <code>ub_policy = "none"</code> for tables where this equivalence is invalid.</p>
 <p><strong>Several rows per unit.</strong> Data with several rows per place (for
 example one per year) give several copies of that place's polygon, ready
 for <code><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html" class="external-link">ggplot2::facet_wrap()</a></code>.</p>
@@ -155,7 +196,8 @@ codes but no boundary; their rows are reported and left out.</p>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p>Other joining data:
-<code><a href="mn_example_population.html">mn_example_population</a></code></p></div>
+<code><a href="mn_example_population.html">mn_example_population</a></code>,
+<code><a href="mn_join_audit.html">mn_join_audit()</a></code></p></div>
     </div>
 
     <div class="section level2">
@@ -163,7 +205,7 @@ codes but no boundary; their rows are reported and left out.</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Mid-year population from NSO, by aimag and year</span></span></span>
 <span class="r-in"><span><span class="va">pop</span> <span class="op">&lt;-</span> <span class="va">mn_example_population</span><span class="op">[</span><span class="va">mn_example_population</span><span class="op">$</span><span class="va">Year</span> <span class="op">==</span> <span class="fl">2025</span>, <span class="op">]</span></span></span>
 <span class="r-in"><span><span class="fu">mn_join</span><span class="op">(</span><span class="va">pop</span>, by <span class="op">=</span> <span class="st">"Region"</span>, level <span class="op">=</span> <span class="st">"aimag"</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Joining at the aimag level; dropped 6 rows for larger units (<span style="color: #0000BB;">"country"</span> and</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Joining at the aimag level; dropped 5 rows for larger units (<span style="color: #0000BB;">"country"</span> and</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>   <span style="color: #0000BB;">"region"</span>) and 2196 rows for smaller units (<span style="color: #0000BB;">"soum"</span> and <span style="color: #0000BB;">"bag"</span>).</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Simple feature collection with 22 features and 19 fields</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Geometry type: MULTIPOLYGON</span>

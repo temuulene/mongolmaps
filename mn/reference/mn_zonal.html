@@ -25,6 +25,7 @@
     <li><a class="dropdown-item" href="../articles/ulaanbaatar.html">Улаанбаатарын газрын зураг</a></li>
     <li><a class="dropdown-item" href="../articles/joining-data.html">Өгөгдлөө газрын зураг дээр</a></li>
     <li><a class="dropdown-item" href="../articles/names-and-codes.html">Нэр ба код</a></li>
+    <li><a class="dropdown-item" href="../articles/audited-workflows.html">Өгөгдөл, шинжилгээг шалгах</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><a class="dropdown-item" href="../articles/thematic-layers.html">Зам, ус, суурин</a></li>
     <li><a class="dropdown-item" href="../articles/terrain-population.html">Гадаргуу, газрын бүрхэвч, хүн ам</a></li>
@@ -57,7 +58,8 @@
 <span>  <span class="va">r</span>,</span>
 <span>  x <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  fun <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"sum"</span>, <span class="st">"mean"</span>, <span class="st">"min"</span>, <span class="st">"max"</span>, <span class="st">"median"</span><span class="op">)</span>,</span>
-<span>  name <span class="op">=</span> <span class="st">"value"</span></span>
+<span>  name <span class="op">=</span> <span class="st">"value"</span>,</span>
+<span>  exact <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -82,6 +84,9 @@
 
 <dt id="arg-name">name<a class="anchor" aria-label="anchor" href="#arg-name"></a></dt>
 <dd><p>Шинэ баганын нэр.</p></dd>
+
+<dt id="arg-exact">exact<a class="anchor" aria-label="anchor" href="#arg-exact"></a></dt>
+<dd><p><code>TRUE</code> (анхдагч) бол нийлбэр болон дунджийг нүдний олон өнцөгтөд багтсан хувиар жигнэнэ. Нүд дотор утга жигд тархсан гэж үзнэ. Медианд <code>exact = FALSE</code> шаардлагатай.</p></dd>
 
 </dl></div>
     <div class="section level2">

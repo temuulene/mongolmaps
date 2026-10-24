@@ -2,12 +2,63 @@
 
 ## mongolmaps (development version)
 
+- Raster summaries now use fractional cell coverage by default; empty
+  coverage returns NA. Median extraction explicitly requires exact =
+  FALSE. Population export reprojection preserves the retained
+  native-grid total and records its normalization; native-grid
+  extraction remains recommended for analysis.
+
+- Joins respect global geographic scope during matching and level
+  detection. Ulaanbaatar region/capital records are reconciled within
+  statistical strata, with explicit value columns, conflict policies and
+  inspectable row decisions.
+
+- Added strict joins, duplicate-key controls, detailed name matching and
+  [`mn_join_audit()`](https://temuulene.github.io/mongolmaps/dev/reference/mn_join_audit.md).
+
+- Bag imports dissolve multipart records, measure areas, check
+  whole-polygon nesting and refresh after file changes. Registered bags
+  also work as clipping targets and appear as available in the code
+  dictionary.
+
+- Added
+  [`mn_provenance()`](https://temuulene.github.io/mongolmaps/dev/reference/mn_provenance.md),
+  [`mn_vintages()`](https://temuulene.github.io/mongolmaps/dev/reference/mn_provenance.md)
+  and boundary-version validation. The catalog reports the available
+  snapshot honestly; no historical geometry has been added. Thematic
+  captions and leaflet credits use source metadata.
+
+- Cache downloads are verified and replaced with rollback on publication
+  failure. Failed protected-area refreshes retain valid cached data.
+  Archive extraction is checked; old revisions are retained until
+  explicitly cleared.
+
+- Added
+  [`mn_assets()`](https://temuulene.github.io/mongolmaps/dev/reference/mn_cache_dir.md),
+  WorldPop asset prefetch/clearing and
+  [`mn_cache_verify()`](https://temuulene.github.io/mongolmaps/dev/reference/mn_cache_dir.md).
+  Partial cloud-tile coverage errors by default.
+
+- Added
+  [`mn_inset_ub()`](https://temuulene.github.io/mongolmaps/dev/reference/mn_inset_ub.md),
+  [`mn_map_ub()`](https://temuulene.github.io/mongolmaps/dev/reference/mn_inset_ub.md),
+  shared map limits/breaks, binned and diverging polygon scales,
+  `mn_ub_grid` and
+  [`mn_erase_water()`](https://temuulene.github.io/mongolmaps/dev/reference/mn_erase_water.md).
+  Insets preserve analytical coordinates, and large raster maps limit
+  display work before reprojection.
+
+- Added an audited-workflows guide and corrected boundary source, CRS
+  and generalized land-cover descriptions. The minimum dplyr version is
+  1.1.1.
+
 - [`mn_join()`](https://temuulene.github.io/mongolmaps/dev/reference/mn_join.md)
   no longer leaves Ulaanbaatar blank for NSO tables that give the
   capital’s figures only on the Ulaanbaatar region row (code 5) and
   leave the capital’s own row (511) empty or out, as many health tables
   do. At the aimag level the region rows are used for Ulaanbaatar when
   they hold more values than the 511 rows.
+
 - The package has a hex logo.
 
 ## mongolmaps 0.1.0
