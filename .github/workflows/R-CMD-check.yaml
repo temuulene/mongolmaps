@@ -64,7 +64,10 @@ jobs:
           }
         shell: Rscript {0}
 
+      # Match CRAN: remote-data examples are opt-in for website builds.
       - uses: r-lib/actions/check-r-package@v2
+        env:
+          NOT_CRAN: "false"
         with:
           args: 'c("--no-manual", "--as-cran")'
           error-on: '"warning"'
