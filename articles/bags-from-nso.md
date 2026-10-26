@@ -1,79 +1,98 @@
-# Bags: using boundaries from NSO
+# Bring your own bag boundaries
+
+Bags are the smallest rural administrative units. mongolmaps includes
+their names and codes, but **does not include rural bag boundaries**.
+Khoroos in Ulaanbaatar are available separately through
+[`mn_khoroos()`](https://temuulene.github.io/mongolmaps/reference/mn_ub.md).
+
+This guide explains how to use a boundary file you have obtained. It
+cannot display your bag map until you supply that file.
 
 ``` r
 
 library(mongolmaps)
 ```
 
-Bags (baga) are the smallest rural units: each soum is divided into a
-few bags, about 1,650 in all. mongolmaps knows every bag’s code and
-name:
+## Check the available codes
+
+Use the aimag and soum together when a place name is repeated.
 
 ``` r
 
-mn_codes("bag", within = "Khovd")
-#> # A tibble: 91 × 16
-#>    pcode    name   name_en name_mn name_mns level type  number iso_code nso_code
-#>    <chr>    <chr>  <chr>   <chr>   <chr>    <chr> <chr>  <int> <chr>    <chr>   
-#>  1 MN840151 1-r b… 1-r ba… 1-р ба… 1-r bag… bag   bag        1 NA       1840151 
-#>  2 MN840153 2-r b… 2-r ba… 2-р ба… 2-r bag… bag   bag        2 NA       1840153 
-#>  3 MN840155 3-r b… 3-r ba… 3-р ба… 3-r bag… bag   bag        3 NA       1840155 
-#>  4 MN840157 4-r b… 4-r ba… 4-р ба… 4-r bag… bag   bag        4 NA       1840157 
-#>  5 MN840159 5-r b… 5-r ba… 5-р ба… 5-r bag… bag   bag        5 NA       1840159 
-#>  6 MN840161 6-r b… 6-r ba… 6-р ба… 6-r bag… bag   bag        6 NA       1840161 
-#>  7 MN840163 7-r b… 7-r ba… 7-р ба… 7-r bag… bag   bag        7 NA       1840163 
-#>  8 MN840165 8-r b… 8-r ba… 8-р ба… 8-r bag… bag   bag        8 NA       1840165 
-#>  9 MN840167 9-r b… 9-r ba… 9-р ба… 9-r bag… bag   bag        9 NA       1840167 
-#> 10 MN840169 10-r … 10-r b… 10-р б… 10-r ba… bag   bag       10 NA       1840169 
-#> # ℹ 81 more rows
-#> # ℹ 6 more variables: parent_pcode <chr>, region_pcode <chr>,
-#> #   aimag_pcode <chr>, soum_pcode <chr>, area_km2 <dbl>, has_geometry <lgl>
+bag_codes <- mn_codes("bag", within = "MN8401")
+knitr::kable(head(bag_codes[c("name_en", "nso_code", "has_geometry")]))
 ```
 
-but **not their boundaries**. No open dataset publishes them: GADM,
-geoBoundaries, the humanitarian COD and OpenStreetMap all stop at soums.
-The National Statistics Office of Mongolia (NSO) shares bag boundaries
-on request.
+| name_en                  | nso_code | has_geometry |
+|:-------------------------|:---------|:-------------|
+| 1-r bag, Alagtolgoi      | 1840151  | FALSE        |
+| 2-r bag, Baatarkhairkhan | 1840153  | FALSE        |
+| 3-r bag, Bichigt         | 1840155  | FALSE        |
+| 4-r bag, Bugat           | 1840157  | FALSE        |
+| 5-r bag, Buyant          | 1840159  | FALSE        |
+| 6-r bag, Jargalan        | 1840161  | FALSE        |
 
-## Getting the file
+`has_geometry = FALSE` means the package has a code but no included
+shape. The parent code in this example identifies Jargalant soum in
+Khovd; use `mn_codes("soum", within = "Khovd")` to find other soums.
 
-Write to NSO at <international@nso.mn> and ask for:
+## Obtain a boundary file
 
-- bag boundaries as a shapefile or GeoPackage;
-- each bag’s NSO code (7 digits, such as `1830151`) or its soum code and
-  bag number;
-- the date the boundaries are valid for;
-- the terms of use (can you share maps? can the file be redistributed?).
+Ask NSO for a shapefile or GeoPackage containing:
 
-## Using the file
+- A unique NSO bag code for each shape, preferably stored as text.
+- The date the boundaries apply to.
+- The file’s coordinate reference system.
+- Terms covering use of the data, published maps and redistribution.
 
-Point mongolmaps at the file:
+You can contact NSO through its official website. Confirm availability
+and terms with the provider; the package cannot supply this file.
+
+## Read and check your file
+
+The examples below are recipes. Replace the path with your actual file
+before running them. If you have a shapefile, keep its `.shp`, `.shx`,
+`.dbf` and projection files together.
 
 ``` r
 
-bags <- mn_bags(path = "bags_from_nso.gpkg")
-mn_map(mn_bags(aimag = "Khovd", path = "bags_from_nso.gpkg"), label = TRUE)
+bags <- mn_read_bags("bags_from_nso.gpkg", code_col = "nso_code")
+khovd_bags <- mn_bags(aimag = "Khovd", path = "bags_from_nso.gpkg")
+mn_map(khovd_bags, title = "Bag boundaries in Khovd")
 ```
 
-or register it once, for example in your `.Rprofile`, and forget about
-it:
+Replace `"nso_code"` with the code column in your file, or omit
+`code_col` to let the reader detect it. The reader checks the codes,
+geometry and nesting inside each soum. If a check fails, inspect the
+file and its boundary date before disabling a check.
+
+## Use the file in later calls
+
+Register the file for the current R session:
 
 ``` r
 
 options(mongolmaps.bags_path = "C:/data/bags_from_nso.gpkg")
-
-mn_bags(aimag = "Khovd")
-mn_admin("bag") # khoroos and bags together
-mn_join(my_bag_table, by = "code", level = "bag")
+khovd_bags <- mn_bags(aimag = "Khovd")
 ```
 
-[`mn_read_bags()`](https://temuulene.github.io/mongolmaps/reference/mn_bags.md)
-checks the file when it is first read:
+To keep that setting across sessions, add the
+[`options()`](https://rdrr.io/r/base/options.html) line to your
+`.Rprofile`. With the file registered, `mn_admin("bag")` can combine
+available bag and khoroo boundaries.
 
-- it finds the column of bag codes (or use `code_col`);
-- every code must be a known NSO bag code;
-- every bag must lie inside its soum (turn off with
-  `check_nesting = FALSE`).
+## Join a statistics table
 
-Bags then get the same columns as every other map in the package, so
-joining NSO bag tables works like joining aimag tables.
+This recipe expects your own `my_bag_table` with a `code` column.
+
+``` r
+
+bag_map <- mn_join(my_bag_table, by = "code", level = "bag")
+mn_join_audit(bag_map)
+```
+
+The joined data use the same columns as other package maps. Check for
+unmatched codes and missing shapes before drawing the map. See [Putting
+your data on a
+map](https://temuulene.github.io/mongolmaps/articles/joining-data.md)
+for the full workflow.

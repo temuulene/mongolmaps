@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>Гадаргуу, газрын бүрхэвч, хүн ам, тусгай хамгаалалттай газар • mongolmaps</title>
+<title>Газрын гадарга, бүрхэвч, хүн амыг зурах • mongolmaps</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/Inter-0.4.10/font.css" rel="stylesheet">
@@ -13,7 +13,7 @@
 <link href="../deps/Inter_Tight-0.4.10/font.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
-<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><script src="../extra.js"></script><meta property="og:title" content="Гадаргуу, газрын бүрхэвч, хүн ам, тусгай хамгаалалттай газар">
+<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><script src="../extra.js"></script><meta property="og:title" content="Газрын гадарга, бүрхэвч, хүн амыг зурах">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -67,7 +67,7 @@
 
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
-      <img src="../logo.svg" class="logo" alt=""><h1>Гадаргуу, газрын бүрхэвч, хүн ам, тусгай хамгаалалттай газар</h1>
+      <img src="../logo.svg" class="logo" alt=""><h1>Газрын гадарга, бүрхэвч, хүн амыг зурах</h1>
             
       
       <small class="dont-index">Source: <a href="https://github.com/temuulene/mongolmaps/blob/main/vignettes/articles/terrain-population.Rmd" class="external-link"><code>vignettes/articles/terrain-population.Rmd</code></a></small>
@@ -76,13 +76,15 @@
 
     
     
+<p>Растер нь нүд бүртээ өндөршил, хүн ам зэрэг утга хадгалсан тор юм.
+Эдгээр жишээ улсын 1 км-ийн торыг нэг удаа татаж хадгална. Эхлээд terra,
+ggplot2-ийг суулгана:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"terra"</span>, <span class="st">"ggplot2"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/temuulene/mongolmaps" class="external-link">mongolmaps</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span>mongolmaps.lang <span class="op">=</span> <span class="st">"mn"</span><span class="op">)</span></span></code></pre></div>
-<p>Эдгээр давхарга нь растер (нүдэн тор) бөгөөд <code>terra</code>
-багцын SpatRaster хэлбэрээр ирнэ. Улсын 1 км-ийн торыг нэг удаа татаж
-хадгална; илүү нарийн торыг нэг газраар нь үүлнээс шууд уншина.</p>
+<span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span>mongolmaps.lang <span class="op">=</span> <span class="st">"mn"</span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span></code></pre></div>
 <table class="table">
 <colgroup>
 <col width="33%">
@@ -91,84 +93,134 @@
 </colgroup>
 <thead><tr class="header">
 <th>Функц</th>
-<th>Нарийвчлал</th>
+<th>Утга</th>
 <th>Эх сурвалж</th>
 </tr></thead>
 <tbody>
 <tr class="odd">
-<td>
-<code><a href="../reference/mn_elevation.html">mn_elevation()</a></code>, <code><a href="../reference/mn_elevation.html">mn_hillshade()</a></code>
-</td>
-<td>1 км (улсаар), 90 м (газраар)</td>
+<td><code><a href="../reference/mn_elevation.html">mn_elevation()</a></code></td>
+<td>Өндөршил, метрээр</td>
 <td>Copernicus DEM GLO-90</td>
 </tr>
 <tr class="even">
-<td><code><a href="../reference/mn_landcover.html">mn_landcover()</a></code></td>
-<td>1 км (улсаар), 10 м (газраар)</td>
-<td>ESA WorldCover 2021</td>
+<td><code><a href="../reference/mn_elevation.html">mn_hillshade()</a></code></td>
+<td>Өндөршлөөс тооцсон сүүдэрлэл</td>
+<td>Copernicus DEM GLO-90</td>
 </tr>
 <tr class="odd">
-<td><code><a href="../reference/mn_population.html">mn_population()</a></code></td>
-<td>1 км, 100 м; 2015-2030 он</td>
-<td>WorldPop</td>
+<td><code><a href="../reference/mn_landcover.html">mn_landcover()</a></code></td>
+<td>Газрын бүрхэвчийн ангилал</td>
+<td>ESA WorldCover 2021</td>
+</tr>
+<tr class="even">
+<td><code>mn_population(2025)</code></td>
+<td>Нүд бүрийн тооцоолсон хүн ам</td>
+<td>WorldPop R2025A</td>
 </tr>
 </tbody>
 </table>
-<p><code><a href="../reference/mn_map.html">mn_map()</a></code> растерийг ч зохих өнгө, эх сурвалжийн
-тэмдэглэлтэй зурна.</p>
 <div class="section level2">
-<h2 id="гадаргуу">Гадаргуу<a class="anchor" aria-label="anchor" href="#%D0%B3%D0%B0%D0%B4%D0%B0%D1%80%D0%B3%D1%83%D1%83"></a>
+<h2 id="өндөршил">Өндөршил<a class="anchor" aria-label="anchor" href="#%D3%A9%D0%BD%D0%B4%D3%A9%D1%80%D1%88%D0%B8%D0%BB"></a>
 </h2>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/mn_map.html">mn_map</a></span><span class="op">(</span><span class="fu"><a href="../reference/mn_elevation.html">mn_elevation</a></span><span class="op">(</span><span class="op">)</span>, title <span class="op">=</span> <span class="st">"Өндөршил (м)"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="fu"><a href="../reference/mn_aimags.html">mn_aimags</a></span><span class="op">(</span><span class="op">)</span>, fill <span class="op">=</span> <span class="cn">NA</span>, colour <span class="op">=</span> <span class="st">"white"</span>, linewidth <span class="op">=</span> <span class="fl">0.2</span><span class="op">)</span></span></code></pre></div>
-<p><img src="terrain-population_files/figure-html/elevation-1.png" class="r-plt" alt="" width="1400"></p>
-<p>Рельефийн сүүдэр бусад давхаргын дэвсгэрт тохиромжтой:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/mn_map.html">mn_map</a></span><span class="op">(</span><span class="fu"><a href="../reference/mn_elevation.html">mn_hillshade</a></span><span class="op">(</span><span class="op">)</span>, caption <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="fu"><a href="../reference/mn_aimags.html">mn_aimags</a></span><span class="op">(</span><span class="op">)</span>, fill <span class="op">=</span> <span class="cn">NA</span>, colour <span class="op">=</span> <span class="st">"white"</span>, linewidth <span class="op">=</span> <span class="fl">0.3</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="fu"><a href="../reference/mn_settlements.html">mn_settlements</a></span><span class="op">(</span>type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"capital"</span>, <span class="st">"aimag_centre"</span><span class="op">)</span><span class="op">)</span>, colour <span class="op">=</span> <span class="st">"firebrick"</span>, size <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></code></pre></div>
-<p><img src="terrain-population_files/figure-html/hillshade-1.png" class="r-plt" alt="" width="1400"></p>
-<p>Нэг газарт 90 м-ийн нарийвчлалаар:</p>
+<code class="sourceCode R"><span><span class="va">elevation</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mn_elevation.html">mn_elevation</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/mn_map.html">mn_map</a></span><span class="op">(</span><span class="va">elevation</span>, title <span class="op">=</span> <span class="st">"Өндөршил"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="fu"><a href="../reference/mn_aimags.html">mn_aimags</a></span><span class="op">(</span><span class="op">)</span>, fill <span class="op">=</span> <span class="cn">NA</span>, colour <span class="op">=</span> <span class="st">"white"</span>, linewidth <span class="op">=</span> <span class="fl">0.2</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="st">"Метр"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="terrain-population_files/figure-html/elevation-1.png" class="r-plt" alt="Монгол Улсын өндөршил, метрээр." width="100%"></p>
+</div>
+<div class="section level2">
+<h2 id="сүүдэрлэсэн-газрын-гадарга">Сүүдэрлэсэн газрын гадарга<a class="anchor" aria-label="anchor" href="#%D1%81%D2%AF%D2%AF%D0%B4%D1%8D%D1%80%D0%BB%D1%8D%D1%81%D1%8D%D0%BD-%D0%B3%D0%B0%D0%B7%D1%80%D1%8B%D0%BD-%D0%B3%D0%B0%D0%B4%D0%B0%D1%80%D0%B3%D0%B0"></a>
+</h2>
+<p>Сүүдэрлэл нь хэлбэрийг тодруулсан хийсвэр гэрэлтүүлэг; өндөршил эсвэл
+ургамлын хэмжилт биш.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/mn_map.html">mn_map</a></span><span class="op">(</span><span class="fu"><a href="../reference/mn_elevation.html">mn_hillshade</a></span><span class="op">(</span><span class="st">"90m"</span>, within <span class="op">=</span> <span class="st">"Улаанбаатар"</span><span class="op">)</span>, caption <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="fu"><a href="../reference/mn_ub.html">mn_ub_districts</a></span><span class="op">(</span><span class="op">)</span>, fill <span class="op">=</span> <span class="cn">NA</span>, colour <span class="op">=</span> <span class="st">"firebrick"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: Raster pixels are placed at uneven horizontal intervals and will be shifted</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Consider using `geom_tile()` instead.</span></span>
-<span><span class="co">#&gt; Raster pixels are placed at uneven horizontal intervals and will be shifted</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Consider using `geom_tile()` instead.</span></span></code></pre></div>
-<p><img src="terrain-population_files/figure-html/bogd-1.png" class="r-plt" alt="" width="1400"></p>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/mn_map.html">mn_map</a></span><span class="op">(</span><span class="fu"><a href="../reference/mn_elevation.html">mn_hillshade</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="fu"><a href="../reference/mn_aimags.html">mn_aimags</a></span><span class="op">(</span><span class="op">)</span>, fill <span class="op">=</span> <span class="cn">NA</span>, colour <span class="op">=</span> <span class="st">"white"</span>, linewidth <span class="op">=</span> <span class="fl">0.3</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="fu"><a href="../reference/mn_settlements.html">mn_settlements</a></span><span class="op">(</span>type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"capital"</span>, <span class="st">"aimag_centre"</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>          colour <span class="op">=</span> <span class="st">"firebrick"</span>, size <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"Газрын гадарга, аймгийн төвүүд"</span>,</span>
+<span>       caption <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/strwrap.html" class="external-link">strwrap</a></span><span class="op">(</span><span class="fu"><a href="../reference/mn_sources.html">mn_citation</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"admin"</span>, <span class="st">"elevation_1km"</span>, <span class="st">"settlements"</span><span class="op">)</span><span class="op">)</span>, width <span class="op">=</span> <span class="fl">95</span><span class="op">)</span>, collapse <span class="op">=</span> <span class="st">"\n"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p><img src="terrain-population_files/figure-html/hillshade-1.png" class="r-plt" alt="Сүүдэрлэсэн газрын гадарга, аймгийн хил, төвүүд." width="100%"></p>
+<p><code>within</code>-ээр нэг газар сонгож болно. Энэ жишээ хадгалсан 1
+км-ийн тороо ашиглах тул тусдаа нарийн файл татахгүй.</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/mn_map.html">mn_map</a></span><span class="op">(</span><span class="fu"><a href="../reference/mn_elevation.html">mn_hillshade</a></span><span class="op">(</span>within <span class="op">=</span> <span class="st">"Ulaanbaatar"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="fu"><a href="../reference/mn_ub.html">mn_ub_districts</a></span><span class="op">(</span><span class="op">)</span>, fill <span class="op">=</span> <span class="cn">NA</span>, colour <span class="op">=</span> <span class="st">"firebrick"</span>, linewidth <span class="op">=</span> <span class="fl">0.4</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"Улаанбаатар орчмын газрын гадарга"</span>, subtitle <span class="op">=</span> <span class="st">"1 км-ийн тор"</span>,</span>
+<span>       caption <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/strwrap.html" class="external-link">strwrap</a></span><span class="op">(</span><span class="fu"><a href="../reference/mn_sources.html">mn_citation</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"admin"</span>, <span class="st">"khoroos"</span>, <span class="st">"elevation_1km"</span><span class="op">)</span><span class="op">)</span>, width <span class="op">=</span> <span class="fl">95</span><span class="op">)</span>, collapse <span class="op">=</span> <span class="st">"\n"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p><img src="terrain-population_files/figure-html/local-terrain-1.png" class="r-plt" alt="Улаанбаатар орчмын 1 км-ийн газрын гадаргын тор, дүүргийн хил." width="100%"></p>
 </div>
 <div class="section level2">
 <h2 id="газрын-бүрхэвч">Газрын бүрхэвч<a class="anchor" aria-label="anchor" href="#%D0%B3%D0%B0%D0%B7%D1%80%D1%8B%D0%BD-%D0%B1%D2%AF%D1%80%D1%85%D1%8D%D0%B2%D1%87"></a>
 </h2>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/mn_map.html">mn_map</a></span><span class="op">(</span><span class="fu"><a href="../reference/mn_landcover.html">mn_landcover</a></span><span class="op">(</span><span class="op">)</span>, title <span class="op">=</span> <span class="st">"Газрын бүрхэвч, 2021"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="terrain-population_files/figure-html/landcover-1.png" class="r-plt" alt="" width="1400"></p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/mn_map.html">mn_map</a></span><span class="op">(</span><span class="fu"><a href="../reference/mn_landcover.html">mn_landcover</a></span><span class="op">(</span><span class="op">)</span>, title <span class="op">=</span> <span class="st">"Газрын бүрхэвч, 2021"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="st">"Бүрхэвч"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>legend.text <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">8</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p><img src="terrain-population_files/figure-html/landcover-1.png" class="r-plt" alt="2021 оны газрын бүрхэвчийн ангилал." width="100%"></p>
+<p>1 км-ийн давхарга нь 10 м-ийн эх сурвалжийг ерөнхийлсөн зураг. Улсын
+тоймд тохиромжтой ч жижиг хэсэг бүрийг нарийн илэрхийлэхгүй.</p>
 </div>
 <div class="section level2">
 <h2 id="хүн-ам">Хүн ам<a class="anchor" aria-label="anchor" href="#%D1%85%D2%AF%D0%BD-%D0%B0%D0%BC"></a>
 </h2>
-<p><code><a href="../reference/mn_zonal.html">mn_zonal()</a></code> торыг дурын олигоноор, жишээ нь сумаар
-нэгтгэнэ:</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">pop</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mn_population.html">mn_population</a></span><span class="op">(</span><span class="fl">2025</span><span class="op">)</span></span>
-<span><span class="va">soums</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mn_zonal.html">mn_zonal</a></span><span class="op">(</span><span class="va">pop</span>, <span class="fu"><a href="../reference/mn_soums.html">mn_soums</a></span><span class="op">(</span><span class="op">)</span>, name <span class="op">=</span> <span class="st">"population"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/mn_map.html">mn_map</a></span><span class="op">(</span><span class="va">soums</span>, fill <span class="op">=</span> <span class="va">population</span> <span class="op">/</span> <span class="va">area_km2</span>, trans <span class="op">=</span> <span class="st">"log10"</span>,</span>
-<span>       title <span class="op">=</span> <span class="st">"Сумын хүн амын нягтрал (хүн/км²), 2025 (WorldPop)"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="terrain-population_files/figure-html/population-1.png" class="r-plt" alt="" width="1400"></p>
+<p>WorldPop нь <strong>нүд бүрийн хүн амын тооцоо</strong>. ҮСХ-ны албан
+ёсны дүнгээс зөрж болно. Сүүлийн тооллогоос хойших онууд нь төсөөлөл
+юм.</p>
+<p><code><a href="../reference/mn_zonal.html">mn_zonal()</a></code> олон өнцөгтийн доторх утгыг нэгтгэнэ. Анхны
+хүн амын тор дээр тооцоод, талбайд хувааж нягтрал гаргана. Хурдан
+ажиллуулахын тулд нэг аймгаас эхэлнэ. Улсын дүн гаргахдаа
+<code>within = "Khovd"</code> болон <code>aimag = "Khovd"</code>
+хоёуланг хасна; бүх сумыг нэгтгэхэд илүү удаан.</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">pop</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mn_population.html">mn_population</a></span><span class="op">(</span><span class="fl">2025</span>, within <span class="op">=</span> <span class="st">"Khovd"</span><span class="op">)</span></span>
+<span><span class="va">soums</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mn_zonal.html">mn_zonal</a></span><span class="op">(</span><span class="va">pop</span>, <span class="fu"><a href="../reference/mn_soums.html">mn_soums</a></span><span class="op">(</span>aimag <span class="op">=</span> <span class="st">"Khovd"</span><span class="op">)</span>, fun <span class="op">=</span> <span class="st">"sum"</span>, name <span class="op">=</span> <span class="st">"population"</span><span class="op">)</span></span>
+<span><span class="va">soums</span><span class="op">$</span><span class="va">density</span> <span class="op">&lt;-</span> <span class="va">soums</span><span class="op">$</span><span class="va">population</span> <span class="op">/</span> <span class="va">soums</span><span class="op">$</span><span class="va">area_km2</span></span>
+<span><span class="va">soums</span><span class="op">$</span><span class="va">density</span><span class="op">[</span><span class="va">soums</span><span class="op">$</span><span class="va">density</span> <span class="op">==</span> <span class="fl">0</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="cn">NA_real_</span></span>
+<span><span class="fu"><a href="../reference/mn_map.html">mn_map</a></span><span class="op">(</span><span class="va">soums</span>, fill <span class="op">=</span> <span class="va">density</span>, trans <span class="op">=</span> <span class="st">"log10"</span>,</span>
+<span>       title <span class="op">=</span> <span class="st">"Хүн амын тооцоолсон нягтрал, 2025"</span>,</span>
+<span>       na_label <span class="op">=</span> <span class="st">"Тэг үнэлгээ эсвэл торон өгөгдөлгүй"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="st">"Хүн/км²"</span>, subtitle <span class="op">=</span> <span class="st">"Ховдын сумд | WorldPop тооцоолол"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="terrain-population_files/figure-html/population-1.png" class="r-plt" alt="Ховд аймгийн сумдын 2025 оны хүн амын тооцоолсон нягтрал, WorldPop." width="100%"></p>
+<p>Логарифмын өнгөний хуваарьт тэгийг дүрслэх боломжгүй. Энэ зурагт тэг
+тооцоог торон өгөгдөлгүй газартай хамт саарлаар харуулсан. Анхны
+<code>population</code> багана өөрчлөгдөөгүй. Албан ёсны тоонд <a href="joining-data.html">ҮСХ-ны өгөгдөл холбох жишээ</a>-г ашиглана.</p>
+<p>Хил дээр нүдний хамрагдсан хувиар жигнэнэ. Энэ нь нүд дотор хүн ам
+жигд тархсан гэж үздэг. 1 км-ийн тор барилга тус бүрийн хүн амыг
+тогтоохгүй. Дундаж нь нүдний хамралтын хувиар жигнэгддэг; өргөрөг,
+уртрагийн тор дээр энэ нь бодит талбайн жин биш. Медианд
+<code>exact = FALSE</code> хэрэглэнэ.</p>
 </div>
 <div class="section level2">
 <h2 id="тусгай-хамгаалалттай-газар">Тусгай хамгаалалттай газар<a class="anchor" aria-label="anchor" href="#%D1%82%D1%83%D1%81%D0%B3%D0%B0%D0%B9-%D1%85%D0%B0%D0%BC%D0%B3%D0%B0%D0%B0%D0%BB%D0%B0%D0%BB%D1%82%D1%82%D0%B0%D0%B9-%D0%B3%D0%B0%D0%B7%D0%B0%D1%80"></a>
 </h2>
-<p>Дэлхийн тусгай хамгаалалттай газрын мэдээллийн сан (WDPA)-г дахин
-тараах эрхгүй тул анх ашиглахад UNEP-WCMC-ээс татна:</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<p>UNEP-WCMC-ээс татаж, 90 хоногийн дараа шинэчилнэ. Ашиглахын өмнө
+нөхцөлийг шалгана. Эх өгөгдөл багцад ордоггүй, дахин түгээгддэггүй.</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">pa</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mn_protected_areas.html">mn_protected_areas</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/mn_map.html">mn_map</a></span><span class="op">(</span><span class="fu"><a href="../reference/mn_aimags.html">mn_aimags</a></span><span class="op">(</span><span class="op">)</span>, caption <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">pa</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="va">desig_eng</span><span class="op">)</span>, alpha <span class="op">=</span> <span class="fl">0.6</span>, colour <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="cn">NULL</span>, caption <span class="op">=</span> <span class="fu"><a href="../reference/mn_sources.html">mn_citation</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"admin"</span>, <span class="st">"wdpa"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="terrain-population_files/figure-html/protected-1.png" class="r-plt" alt="" width="1400"></p>
+<span><span class="fu"><a href="../reference/mn_map.html">mn_map</a></span><span class="op">(</span><span class="fu"><a href="../reference/mn_aimags.html">mn_aimags</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">pa</span>, fill <span class="op">=</span> <span class="st">"#238b45"</span>, alpha <span class="op">=</span> <span class="fl">0.6</span>, colour <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"Тусгай хамгаалалттай газар"</span>, subtitle <span class="op">=</span> <span class="st">"Ногоон: WDPA-д бүртгэлтэй газар"</span>,</span>
+<span>       caption <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/strwrap.html" class="external-link">strwrap</a></span><span class="op">(</span><span class="fu"><a href="../reference/mn_sources.html">mn_citation</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"admin"</span>, <span class="st">"wdpa"</span><span class="op">)</span><span class="op">)</span>, width <span class="op">=</span> <span class="fl">95</span><span class="op">)</span>, collapse <span class="op">=</span> <span class="st">"\n"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p><img src="terrain-population_files/figure-html/protected-1.png" class="r-plt" alt="Монгол Улсын тусгай хамгаалалттай газрууд." width="100%"></p>
+</div>
+<div class="section level2">
+<h2 id="илүү-нарийн-зураг-хэрэгтэй-үед">Илүү нарийн зураг хэрэгтэй үед<a class="anchor" aria-label="anchor" href="#%D0%B8%D0%BB%D2%AF%D2%AF-%D0%BD%D0%B0%D1%80%D0%B8%D0%B9%D0%BD-%D0%B7%D1%83%D1%80%D0%B0%D0%B3-%D1%85%D1%8D%D1%80%D1%8D%D0%B3%D1%82%D1%8D%D0%B9-%D2%AF%D0%B5%D0%B4"></a>
+</h2>
+<p>Доорх нь нэмэлт жор; дээрх 1 км-ийн зурагт ашиглаагүй. Эх сурвалжаас
+шууд унших тул ажиллуулах бүрт интернет хэрэгтэй. Энэ гарын авлагыг
+бүтээхэд ажиллуулаагүй.</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Limit fine grids to a small area.</span></span>
+<span><span class="va">elevation_90m</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mn_elevation.html">mn_elevation</a></span><span class="op">(</span><span class="st">"90m"</span>, within <span class="op">=</span> <span class="st">"Nalaikh"</span><span class="op">)</span></span>
+<span><span class="va">cover_10m</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mn_landcover.html">mn_landcover</a></span><span class="op">(</span><span class="st">"10m"</span>, within <span class="op">=</span> <span class="st">"Nalaikh"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/mn_map.html">mn_map</a></span><span class="op">(</span><span class="va">elevation_90m</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/mn_map.html">mn_map</a></span><span class="op">(</span><span class="va">cover_10m</span><span class="op">)</span></span></code></pre></div>
+<p><code>mn_population(2025, resolution = "100m")</code> нь улсын илүү
+нарийн хүн амын тор татна. Нарийвчлал ихсэх нь загварын тодорхойгүй
+байдлыг арилгахгүй. Шинжилгээнд анхны торыг ашиглана. Тор солиход үлдсэн
+нийт дүн хадгалагдах ч орон нутгийн хуваарилалт өөрчлөгдөнө.</p>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

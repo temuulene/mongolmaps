@@ -40,7 +40,7 @@
 <li><a class="dropdown-item" href="../articles/ulaanbaatar.html">Maps of Ulaanbaatar</a></li>
     <li><a class="dropdown-item" href="../articles/joining-data.html">Putting your data on a map</a></li>
     <li><a class="dropdown-item" href="../articles/names-and-codes.html">Names and codes</a></li>
-    <li><a class="dropdown-item" href="../articles/audited-workflows.html">Auditable joins and comparable maps</a></li>
+    <li><a class="dropdown-item" href="../articles/audited-workflows.html">Check joins and compare maps</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><a class="dropdown-item" href="../articles/index.html">More articles...</a></li>
   </ul>
@@ -74,148 +74,203 @@
 
     
     
+<p>A place can have several spellings. Khovsgol, Khuvsgul, Khövsgöl and
+Хөвсгөл refer to the same aimag. mongolmaps connects these names to one
+place code. Use codes when joining data; use names for labels.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/temuulene/mongolmaps" class="external-link">mongolmaps</a></span><span class="op">)</span></span></code></pre></div>
-<p>Mongolian place names are written in many ways: Khovsgol, Khuvsgul,
-Hovsgol, Khövsgöl or Хөвсгөл are the same aimag. mongolmaps gives every
-unit one code and knows its other names.</p>
 <div class="section level2">
-<h2 id="the-codes">The codes<a class="anchor" aria-label="anchor" href="#the-codes"></a>
+<h2 id="find-a-place-code">Find a place code<a class="anchor" aria-label="anchor" href="#find-a-place-code"></a>
 </h2>
-<p><code>pcode</code> is unique across all levels:</p>
-<table class="table">
-<thead><tr class="header">
-<th>Unit</th>
-<th>pcode</th>
-<th>NSO code</th>
-<th>ISO 3166-2</th>
-</tr></thead>
-<tbody>
-<tr class="odd">
-<td>Mongolia</td>
-<td><code>MN</code></td>
-<td><code>0</code></td>
-<td><code>MN</code></td>
-</tr>
-<tr class="even">
-<td>Western region</td>
-<td><code>MNR1</code></td>
-<td><code>1</code></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td>Khovd aimag</td>
-<td><code>MN84</code></td>
-<td><code>184</code></td>
-<td><code>MN-043</code></td>
-</tr>
-<tr class="even">
-<td>Jargalant soum (Khovd)</td>
-<td><code>MN8401</code></td>
-<td><code>18401</code></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td>Ulaanbaatar</td>
-<td><code>MN11</code></td>
-<td><code>511</code></td>
-<td><code>MN-1</code></td>
-</tr>
-<tr class="even">
-<td>Bayangol district</td>
-<td><code>MN1107</code></td>
-<td><code>51107</code></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td>Bayangol, 1st khoroo</td>
-<td><code>MN110751</code></td>
-<td><code>5110751</code></td>
-<td></td>
-</tr>
-</tbody>
-</table>
-<p>pcodes match the humanitarian Common Operational Dataset (COD) and
-are the NSO codes without their leading region digit.
-<code><a href="../reference/mn_codes.html">mn_codes()</a></code> lists them all:</p>
+<p><code><a href="../reference/mn_match.html">mn_match()</a></code> returns a P-code by default. You can ask for
+another column, such as <code>name_mn</code> or <code>nso_code</code>,
+with <code>to</code>.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/mn_codes.html">mn_codes</a></span><span class="op">(</span><span class="st">"aimag"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 22 × 16</span></span></span>
-<span><span class="co">#&gt;    pcode name      name_en name_mn name_mns level type  number iso_code nso_code</span></span>
-<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> MN11  Ulaanbaa… Ulaanb… Улаанб… Ulaanba… aimag capi…     <span style="color: #BB0000;">NA</span> MN-1     511     </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> MN21  Dornod    Dornod  Дорнод  Dornod   aimag aimag     <span style="color: #BB0000;">NA</span> MN-061   421     </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> MN22  Sukhbaat… Sukhba… Сүхбаа… Sükhbaa… aimag aimag     <span style="color: #BB0000;">NA</span> MN-051   422     </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> MN23  Khentii   Khentii Хэнтий  Khentii  aimag aimag     <span style="color: #BB0000;">NA</span> MN-039   423     </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> MN41  Tuv       Tuv     Төв     Töv      aimag aimag     <span style="color: #BB0000;">NA</span> MN-047   341     </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> MN42  Govisumb… Govisu… Говьсү… Govisüm… aimag aimag     <span style="color: #BB0000;">NA</span> MN-064   342     </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> MN43  Selenge   Selenge Сэлэнгэ Selenge  aimag aimag     <span style="color: #BB0000;">NA</span> MN-049   343     </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> MN44  Dornogovi Dornog… Дорног… Dornogo… aimag aimag     <span style="color: #BB0000;">NA</span> MN-063   344     </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> MN45  Darkhan-… Darkha… Дархан… Darkhan… aimag aimag     <span style="color: #BB0000;">NA</span> MN-037   345     </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> MN46  Umnugovi  Umnugo… Өмнөго… Ömnögovi aimag aimag     <span style="color: #BB0000;">NA</span> MN-053   346     </span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 12 more rows</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 6 more variables: parent_pcode &lt;chr&gt;, region_pcode &lt;chr&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   aimag_pcode &lt;chr&gt;, soum_pcode &lt;chr&gt;, area_km2 &lt;dbl&gt;, has_geometry &lt;lgl&gt;</span></span></span>
-<span><span class="fu"><a href="../reference/mn_codes.html">mn_codes</a></span><span class="op">(</span><span class="st">"bag"</span>, within <span class="op">=</span> <span class="st">"Baganuur"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 5 × 16</span></span></span>
-<span><span class="co">#&gt;   pcode    name    name_en name_mn name_mns level type  number iso_code nso_code</span></span>
-<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> MN110151 1-r kh… 1-r kh… 1-р хо… 1-r kho… bag   khor…      1 <span style="color: #BB0000;">NA</span>       5110151 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> MN110153 2-r kh… 2-r kh… 2-р хо… 2-r kho… bag   khor…      2 <span style="color: #BB0000;">NA</span>       5110153 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> MN110155 3-r kh… 3-r kh… 3-р хо… 3-r kho… bag   khor…      3 <span style="color: #BB0000;">NA</span>       5110155 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> MN110157 4-r kh… 4-r kh… 4-р хо… 4-r kho… bag   khor…      4 <span style="color: #BB0000;">NA</span>       5110157 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> MN110159 5-r kh… 5-r kh… 5-р хо… 5-r kho… bag   khor…      5 <span style="color: #BB0000;">NA</span>       5110159 </span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 6 more variables: parent_pcode &lt;chr&gt;, region_pcode &lt;chr&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   aimag_pcode &lt;chr&gt;, soum_pcode &lt;chr&gt;, area_km2 &lt;dbl&gt;, has_geometry &lt;lgl&gt;</span></span></span></code></pre></div>
-<p>Bags and villages (tosgon) have codes and names but no public
-boundary (<code>has_geometry</code> is <code>FALSE</code>).</p>
-</div>
-<div class="section level2">
-<h2 id="matching-names">Matching names<a class="anchor" aria-label="anchor" href="#matching-names"></a>
-</h2>
-<p><code><a href="../reference/mn_match.html">mn_match()</a></code> turns names or codes into pcodes (or any
-other column):</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/mn_match.html">mn_match</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Khuvsgul"</span>, <span class="st">"Hovsgol"</span>, <span class="st">"Kh\u00f6vsg\u00f6l"</span>, <span class="st">"\u0425\u04e9\u0432\u0441\u0433\u04e9\u043b"</span>, <span class="st">"MN-041"</span>, <span class="st">"267"</span><span class="op">)</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/mn_match.html">mn_match</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Khuvsgul"</span>, <span class="st">"Hovsgol"</span>, <span class="st">"Khövsgöl"</span>, <span class="st">"Хөвсгөл"</span>, <span class="st">"MN-041"</span>, <span class="st">"267"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "MN67" "MN67" "MN67" "MN67" "MN67" "MN67"</span></span>
 <span><span class="fu"><a href="../reference/mn_match.html">mn_match</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"MN84"</span>, <span class="st">"MN8401"</span><span class="op">)</span>, to <span class="op">=</span> <span class="st">"name_mn"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "Ховд"      "Жаргалант"</span></span></code></pre></div>
-<p>It ignores case, punctuation and words such as “aimag”, “province”,
-“soum” or “district” – but uses them as hints when a name is shared:</p>
+</div>
+<div class="section level2">
+<h2 id="choose-a-code-system">Choose a code system<a class="anchor" aria-label="anchor" href="#choose-a-code-system"></a>
+</h2>
+<ul>
+<li>
+<code>pcode</code>: a unique code across the package’s
+administrative levels.</li>
+<li>
+<code>nso_code</code>: the code used in National Statistics Office
+tables.</li>
+<li>
+<code>iso_code</code>: ISO 3166-2 for aimags and Ulaanbaatar; not
+available at every level.</li>
+</ul>
+<p>This table comes from the package’s crosswalk rather than a
+hand-written list. Store codes as text to preserve their formatting.</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">examples</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mn_codes.html">mn_codes</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">examples</span> <span class="op">&lt;-</span> <span class="va">examples</span><span class="op">[</span><span class="va">examples</span><span class="op">$</span><span class="va">pcode</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>  <span class="st">"MN"</span>, <span class="st">"MNR1"</span>, <span class="st">"MN84"</span>, <span class="st">"MN8401"</span>, <span class="st">"MN11"</span>, <span class="st">"MN1107"</span>, <span class="st">"MN110751"</span></span>
+<span><span class="op">)</span>, <span class="op">]</span></span>
+<span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">examples</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"name_en"</span>, <span class="st">"pcode"</span>, <span class="st">"nso_code"</span>, <span class="st">"iso_code"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
+<table class="table">
+<thead><tr class="header">
+<th align="left">name_en</th>
+<th align="left">pcode</th>
+<th align="left">nso_code</th>
+<th align="left">iso_code</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left">Mongolia</td>
+<td align="left">MN</td>
+<td align="left">0</td>
+<td align="left">MN</td>
+</tr>
+<tr class="even">
+<td align="left">Western region</td>
+<td align="left">MNR1</td>
+<td align="left">1</td>
+<td align="left">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">Ulaanbaatar</td>
+<td align="left">MN11</td>
+<td align="left">511</td>
+<td align="left">MN-1</td>
+</tr>
+<tr class="even">
+<td align="left">Khovd</td>
+<td align="left">MN84</td>
+<td align="left">184</td>
+<td align="left">MN-043</td>
+</tr>
+<tr class="odd">
+<td align="left">Bayangol</td>
+<td align="left">MN1107</td>
+<td align="left">51107</td>
+<td align="left">NA</td>
+</tr>
+<tr class="even">
+<td align="left">Jargalant</td>
+<td align="left">MN8401</td>
+<td align="left">18401</td>
+<td align="left">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">1-r khoroo</td>
+<td align="left">MN110751</td>
+<td align="left">5110751</td>
+<td align="left">NA</td>
+</tr>
+</tbody>
+</table>
+<p>Use <code>mn_codes("aimag")</code> for all aimags and the capital. To
+see a few khoroos and whether they have a boundary:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/mn_match.html">mn_match</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Sukhbaatar"</span>, <span class="st">"Sukhbaatar district"</span>, <span class="st">"Sukhbaatar soum"</span><span class="op">)</span>, within <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="cn">NA</span>, <span class="cn">NA</span>, <span class="st">"Selenge"</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "MN22"   "MN1119" "MN4301"</span></span></code></pre></div>
-<p>Small typos are matched and reported:</p>
+<code class="sourceCode R"><span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="fu"><a href="../reference/mn_codes.html">mn_codes</a></span><span class="op">(</span><span class="st">"bag"</span>, within <span class="op">=</span> <span class="st">"Baganuur"</span><span class="op">)</span><span class="op">[</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"name_en"</span>, <span class="st">"pcode"</span>, <span class="st">"nso_code"</span>, <span class="st">"has_geometry"</span><span class="op">)</span></span>
+<span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
+<table class="table">
+<thead><tr class="header">
+<th align="left">name_en</th>
+<th align="left">pcode</th>
+<th align="left">nso_code</th>
+<th align="left">has_geometry</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left">1-r khoroo</td>
+<td align="left">MN110151</td>
+<td align="left">5110151</td>
+<td align="left">TRUE</td>
+</tr>
+<tr class="even">
+<td align="left">2-r khoroo</td>
+<td align="left">MN110153</td>
+<td align="left">5110153</td>
+<td align="left">TRUE</td>
+</tr>
+<tr class="odd">
+<td align="left">3-r khoroo</td>
+<td align="left">MN110155</td>
+<td align="left">5110155</td>
+<td align="left">TRUE</td>
+</tr>
+<tr class="even">
+<td align="left">4-r khoroo</td>
+<td align="left">MN110157</td>
+<td align="left">5110157</td>
+<td align="left">TRUE</td>
+</tr>
+<tr class="odd">
+<td align="left">5-r khoroo</td>
+<td align="left">MN110159</td>
+<td align="left">5110159</td>
+<td align="left">TRUE</td>
+</tr>
+</tbody>
+</table>
+<p>Rural bags and villages have names and codes, but their boundaries
+are not included. <code>has_geometry = FALSE</code> identifies these
+entries. See <a href="bags-from-nso.html">Bring your own bag
+boundaries</a>.</p>
+</div>
+<div class="section level2">
+<h2 id="resolve-repeated-names">Resolve repeated names<a class="anchor" aria-label="anchor" href="#resolve-repeated-names"></a>
+</h2>
+<p>Several soums share names such as Bayan-Uul. Restrict the search to
+the right parent with <code>within</code>.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/mn_match.html">mn_match</a></span><span class="op">(</span><span class="st">"Ulanbaatr"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Matched 1 value approximately; please check:</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Ulanbaatr → Ulaanbaatar (MN11)</span></span>
-<span><span class="co">#&gt; [1] "MN11"</span></span></code></pre></div>
-<p>When a name is shared by several units, <code><a href="../reference/mn_match.html">mn_match()</a></code>
-returns <code>NA</code> and says which ones; add <code>within</code> to
-choose:</p>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/mn_match.html">mn_match</a></span><span class="op">(</span><span class="st">"Bayan-Uul"</span>, level <span class="op">=</span> <span class="st">"soum"</span>, within <span class="op">=</span> <span class="st">"Dornod"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "MN2110"</span></span>
+<span><span class="fu"><a href="../reference/mn_match.html">mn_match</a></span><span class="op">(</span><span class="st">"Sukhbaatar district"</span>, within <span class="op">=</span> <span class="st">"Ulaanbaatar"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "MN1119"</span></span></code></pre></div>
+<p>Without enough information, <code><a href="../reference/mn_match.html">mn_match()</a></code> returns
+<code>NA</code> and warns about the possible matches. Inspect the
+candidates before choosing:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/mn_match.html">mn_match</a></span><span class="op">(</span><span class="st">"Bayan-Uul"</span>, level <span class="op">=</span> <span class="st">"soum"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">matches</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mn_match.html">mn_match</a></span><span class="op">(</span><span class="st">"Bayan-Uul"</span>, level <span class="op">=</span> <span class="st">"soum"</span>, details <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Warning: 1 value matches more than one unit and became <span style="color: #0000BB;">"NA"</span>:</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Bayan-Uul: Bayan-Uul (MN2110, Dornod); Bayan-Uul (MN8207, Govi-Altai)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Use `within` (for example the aimag) to choose one.</span></span>
-<span><span class="co">#&gt; [1] NA</span></span>
-<span><span class="fu"><a href="../reference/mn_match.html">mn_match</a></span><span class="op">(</span><span class="st">"Bayan-Uul"</span>, level <span class="op">=</span> <span class="st">"soum"</span>, within <span class="op">=</span> <span class="st">"Dornod"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "MN2110"</span></span></code></pre></div>
+<span><span class="va">matches</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"x"</span>, <span class="st">"pcode"</span>, <span class="st">"status"</span><span class="op">)</span><span class="op">]</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 1 × 3</span></span></span>
+<span><span class="co">#&gt;   x         pcode status   </span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> Bayan-Uul <span style="color: #BB0000;">NA</span>    ambiguous</span></span></code></pre></div>
+<p>The warning in this example is intentional. When joining rows from
+several aimags, use <code>by_parent</code>; see <a href="joining-data.html">Putting your data on a map</a>.</p>
 </div>
 <div class="section level2">
-<h2 id="transliteration">Transliteration<a class="anchor" aria-label="anchor" href="#transliteration"></a>
+<h2 id="check-spelling-corrections">Check spelling corrections<a class="anchor" aria-label="anchor" href="#check-spelling-corrections"></a>
 </h2>
-<p><code><a href="../reference/mn_translit.html">mn_translit()</a></code> romanises Cyrillic with a fixed table:</p>
+<p>The matcher ignores case and punctuation and uses words such as
+“aimag” or “district” to help identify the level. It can also suggest a
+close spelling. Review these suggestions before using them.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"\u04e8\u0432\u04e9\u0440\u0445\u0430\u043d\u0433\u0430\u0439"</span>, <span class="st">"\u0421\u04af\u0445\u0431\u0430\u0430\u0442\u0430\u0440"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/mn_match.html">mn_match</a></span><span class="op">(</span><span class="st">"Ulanbaatr"</span>, details <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"x"</span>, <span class="st">"pcode"</span>, <span class="st">"status"</span><span class="op">)</span><span class="op">]</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 1 × 3</span></span></span>
+<span><span class="co">#&gt;   x         pcode status</span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> Ulanbaatr MN11  fuzzy</span></span></code></pre></div>
+<p>To disallow approximate spelling matches, set
+<code>fuzzy = FALSE</code>. For a join that must stop on uncertain
+matches, use <code>mn_join(..., strict = TRUE)</code>.</p>
+</div>
+<div class="section level2">
+<h2 id="convert-cyrillic-to-latin-letters">Convert Cyrillic to Latin letters<a class="anchor" aria-label="anchor" href="#convert-cyrillic-to-latin-letters"></a>
+</h2>
+<p><code><a href="../reference/mn_translit.html">mn_translit()</a></code> converts spelling; it does not identify a
+place or check that it exists.</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Өвөрхангай"</span>, <span class="st">"Сүхбаатар"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/mn_translit.html">mn_translit</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "Övörkhangai" "Sükhbaatar"</span></span>
 <span><span class="fu"><a href="../reference/mn_translit.html">mn_translit</a></span><span class="op">(</span><span class="va">x</span>, to <span class="op">=</span> <span class="st">"nso"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "Uvurkhangai" "Sukhbaatar"</span></span></code></pre></div>
-<p>The default is the national standard MNS 5217:2012;
-<code>to = "nso"</code> gives the plain-ASCII spellings used in NSO
-English tables.</p>
+<p>The default uses MNS 5217:2012. <code>to = "nso"</code> gives the
+plain Latin spellings used in NSO English tables.</p>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

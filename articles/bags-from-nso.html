@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>Bags: using boundaries from NSO • mongolmaps</title>
+<title>Bring your own bag boundaries • mongolmaps</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/Inter-0.4.10/font.css" rel="stylesheet">
@@ -13,7 +13,7 @@
 <link href="../deps/Inter_Tight-0.4.10/font.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
-<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Bags: using boundaries from NSO">
+<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Bring your own bag boundaries">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -40,7 +40,7 @@
 <li><a class="dropdown-item" href="../articles/ulaanbaatar.html">Maps of Ulaanbaatar</a></li>
     <li><a class="dropdown-item" href="../articles/joining-data.html">Putting your data on a map</a></li>
     <li><a class="dropdown-item" href="../articles/names-and-codes.html">Names and codes</a></li>
-    <li><a class="dropdown-item" href="../articles/audited-workflows.html">Auditable joins and comparable maps</a></li>
+    <li><a class="dropdown-item" href="../articles/audited-workflows.html">Check joins and compare maps</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><a class="dropdown-item" href="../articles/index.html">More articles...</a></li>
   </ul>
@@ -65,7 +65,7 @@
 
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
-      <img src="../logo.svg" class="logo" alt=""><h1>Bags: using boundaries from NSO</h1>
+      <img src="../logo.svg" class="logo" alt=""><h1>Bring your own bag boundaries</h1>
             
       
       <small class="dont-index">Source: <a href="https://github.com/temuulene/mongolmaps/blob/main/vignettes/articles/bags-from-nso.Rmd" class="external-link"><code>vignettes/articles/bags-from-nso.Rmd</code></a></small>
@@ -74,72 +74,121 @@
 
     
     
+<p>Bags are the smallest rural administrative units. mongolmaps includes
+their names and codes, but <strong>does not include rural bag
+boundaries</strong>. Khoroos in Ulaanbaatar are available separately
+through <code><a href="../reference/mn_ub.html">mn_khoroos()</a></code>.</p>
+<p>This guide explains how to use a boundary file you have obtained. It
+cannot display your bag map until you supply that file.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/temuulene/mongolmaps" class="external-link">mongolmaps</a></span><span class="op">)</span></span></code></pre></div>
-<p>Bags (baga) are the smallest rural units: each soum is divided into a
-few bags, about 1,650 in all. mongolmaps knows every bag’s code and
-name:</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/mn_codes.html">mn_codes</a></span><span class="op">(</span><span class="st">"bag"</span>, within <span class="op">=</span> <span class="st">"Khovd"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 91 × 16</span></span></span>
-<span><span class="co">#&gt;    pcode    name   name_en name_mn name_mns level type  number iso_code nso_code</span></span>
-<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> MN840151 1-r b… 1-r ba… 1-р ба… 1-r bag… bag   bag        1 <span style="color: #BB0000;">NA</span>       1840151 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> MN840153 2-r b… 2-r ba… 2-р ба… 2-r bag… bag   bag        2 <span style="color: #BB0000;">NA</span>       1840153 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> MN840155 3-r b… 3-r ba… 3-р ба… 3-r bag… bag   bag        3 <span style="color: #BB0000;">NA</span>       1840155 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> MN840157 4-r b… 4-r ba… 4-р ба… 4-r bag… bag   bag        4 <span style="color: #BB0000;">NA</span>       1840157 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> MN840159 5-r b… 5-r ba… 5-р ба… 5-r bag… bag   bag        5 <span style="color: #BB0000;">NA</span>       1840159 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> MN840161 6-r b… 6-r ba… 6-р ба… 6-r bag… bag   bag        6 <span style="color: #BB0000;">NA</span>       1840161 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> MN840163 7-r b… 7-r ba… 7-р ба… 7-r bag… bag   bag        7 <span style="color: #BB0000;">NA</span>       1840163 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> MN840165 8-r b… 8-r ba… 8-р ба… 8-r bag… bag   bag        8 <span style="color: #BB0000;">NA</span>       1840165 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> MN840167 9-r b… 9-r ba… 9-р ба… 9-r bag… bag   bag        9 <span style="color: #BB0000;">NA</span>       1840167 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> MN840169 10-r … 10-r b… 10-р б… 10-r ba… bag   bag       10 <span style="color: #BB0000;">NA</span>       1840169 </span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 81 more rows</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 6 more variables: parent_pcode &lt;chr&gt;, region_pcode &lt;chr&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   aimag_pcode &lt;chr&gt;, soum_pcode &lt;chr&gt;, area_km2 &lt;dbl&gt;, has_geometry &lt;lgl&gt;</span></span></span></code></pre></div>
-<p>but <strong>not their boundaries</strong>. No open dataset publishes
-them: GADM, geoBoundaries, the humanitarian COD and OpenStreetMap all
-stop at soums. The National Statistics Office of Mongolia (NSO) shares
-bag boundaries on request.</p>
 <div class="section level2">
-<h2 id="getting-the-file">Getting the file<a class="anchor" aria-label="anchor" href="#getting-the-file"></a>
+<h2 id="check-the-available-codes">Check the available codes<a class="anchor" aria-label="anchor" href="#check-the-available-codes"></a>
 </h2>
-<p>Write to NSO at <a href="mailto:international@nso.mn" class="email">international@nso.mn</a> and ask for:</p>
-<ul>
-<li>bag boundaries as a shapefile or GeoPackage;</li>
-<li>each bag’s NSO code (7 digits, such as <code>1830151</code>) or its
-soum code and bag number;</li>
-<li>the date the boundaries are valid for;</li>
-<li>the terms of use (can you share maps? can the file be
-redistributed?).</li>
-</ul>
+<p>Use the aimag and soum together when a place name is repeated.</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">bag_codes</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mn_codes.html">mn_codes</a></span><span class="op">(</span><span class="st">"bag"</span>, within <span class="op">=</span> <span class="st">"MN8401"</span><span class="op">)</span></span>
+<span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">bag_codes</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"name_en"</span>, <span class="st">"nso_code"</span>, <span class="st">"has_geometry"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<table class="table">
+<thead><tr class="header">
+<th align="left">name_en</th>
+<th align="left">nso_code</th>
+<th align="left">has_geometry</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left">1-r bag, Alagtolgoi</td>
+<td align="left">1840151</td>
+<td align="left">FALSE</td>
+</tr>
+<tr class="even">
+<td align="left">2-r bag, Baatarkhairkhan</td>
+<td align="left">1840153</td>
+<td align="left">FALSE</td>
+</tr>
+<tr class="odd">
+<td align="left">3-r bag, Bichigt</td>
+<td align="left">1840155</td>
+<td align="left">FALSE</td>
+</tr>
+<tr class="even">
+<td align="left">4-r bag, Bugat</td>
+<td align="left">1840157</td>
+<td align="left">FALSE</td>
+</tr>
+<tr class="odd">
+<td align="left">5-r bag, Buyant</td>
+<td align="left">1840159</td>
+<td align="left">FALSE</td>
+</tr>
+<tr class="even">
+<td align="left">6-r bag, Jargalan</td>
+<td align="left">1840161</td>
+<td align="left">FALSE</td>
+</tr>
+</tbody>
+</table>
+<p><code>has_geometry = FALSE</code> means the package has a code but no
+included shape. The parent code in this example identifies Jargalant
+soum in Khovd; use <code>mn_codes("soum", within = "Khovd")</code> to
+find other soums.</p>
 </div>
 <div class="section level2">
-<h2 id="using-the-file">Using the file<a class="anchor" aria-label="anchor" href="#using-the-file"></a>
+<h2 id="obtain-a-boundary-file">Obtain a boundary file<a class="anchor" aria-label="anchor" href="#obtain-a-boundary-file"></a>
 </h2>
-<p>Point mongolmaps at the file:</p>
+<p>Ask NSO for a shapefile or GeoPackage containing:</p>
+<ul>
+<li>A unique NSO bag code for each shape, preferably stored as
+text.</li>
+<li>The date the boundaries apply to.</li>
+<li>The file’s coordinate reference system.</li>
+<li>Terms covering use of the data, published maps and
+redistribution.</li>
+</ul>
+<p>You can contact NSO through its official website. Confirm
+availability and terms with the provider; the package cannot supply this
+file.</p>
+</div>
+<div class="section level2">
+<h2 id="read-and-check-your-file">Read and check your file<a class="anchor" aria-label="anchor" href="#read-and-check-your-file"></a>
+</h2>
+<p>The examples below are recipes. Replace the path with your actual
+file before running them. If you have a shapefile, keep its
+<code>.shp</code>, <code>.shx</code>, <code>.dbf</code> and projection
+files together.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">bags</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mn_bags.html">mn_bags</a></span><span class="op">(</span>path <span class="op">=</span> <span class="st">"bags_from_nso.gpkg"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/mn_map.html">mn_map</a></span><span class="op">(</span><span class="fu"><a href="../reference/mn_bags.html">mn_bags</a></span><span class="op">(</span>aimag <span class="op">=</span> <span class="st">"Khovd"</span>, path <span class="op">=</span> <span class="st">"bags_from_nso.gpkg"</span><span class="op">)</span>, label <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
-<p>or register it once, for example in your <code>.Rprofile</code>, and
-forget about it:</p>
+<code class="sourceCode R"><span><span class="va">bags</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mn_bags.html">mn_read_bags</a></span><span class="op">(</span><span class="st">"bags_from_nso.gpkg"</span>, code_col <span class="op">=</span> <span class="st">"nso_code"</span><span class="op">)</span></span>
+<span><span class="va">khovd_bags</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mn_bags.html">mn_bags</a></span><span class="op">(</span>aimag <span class="op">=</span> <span class="st">"Khovd"</span>, path <span class="op">=</span> <span class="st">"bags_from_nso.gpkg"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/mn_map.html">mn_map</a></span><span class="op">(</span><span class="va">khovd_bags</span>, title <span class="op">=</span> <span class="st">"Bag boundaries in Khovd"</span><span class="op">)</span></span></code></pre></div>
+<p>Replace <code>"nso_code"</code> with the code column in your file, or
+omit <code>code_col</code> to let the reader detect it. The reader
+checks the codes, geometry and nesting inside each soum. If a check
+fails, inspect the file and its boundary date before disabling a
+check.</p>
+</div>
+<div class="section level2">
+<h2 id="use-the-file-in-later-calls">Use the file in later calls<a class="anchor" aria-label="anchor" href="#use-the-file-in-later-calls"></a>
+</h2>
+<p>Register the file for the current R session:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span>mongolmaps.bags_path <span class="op">=</span> <span class="st">"C:/data/bags_from_nso.gpkg"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu"><a href="../reference/mn_bags.html">mn_bags</a></span><span class="op">(</span>aimag <span class="op">=</span> <span class="st">"Khovd"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/mn_admin.html">mn_admin</a></span><span class="op">(</span><span class="st">"bag"</span><span class="op">)</span> <span class="co"># khoroos and bags together</span></span>
-<span><span class="fu"><a href="../reference/mn_join.html">mn_join</a></span><span class="op">(</span><span class="va">my_bag_table</span>, by <span class="op">=</span> <span class="st">"code"</span>, level <span class="op">=</span> <span class="st">"bag"</span><span class="op">)</span></span></code></pre></div>
-<p><code><a href="../reference/mn_bags.html">mn_read_bags()</a></code> checks the file when it is first
-read:</p>
-<ul>
-<li>it finds the column of bag codes (or use
-<code>code_col</code>);</li>
-<li>every code must be a known NSO bag code;</li>
-<li>every bag must lie inside its soum (turn off with
-<code>check_nesting = FALSE</code>).</li>
-</ul>
-<p>Bags then get the same columns as every other map in the package, so
-joining NSO bag tables works like joining aimag tables.</p>
+<span><span class="va">khovd_bags</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mn_bags.html">mn_bags</a></span><span class="op">(</span>aimag <span class="op">=</span> <span class="st">"Khovd"</span><span class="op">)</span></span></code></pre></div>
+<p>To keep that setting across sessions, add the <code><a href="https://rdrr.io/r/base/options.html" class="external-link">options()</a></code>
+line to your <code>.Rprofile</code>. With the file registered,
+<code>mn_admin("bag")</code> can combine available bag and khoroo
+boundaries.</p>
+</div>
+<div class="section level2">
+<h2 id="join-a-statistics-table">Join a statistics table<a class="anchor" aria-label="anchor" href="#join-a-statistics-table"></a>
+</h2>
+<p>This recipe expects your own <code>my_bag_table</code> with a
+<code>code</code> column.</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">bag_map</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mn_join.html">mn_join</a></span><span class="op">(</span><span class="va">my_bag_table</span>, by <span class="op">=</span> <span class="st">"code"</span>, level <span class="op">=</span> <span class="st">"bag"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/mn_join_audit.html">mn_join_audit</a></span><span class="op">(</span><span class="va">bag_map</span><span class="op">)</span></span></code></pre></div>
+<p>The joined data use the same columns as other package maps. Check for
+unmatched codes and missing shapes before drawing the map. See <a href="joining-data.html">Putting your data on a map</a> for the full
+workflow.</p>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

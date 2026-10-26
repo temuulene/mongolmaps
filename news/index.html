@@ -22,7 +22,7 @@
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/ulaanbaatar.html">Maps of Ulaanbaatar</a></li>
     <li><a class="dropdown-item" href="../articles/joining-data.html">Putting your data on a map</a></li>
     <li><a class="dropdown-item" href="../articles/names-and-codes.html">Names and codes</a></li>
-    <li><a class="dropdown-item" href="../articles/audited-workflows.html">Auditable joins and comparable maps</a></li>
+    <li><a class="dropdown-item" href="../articles/audited-workflows.html">Check joins and compare maps</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><a class="dropdown-item" href="../articles/index.html">More articles...</a></li>
   </ul></li>
@@ -43,7 +43,12 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="0.2.0" id="mongolmaps-020">mongolmaps 0.2.0<a class="anchor" aria-label="anchor" href="#mongolmaps-020"></a></h2>
+<h2 class="pkg-version" data-toc-text="development version" id="mongolmaps-development-version">mongolmaps (development version)<a class="anchor" aria-label="anchor" href="#mongolmaps-development-version"></a></h2>
+<ul><li>Fixed shifted raster pixels across empty rows or columns, including terrain maps of detached Ulaanbaatar districts. Empty cells remain transparent.</li>
+<li>Reworked all English and Mongolian guides with clearer examples, readable legends, complete district charts and an interactive khoroo map. Website builds now check figures, image files, article links and unexpected warnings.</li>
+</ul></div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.2.0" id="mongolmaps-020">mongolmaps 0.2.0<a class="anchor" aria-label="anchor" href="#mongolmaps-020"></a></h2><p class="text-muted">CRAN release: 2026-10-25</p>
 <ul><li><p>Raster summaries now use fractional cell coverage by default; empty coverage returns NA. Median extraction explicitly requires exact = FALSE. Population export reprojection preserves the retained native-grid total and records its normalization; native-grid extraction remains recommended for analysis.</p></li>
 <li><p>Joins respect global geographic scope during matching and level detection. Ulaanbaatar region/capital records are reconciled within statistical strata, with explicit value columns, conflict policies and inspectable row decisions.</p></li>
 <li><p>Added strict joins, duplicate-key controls, detailed name matching and <code><a href="../reference/mn_join_audit.html">mn_join_audit()</a></code>.</p></li>

@@ -1,14 +1,21 @@
-# Auditable joins and comparable maps
+# Check joins and compare maps
+
+Use this guide after [Putting your data on a
+map](https://temuulene.github.io/mongolmaps/articles/joining-data.md).
+It shows how to check matches, compare years fairly and make small urban
+areas visible. All examples use data included in the package. For the
+enlarged map, install patchwork.
 
 ``` r
 
 library(mongolmaps)
+library(ggplot2)
 ```
 
-## Keep a record of every join decision
+## Check what happened to every row
 
-Use codes where possible. When names repeat, supply the parent in a
-column or restrict the candidate universe with `within`.
+Prefer codes over names. If names repeat, use `within` to restrict the
+search to one area, or `by_parent` to supply each row’s parent.
 
 ``` r
 
@@ -16,18 +23,27 @@ district <- mn_join(
   data.frame(place = "Bayangol", cases = 12),
   "place", level = "soum", within = "Ulaanbaatar"
 )
-mn_join_audit(district)[c("row", "x", "pcode", "status", "action")]
-#> # A tibble: 1 × 5
-#>     row x        pcode  status action
-#>   <int> <chr>    <chr>  <chr>  <chr> 
-#> 1     1 Bayangol MN1107 exact  joined
+knitr::kable(mn_join_audit(district)[c("row", "x", "pcode", "status", "action")])
 ```
 
-`mn_match(details = TRUE)` exposes candidates, normalized keys, aliases
-and edit distances. A short edit distance is a spelling rule, not a
-probability that a match is correct. Strict joins reject
-fuzzy/unresolved keys, missing boundaries and duplicate place/stratum
-keys.
+| row | x        | pcode  | status | action |
+|----:|:---------|:-------|:-------|:-------|
+|   1 | Bayangol | MN1107 | exact  | joined |
+
+The audit has one row for every **original input row**. It shows whether
+a row was joined, left out because it belongs to another level, or not
+matched. Save the audit separately if you need a permanent analysis
+record; rebuilding an object can remove its attached metadata.
+
+`mn_match(details = TRUE)` shows the possible matches and spelling
+differences. A small spelling difference is not a probability that the
+match is correct.
+
+## Stop on uncertain or duplicate matches
+
+`strict = TRUE` stops on unresolved names, fuzzy matches, missing
+boundaries and duplicate place/group combinations. In `strata`, list the
+columns that define separate observations.
 
 ``` r
 
@@ -38,211 +54,185 @@ observations <- data.frame(
 )
 joined <- mn_join(observations, "place", level = "aimag",
                   strata = "Year", strict = TRUE, fuzzy = FALSE)
-mn_join_audit(joined)[c("row", "status", "action")]
-#> # A tibble: 4 × 3
-#>     row status action
-#>   <int> <chr>  <chr> 
-#> 1     1 exact  joined
-#> 2     2 exact  joined
-#> 3     3 exact  joined
-#> 4     4 exact  joined
+knitr::kable(mn_join_audit(joined)[c("row", "status", "action")])
 ```
 
-The audit has one record per **original input row**. Its row numbers do
-not refer to rows of a subsequently filtered map. It distinguishes
-unmatched keys from known units without geometry, geographic exclusions
-and other administrative levels. Audit/provenance attributes can be lost
-if an object is rebuilt; save them explicitly for an analysis record.
+| row | status | action |
+|----:|:-------|:-------|
+|   1 | exact  | joined |
+|   2 | exact  | joined |
+|   3 | exact  | joined |
+|   4 | exact  | joined |
 
-## Reconcile Ulaanbaatar within statistical strata
+The counts here are made up to demonstrate the checks.
 
-NSO codes 5 and 511 sometimes hold complementary capital observations.
-Declare all statistical dimensions and the measure columns. Check table
-metadata first: this geographic equivalence is not valid for every
-table.
+## Use the same colours when comparing years
+
+A value of 10 should have the same colour in both panels. Set `limits`
+and `breaks` explicitly, or use facets, which share a scale. Show just
+the two observed aimags so the comparison is easy to see.
 
 ``` r
 
-table <- data.frame(
+observed <- joined[joined$pcode %in% c("MN84", "MN85"), ]
+mn_map(observed, fill = cases, limits = c(0, 25), breaks = c(0, 10, 20),
+       title = "Example case counts") +
+  facet_wrap(~Year) +
+  labs(fill = "Cases", subtitle = "Made-up data")
+```
+
+![Made-up case counts in Khovd and Uvs in 2024 and 2025, with one shared
+scale.](audited-workflows_files/figure-html/comparison-1.png)
+
+For categories, give explicit cut points in `bins` so intervals stay the
+same across maps. Use `midpoint = 0` for a scale centred on zero, such
+as a change in rates. Keep zeros, missing values and suppressed values
+distinct. A map alone cannot show whether a rate is stable.
+
+## Handle Ulaanbaatar’s two NSO codes
+
+NSO code `5` is the capital region and `511` is the capital at aimag
+level. Some tables put the same measure under either code. Check the
+table’s metadata before treating them as equivalent.
+
+``` r
+
+capital_table <- data.frame(
   Region = c("5", "511", "5", "511"),
   Month = c("July", "July", "August", "August"),
   value = c(10, NA, NA, 20)
 )
-capital <- mn_join(table, "Region", level = "aimag",
+capital <- mn_join(capital_table, "Region", level = "aimag",
                    strata = "Month", value_cols = "value")
-#> ℹ Using Ulaanbaatar region values to fill capital data within 1 statistical
-#>   stratum/strata.
-sf::st_drop_geometry(capital[capital$pcode == "MN11", c("Month", "value")])
-#> # A tibble: 2 × 2
-#>   Month  value
-#> * <chr>  <dbl>
-#> 1 July      10
-#> 2 August    20
-mn_join_audit(capital)[c("row", "x", "action")]
-#> # A tibble: 4 × 3
-#>     row x     action    
-#>   <int> <chr> <chr>     
-#> 1     1 5     joined    
-#> 2     2 511   superseded
-#> 3     3 5     superseded
-#> 4     4 511   joined
+knitr::kable(sf::st_drop_geometry(
+  capital[capital$pcode == "MN11", c("Month", "value")]
+))
 ```
 
-The default prefers a nonmissing capital value and fills missing values
-from the region. Conflicts produce a warning. Use `ub_policy = "error"`
-to stop on conflicts, `"prefer_region"` to reverse precedence, or
-`"none"` to disable this reconciliation. Never sum mixed-level NSO rows
-to calculate a retained percentage: totals and their components overlap.
+| Month  | value |
+|:-------|------:|
+| July   |    10 |
+| August |    20 |
 
-## Separate statistical years from boundary vintages
+The default uses a nonmissing capital value and fills gaps from the
+region. Conflicting values produce a warning. Use `ub_policy = "error"`
+to stop on conflicts, `"prefer_region"` to give the region priority, or
+`"none"` to handle the rows yourself. Do not add region totals to their
+component units; that would count people twice.
 
-``` r
+## Enlarge Ulaanbaatar
 
-mn_vintages()[c("id", "data_version", "geometry_vintage", "authority")]
-#> # A tibble: 4 × 4
-#>   id         data_version geometry_vintage                             authority
-#>   <chr>      <chr>        <chr>                                        <chr>    
-#> 1 admin      data-v1      COD 2020; Ulaanbaatar khoroo-derived 2026    official…
-#> 2 khoroos    data-v1      2026 source snapshot; effective date unknown unoffici…
-#> 3 codes      data-v1      NA                                           source s…
-#> 4 admin_high data-v1      COD 2020; Ulaanbaatar khoroo-derived 2026    official…
-mn_provenance(mn_khoroos())[c("id", "source_revision", "effective_date")]
-#> # A tibble: 2 × 3
-#>   id      source_revision                          effective_date
-#>   <chr>   <chr>                                    <chr>         
-#> 1 khoroos bb1bf18f27e57d7a5aa7fe6d4a17234b40e162c1 NA            
-#> 2 codes   2025                                     NA
-mn_citation(mn_settlements())
-#> [1] "Settlements: Wikidata (CC0)"
-```
-
-Only `data-v1` geometry is currently available. Passing another
-`boundary_version` to an administrative getter errors instead of
-relabeling the available map as a historical boundary. Khoroo geometry
-is unofficial and reconciled; its source snapshot date does not
-establish its effective date. Historical comparisons need compatible
-codes and actual historical geometry or an explicit reallocation
-procedure.
-
-## Compare maps using common scales
-
-``` r
-
-mn_map(joined, fill = cases, limits = c(0, 25), breaks = c(0, 10, 20)) +
-  ggplot2::facet_wrap(~Year)
-```
-
-![](audited-workflows_files/figure-html/comparison-1.png)
-
-`bins` accepts interval counts or explicit cut points. Use explicit cut
-points for comparisons. `midpoint = 0` gives a diverging scale for
-differences. Grey means missing values; zero and missing observations
-should be coded separately. Preserve suppression and uncertainty
-variables when preparing health statistics; a map does not establish
-rate stability.
-
-## Enlarge Ulaanbaatar without moving analytical geometry
+Small places can disappear at a national scale.
+[`mn_inset_ub()`](https://temuulene.github.io/mongolmaps/reference/mn_inset_ub.md)
+adds an enlarged view without changing the coordinates used for
+analysis.
 
 ``` r
 
 pop <- mn_example_population[mn_example_population$Year == 2025, ]
 aimags <- mn_join(pop, "Region", level = "aimag")
-#> ℹ Joining at the aimag level; dropped 5 rows for larger units ("country" and
-#>   "region") and 2196 rows for smaller units ("soum" and "bag").
 mn_inset_ub(aimags, fill = value, trans = "log10",
-            title = "Population, 2025")
+            title = "Population, 2025") &
+  labs(fill = "People")
 ```
 
-![](audited-workflows_files/figure-html/inset-1.png)
+![Population in 2025 with an enlarged view of Ulaanbaatar and a shared
+colour scale.](audited-workflows_files/figure-html/inset-1.png)
 
-For finer urban data, pass an `ub` map with a fill expression in the
-same units as the national data. Limits, breaks and bin cut points are
-shared. The panels use independent geographic scales. The UB layout
-separates Baganuur and Bagakhangai; its main panel includes Nalaikh.
+The panels share a colour scale but have different geographic scales.
+You can supply finer urban data through `ub`; use the same measurement
+units in both panels. See [Maps of
+Ulaanbaatar](https://temuulene.github.io/mongolmaps/articles/ulaanbaatar.md)
+for detached district panels.
+
+## Compare district population trends
+
+Each panel below shows one district. The charts use real NSO population
+observations for 2015, 2020 and 2025.
 
 ``` r
 
-mn_map_ub(fill = area_km2, title = "District areas")
+district_pop <- mn_join(
+  mn_example_population, "Region", level = "soum",
+  within = "Ulaanbaatar", strata = "Year", value_cols = "value"
+)
+trends <- sf::st_drop_geometry(district_pop)
+
+ggplot(trends, aes(Year, value / 1000, group = pcode)) +
+  geom_line(colour = "#0072B2") +
+  geom_point(colour = "#0072B2", size = 1.5) +
+  facet_wrap(~name, ncol = 3) +
+  scale_x_continuous(breaks = c(2015, 2025), expand = expansion(mult = 0.15)) +
+  labs(x = NULL, y = "People (thousands)", title = "District population") +
+  theme_minimal(base_size = 10)
 ```
 
-![](audited-workflows_files/figure-html/urban-1.png)
+![Population trends for all nine Ulaanbaatar districts in nine panels
+with a shared vertical
+scale.](audited-workflows_files/figure-html/grid-1.png)
 
-## Small multiples and population-aware views
+All panels share a vertical scale, so their population sizes can be
+compared. For a custom geographic layout, `mn_aimag_grid` and
+`mn_ub_grid` provide approximate tile positions.
 
-Use `mn_aimag_grid` for aimags and `mn_ub_grid` for the nine districts.
-Tile positions are approximate geographic layouts, not coordinates.
-Per-aimag soum grids are usually more readable than hundreds of national
-soum panels.
+## Show population with circles
+
+Large rural aimags occupy more space on a map even when they have few
+residents. Size circles by population to show where people live.
 
 ``` r
 
-grid <- mn_ub_grid
-grid$value <- seq_len(nrow(grid))
-ggplot2::ggplot(grid, ggplot2::aes(1, value)) +
-  ggplot2::geom_col() +
-  geofacet::facet_geo(~code, grid = mn_ub_grid, label = "name")
-#> Note: You provided a user-specified grid. If this is a generally-useful
-#>   grid, please consider submitting it to become a part of the geofacet
-#>   package. You can do this easily by calling:
-#>   grid_submit(__grid_df_name__)
-#> Warning in min(x): no non-missing arguments to min; returning Inf
-#> Warning in max(x): no non-missing arguments to max; returning -Inf
-#> Warning in min(x): no non-missing arguments to min; returning Inf
-#> Warning in max(x): no non-missing arguments to max; returning -Inf
-#> Warning in min(x): no non-missing arguments to min; returning Inf
-#> Warning in max(x): no non-missing arguments to max; returning -Inf
-#> Warning in min(x): no non-missing arguments to min; returning Inf
-#> Warning in max(x): no non-missing arguments to max; returning -Inf
-#> Warning in min(x): no non-missing arguments to min; returning Inf
-#> Warning in max(x): no non-missing arguments to max; returning -Inf
-#> Warning in min(x): no non-missing arguments to min; returning Inf
-#> Warning in max(x): no non-missing arguments to max; returning -Inf
-#> Warning in min(x): no non-missing arguments to min; returning Inf
-#> Warning in max(x): no non-missing arguments to max; returning -Inf
+pop <- mn_example_population[mn_example_population$Year == 2025, ]
+aimags <- mn_join(pop, "Region", level = "aimag")
+mn_map(aimags) +
+  geom_sf(data = mn_label_points(aimags), aes(size = value),
+          colour = "#0072B2", alpha = 0.65) +
+  scale_size_area(max_size = 16, labels = scales::label_comma()) +
+  labs(title = "Population, 2025", size = "People")
 ```
 
-![](audited-workflows_files/figure-html/grid-1.png)
+![Circles sized by 2025 population placed over Mongolia's aimags and
+capital.](audited-workflows_files/figure-html/circles-1.png)
 
-A Dorling cartogram is an optional alternative: size circles by
-population and use colour for an analytically defensible rate. Retain
-the original geometry for analysis. Check missing/zero weights,
-geographic vintage, and any instability or suppression in the rate
-before using this recipe.
+Circle **area** represents population. Circles can overlap, so use the
+district trends or the enlarged map when you need precise local
+comparisons.
+
+## Check the boundary date and source
+
+The year of a statistic is not the year of its boundaries.
 
 ``` r
 
-# Optional package: install.packages("cartogram")
-# For health rates, prepare compatible numerators and denominators separately.
-analysis_map <- sf::st_transform(aimags, mn_crs("albers"))
-analysis_map$people_per_km2 <- analysis_map$value / analysis_map$area_km2
-display_map <- cartogram::cartogram_dorling(analysis_map, weight = "value")
-mn_map(display_map, fill = people_per_km2)
+knitr::kable(mn_vintages()[c("id", "geometry_vintage")])
 ```
 
-## Raster summaries and offline work
-
-Population grids contain **people per cell**. The default
-`mn_zonal(r, polygons, fun = "sum")` weights each count by its covered
-cell fraction. It assumes a uniform allocation inside each cell. A 1 km
-grid cannot recover building-level population. For means, coverage
-fractions are not physical area weights on a longitude/latitude grid.
-Median summaries require `exact = FALSE`.
-
-Prefer analysis on the native population grid. If
-`mn_population(crs = ...)` is used for export, weighted-sum remapping is
-normalized to preserve the retained native-grid total. This does **not**
-validate local allocations; inspect the `mongolmaps_remapping`
-attribute. Raster map resampling is for display only.
+| id         | geometry_vintage                             |
+|:-----------|:---------------------------------------------|
+| admin      | COD 2020; Ulaanbaatar khoroo-derived 2026    |
+| khoroos    | 2026 source snapshot; effective date unknown |
+| codes      | NA                                           |
+| admin_high | COD 2020; Ulaanbaatar khoroo-derived 2026    |
 
 ``` r
 
-assets <- mn_assets()
-assets[assets$id == "worldpop_2025_1km", c("id", "year", "resolution", "url")]
-#> # A tibble: 1 × 4
-#>   id                 year resolution url                                        
-#>   <chr>             <int> <chr>      <chr>                                      
-#> 1 worldpop_2025_1km  2025 1km        https://data.worldpop.org/GIS/Population/G…
+knitr::kable(mn_provenance(mn_khoroos())[c("id", "effective_date")])
 ```
+
+| id      | effective_date |
+|:--------|:---------------|
+| khoroos | NA             |
+| codes   | NA             |
+
+Only `data-v1` boundaries are available. Asking for another
+`boundary_version` gives an error. Khoroo boundaries are unofficial, and
+their effective date is unknown. Compare historical data only after
+checking code changes and boundary compatibility.
+
+## Prepare to work offline
+
+This optional recipe downloads selected files before you lose internet
+access, verifies them and turns on offline mode.
 
 ``` r
 
@@ -251,16 +241,7 @@ mn_cache_verify()
 options(mongolmaps.offline = TRUE)
 ```
 
-WorldPop files are opt-in, so `mn_download("all")` does not fetch every
-year and resolution. Cached downloads are checked against their checksum
-by default; old data versions remain until explicitly cleared. Automatic
-protected-area refresh keeps a valid stale file if refreshing fails. An
-explicit `refresh = TRUE` requires a successful refresh and preserves
-the old file on failure.
-
-For cartographic water removal,
-[`mn_erase_water()`](https://temuulene.github.io/mongolmaps/reference/mn_erase_water.md)
-returns a new geometry and `land_area_km2`, leaving the input and its
-`area_km2` unchanged. Land is not the same as inhabited land. When
-composing additional layers, combine their credits explicitly, for
-example `mn_citation(c("admin", "osm_roads", "osm_water"))`.
+WorldPop years and resolutions are opt-in; `mn_download("all")` does not
+download them all. See [terrain and
+population](https://temuulene.github.io/mongolmaps/articles/terrain-population.md)
+for the limits of population grids and area summaries.

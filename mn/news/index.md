@@ -1,6 +1,18 @@
 # Changelog
 
+## mongolmaps (development version)
+
+- Fixed shifted raster pixels across empty rows or columns, including
+  terrain maps of detached Ulaanbaatar districts. Empty cells remain
+  transparent.
+- Reworked all English and Mongolian guides with clearer examples,
+  readable legends, complete district charts and an interactive khoroo
+  map. Website builds now check figures, image files, article links and
+  unexpected warnings.
+
 ## mongolmaps 0.2.0
+
+CRAN release: 2026-10-25
 
 - Raster summaries now use fractional cell coverage by default; empty
   coverage returns NA. Median extraction explicitly requires exact =

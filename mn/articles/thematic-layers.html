@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>Сэдэвчилсэн давхарга: зам, ус, суурин • mongolmaps</title>
+<title>Зам, ус, суурин газар нэмэх • mongolmaps</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/Inter-0.4.10/font.css" rel="stylesheet">
@@ -13,7 +13,7 @@
 <link href="../deps/Inter_Tight-0.4.10/font.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
-<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><script src="../extra.js"></script><meta property="og:title" content="Сэдэвчилсэн давхарга: зам, ус, суурин">
+<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><script src="../extra.js"></script><meta property="og:title" content="Зам, ус, суурин газар нэмэх">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -67,7 +67,7 @@
 
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
-      <img src="../logo.svg" class="logo" alt=""><h1>Сэдэвчилсэн давхарга: зам, ус, суурин</h1>
+      <img src="../logo.svg" class="logo" alt=""><h1>Зам, ус, суурин газар нэмэх</h1>
             
       
       <small class="dont-index">Source: <a href="https://github.com/temuulene/mongolmaps/blob/main/vignettes/articles/thematic-layers.Rmd" class="external-link"><code>vignettes/articles/thematic-layers.Rmd</code></a></small>
@@ -76,123 +76,141 @@
 
     
     
+<p>Нэмэлт давхаргууд нь газар хаана байгааг, хэрхэн холбогддогийг
+ойлгоход тусална. Гол, нуур, суурин газрын жижиг давхаргууд багцад бий.
+Замын өгөгдлийг анхны хэрэглээнд татаж хадгална.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/temuulene/mongolmaps" class="external-link">mongolmaps</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span>mongolmaps.lang <span class="op">=</span> <span class="st">"mn"</span><span class="op">)</span></span></code></pre></div>
-<p>Хил хязгаараас гадна mongolmaps газрын зургийг уншигдахуйц болгох
-давхаргуудыг өгнө. Жижиг давхарга багцтай ирдэг; томыг нь нэг удаа
-татаж, хадгална (<code><a href="../reference/mn_cache_dir.html">mn_cache_dir()</a></code>).</p>
+<span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span>mongolmaps.lang <span class="op">=</span> <span class="st">"mn"</span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span></code></pre></div>
 <table class="table">
 <colgroup>
-<col width="25%">
-<col width="25%">
-<col width="25%">
-<col width="25%">
+<col width="33%">
+<col width="33%">
+<col width="33%">
 </colgroup>
 <thead><tr class="header">
+<th>Давхарга</th>
 <th>Функц</th>
-<th>Агуулга</th>
-<th>Эх сурвалж</th>
-<th>Хэрхэн авах</th>
+<th>Анхны хэрэглээ</th>
 </tr></thead>
 <tbody>
 <tr class="odd">
+<td>Нийслэл, аймаг, сумын төв</td>
 <td><code><a href="../reference/mn_settlements.html">mn_settlements()</a></code></td>
-<td>нийслэл, аймаг, сумын төв</td>
-<td>Wikidata</td>
-<td>багцад</td>
+<td>Багцад бий</td>
 </tr>
 <tr class="even">
+<td>Хөрш орнууд</td>
 <td><code><a href="../reference/mn_neighbours.html">mn_neighbours()</a></code></td>
-<td>Монголын эргэн тойрон дахь Орос, Хятад, Казахстан</td>
-<td>Natural Earth</td>
-<td>багцад</td>
+<td>Багцад бий</td>
 </tr>
 <tr class="odd">
+<td>Голлох гол, нуур</td>
 <td>
 <code><a href="../reference/mn_neighbours.html">mn_rivers()</a></code>, <code><a href="../reference/mn_neighbours.html">mn_lakes()</a></code>
 </td>
-<td>томоохон гол, нуур</td>
-<td>Natural Earth</td>
-<td>багцад</td>
+<td>Багцад бий</td>
 </tr>
 <tr class="even">
+<td>Илүү дэлгэрэнгүй усны объект</td>
 <td>
 <code>mn_rivers("all")</code>, <code>mn_lakes("all")</code>
 </td>
-<td>бүх гол, горхи, усан сан</td>
-<td>OpenStreetMap</td>
-<td>татна, ~20 МБ</td>
+<td>Татна</td>
 </tr>
 <tr class="odd">
+<td>Авто зам, гудамж</td>
 <td><code><a href="../reference/mn_roads.html">mn_roads()</a></code></td>
-<td>авто зам, гудамж</td>
-<td>OpenStreetMap</td>
-<td>татна, ~30 МБ</td>
+<td>Ойролцоогоор 30 МБ татна</td>
 </tr>
 <tr class="even">
+<td>Төмөр зам, өртөө, нисэх буудал</td>
 <td>
 <code><a href="../reference/mn_roads.html">mn_railways()</a></code>, <code><a href="../reference/mn_roads.html">mn_airports()</a></code>
 </td>
-<td>төмөр зам, өртөө, нисэх буудал</td>
-<td>OpenStreetMap</td>
-<td>татна, &lt;1 МБ</td>
+<td>Татна</td>
 </tr>
 <tr class="odd">
+<td>Газрын зурагт бүртгэлтэй суурин</td>
 <td><code><a href="../reference/mn_roads.html">mn_places()</a></code></td>
-<td>хот, тосгон, суурин</td>
-<td>OpenStreetMap</td>
-<td>татна, &lt;1 МБ</td>
+<td>Татна</td>
 </tr>
 </tbody>
 </table>
+<p>“All” нь эх сурвалжид байгаа бүх объект гэсэн үг; бүрэн тооллого биш.
+OpenStreetMap-ийн хамралт газар бүрт өөр.</p>
 <div class="section level2">
-<h2 id="улсын-хэмжээнд">Улсын хэмжээнд<a class="anchor" aria-label="anchor" href="#%D1%83%D0%BB%D1%81%D1%8B%D0%BD-%D1%85%D1%8D%D0%BC%D0%B6%D1%8D%D1%8D%D0%BD%D0%B4"></a>
+<h2 id="өгөгдөл-татахгүйгээр-эхлэх">Өгөгдөл татахгүйгээр эхлэх<a class="anchor" aria-label="anchor" href="#%D3%A9%D0%B3%D3%A9%D0%B3%D0%B4%D3%A9%D0%BB-%D1%82%D0%B0%D1%82%D0%B0%D1%85%D0%B3%D2%AF%D0%B9%D0%B3%D1%8D%D1%8D%D1%80-%D1%8D%D1%85%D0%BB%D1%8D%D1%85"></a>
 </h2>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/mn_map.html">mn_map</a></span><span class="op">(</span><span class="fu"><a href="../reference/mn_aimags.html">mn_aimags</a></span><span class="op">(</span><span class="op">)</span>, context <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="fu"><a href="../reference/mn_roads.html">mn_roads</a></span><span class="op">(</span><span class="op">)</span>, colour <span class="op">=</span> <span class="st">"firebrick"</span>, linewidth <span class="op">=</span> <span class="fl">0.25</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="fu"><a href="../reference/mn_roads.html">mn_railways</a></span><span class="op">(</span><span class="op">)</span>, colour <span class="op">=</span> <span class="st">"black"</span>, linewidth <span class="op">=</span> <span class="fl">0.6</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="fu"><a href="../reference/mn_roads.html">mn_airports</a></span><span class="op">(</span><span class="op">)</span>, shape <span class="op">=</span> <span class="fl">17</span>, colour <span class="op">=</span> <span class="st">"navy"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"Гол авто зам, төмөр зам, нисэх буудал"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="thematic-layers_files/figure-html/country-1.png" class="r-plt" alt="" width="1400"></p>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="fu"><a href="../reference/mn_settlements.html">mn_settlements</a></span><span class="op">(</span>type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"capital"</span>, <span class="st">"aimag_centre"</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>          colour <span class="op">=</span> <span class="st">"firebrick"</span>, size <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"Аймаг, ус, суурин газрууд"</span>,</span>
+<span>       caption <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/strwrap.html" class="external-link">strwrap</a></span><span class="op">(</span><span class="fu"><a href="../reference/mn_sources.html">mn_citation</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"admin"</span>, <span class="st">"naturalearth"</span>, <span class="st">"settlements"</span><span class="op">)</span><span class="op">)</span>, width <span class="op">=</span> <span class="fl">95</span><span class="op">)</span>, collapse <span class="op">=</span> <span class="st">"\n"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p><img src="thematic-layers_files/figure-html/bundled-1.png" class="r-plt" alt="Аймгийн хил, гол ус, аймгийн төвүүд." width="100%"></p>
 </div>
 <div class="section level2">
-<h2 id="нэг-аймаг">Нэг аймаг<a class="anchor" aria-label="anchor" href="#%D0%BD%D1%8D%D0%B3-%D0%B0%D0%B9%D0%BC%D0%B0%D0%B3"></a>
+<h2 id="улсын-тээврийн-сүлжээ-нэмэх">Улсын тээврийн сүлжээ нэмэх<a class="anchor" aria-label="anchor" href="#%D1%83%D0%BB%D1%81%D1%8B%D0%BD-%D1%82%D1%8D%D1%8D%D0%B2%D1%80%D0%B8%D0%B9%D0%BD-%D1%81%D2%AF%D0%BB%D0%B6%D1%8D%D1%8D-%D0%BD%D1%8D%D0%BC%D1%8D%D1%85"></a>
 </h2>
-<p><code>within</code> тухайн газар доторх объектуудыг үлдээж, шугамыг
-хил дээр нь тасална:</p>
+<p><code><a href="../reference/mn_roads.html">mn_roads()</a></code> анхдагчаар гол замыг сонгоно. Авто замыг
+нарийн, төмөр замыг бүдүүн зурвал ялгахад хялбар.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">aimag</span> <span class="op">&lt;-</span> <span class="st">"Хөвсгөл"</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/mn_map.html">mn_map</a></span><span class="op">(</span><span class="fu"><a href="../reference/mn_aimags.html">mn_aimags</a></span><span class="op">(</span><span class="op">)</span>, context <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="fu"><a href="../reference/mn_roads.html">mn_roads</a></span><span class="op">(</span><span class="op">)</span>, colour <span class="op">=</span> <span class="st">"firebrick"</span>, linewidth <span class="op">=</span> <span class="fl">0.25</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="fu"><a href="../reference/mn_roads.html">mn_railways</a></span><span class="op">(</span><span class="op">)</span>, colour <span class="op">=</span> <span class="st">"black"</span>, linewidth <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="fu"><a href="../reference/mn_roads.html">mn_airports</a></span><span class="op">(</span><span class="op">)</span>, shape <span class="op">=</span> <span class="fl">17</span>, colour <span class="op">=</span> <span class="st">"navy"</span>, size <span class="op">=</span> <span class="fl">1.5</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"Гол авто зам, төмөр зам, нисэх буудал"</span>,</span>
+<span>       subtitle <span class="op">=</span> <span class="st">"Авто зам: улаан | Төмөр зам: хар | Нисэх буудал: цэнхэр гурвалжин"</span>,</span>
+<span>       caption <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/strwrap.html" class="external-link">strwrap</a></span><span class="op">(</span><span class="fu"><a href="../reference/mn_sources.html">mn_citation</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"admin"</span>, <span class="st">"naturalearth"</span>, <span class="st">"osm_roads"</span>, <span class="st">"osm_transport"</span><span class="op">)</span><span class="op">)</span>, width <span class="op">=</span> <span class="fl">95</span><span class="op">)</span>, collapse <span class="op">=</span> <span class="st">"\n"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p><img src="thematic-layers_files/figure-html/country-1.png" class="r-plt" alt="Улсын авто зам, төмөр зам, нисэх буудал." width="100%"></p>
+</div>
+<div class="section level2">
+<h2 id="нэг-аймгийг-харуулах">Нэг аймгийг харуулах<a class="anchor" aria-label="anchor" href="#%D0%BD%D1%8D%D0%B3-%D0%B0%D0%B9%D0%BC%D0%B3%D0%B8%D0%B9%D0%B3-%D1%85%D0%B0%D1%80%D1%83%D1%83%D0%BB%D0%B0%D1%85"></a>
+</h2>
+<p><code>within</code> газар нутгийг сонгож, шугамыг хил дээр нь
+тасална. Доорх жишээ дэлгэрэнгүй усны болон замын давхаргыг татна.</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">aimag</span> <span class="op">&lt;-</span> <span class="st">"Khuvsgul"</span></span>
 <span><span class="fu"><a href="../reference/mn_map.html">mn_map</a></span><span class="op">(</span><span class="fu"><a href="../reference/mn_soums.html">mn_soums</a></span><span class="op">(</span>aimag <span class="op">=</span> <span class="va">aimag</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="fu"><a href="../reference/mn_neighbours.html">mn_lakes</a></span><span class="op">(</span><span class="st">"all"</span>, within <span class="op">=</span> <span class="va">aimag</span><span class="op">)</span>, fill <span class="op">=</span> <span class="st">"#9ecae1"</span>, colour <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="fu"><a href="../reference/mn_neighbours.html">mn_rivers</a></span><span class="op">(</span><span class="st">"all"</span>, within <span class="op">=</span> <span class="va">aimag</span><span class="op">)</span>, colour <span class="op">=</span> <span class="st">"#4292c6"</span>, linewidth <span class="op">=</span> <span class="fl">0.2</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="fu"><a href="../reference/mn_roads.html">mn_roads</a></span><span class="op">(</span>within <span class="op">=</span> <span class="va">aimag</span><span class="op">)</span>, colour <span class="op">=</span> <span class="st">"grey30"</span>, linewidth <span class="op">=</span> <span class="fl">0.3</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="fu"><a href="../reference/mn_settlements.html">mn_settlements</a></span><span class="op">(</span>within <span class="op">=</span> <span class="va">aimag</span><span class="op">)</span>, size <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"Хөвсгөл: сум, ус, зам, сумын төв"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="thematic-layers_files/figure-html/khuvsgul-1.png" class="r-plt" alt="" width="1400"></p>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"Хөвсгөл: сум, ус, зам, сумын төв"</span>,</span>
+<span>       caption <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/strwrap.html" class="external-link">strwrap</a></span><span class="op">(</span><span class="fu"><a href="../reference/mn_sources.html">mn_citation</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"admin"</span>, <span class="st">"osm_roads"</span>, <span class="st">"osm_water"</span>, <span class="st">"settlements"</span><span class="op">)</span><span class="op">)</span>, width <span class="op">=</span> <span class="fl">95</span><span class="op">)</span>, collapse <span class="op">=</span> <span class="st">"\n"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p><img src="thematic-layers_files/figure-html/khuvsgul-1.png" class="r-plt" alt="Хөвсгөл аймгийн сум, ус, зам, сумын төвүүд." width="100%"></p>
 </div>
 <div class="section level2">
-<h2 id="улаанбаатарын-гудамж">Улаанбаатарын гудамж<a class="anchor" aria-label="anchor" href="#%D1%83%D0%BB%D0%B0%D0%B0%D0%BD%D0%B1%D0%B0%D0%B0%D1%82%D0%B0%D1%80%D1%8B%D0%BD-%D0%B3%D1%83%D0%B4%D0%B0%D0%BC%D0%B6"></a>
+<h2 id="хотын-гудамжийг-ойртуулж-харах">Хотын гудамжийг ойртуулж харах<a class="anchor" aria-label="anchor" href="#%D1%85%D0%BE%D1%82%D1%8B%D0%BD-%D0%B3%D1%83%D0%B4%D0%B0%D0%BC%D0%B6%D0%B8%D0%B9%D0%B3-%D0%BE%D0%B9%D1%80%D1%82%D1%83%D1%83%D0%BB%D0%B6-%D1%85%D0%B0%D1%80%D0%B0%D1%85"></a>
 </h2>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">central</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"БГД"</span>, <span class="st">"БЗД"</span>, <span class="st">"ЧД"</span>, <span class="st">"ХУД"</span>, <span class="st">"СХД"</span>, <span class="st">"СБД"</span><span class="op">)</span></span>
-<span><span class="va">streets</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mn_roads.html">mn_roads</a></span><span class="op">(</span>class <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"main"</span>, <span class="st">"minor"</span><span class="op">)</span>, within <span class="op">=</span> <span class="va">central</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Re-reading with feature count reset from 34522 to 34521</span></span>
-<span><span class="fu"><a href="../reference/mn_map.html">mn_map</a></span><span class="op">(</span><span class="fu"><a href="../reference/mn_ub.html">mn_khoroos</a></span><span class="op">(</span>district <span class="op">=</span> <span class="va">central</span><span class="op">)</span>, fill <span class="op">=</span> <span class="va">parent_pcode</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">streets</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>linewidth <span class="op">=</span> <span class="va">class</span><span class="op">)</span>, colour <span class="op">=</span> <span class="st">"grey20"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html" class="external-link">scale_linewidth_manual</a></span><span class="op">(</span>values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>main <span class="op">=</span> <span class="fl">0.5</span>, minor <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span>, guide <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="thematic-layers_files/figure-html/ub-1.png" class="r-plt" alt="" width="1400"></p>
-</div>
-<div class="section level2">
-<h2 id="эх-сурвалжийг-дурдах">Эх сурвалжийг дурдах<a class="anchor" aria-label="anchor" href="#%D1%8D%D1%85-%D1%81%D1%83%D1%80%D0%B2%D0%B0%D0%BB%D0%B6%D0%B8%D0%B9%D0%B3-%D0%B4%D1%83%D1%80%D0%B4%D0%B0%D1%85"></a>
-</h2>
-<p>OpenStreetMap-ийн давхарга Open Database License (ODbL) лицензтэй.
-Нийтлэхдээ дурдана уу:</p>
+<p>Бүх хотын оронд цөөн дүүрэг сонговол гудамж илүү тод харагдана.
+Энгийн дэвсгэр нь зам, хорооны заагийг ялгахад тусална.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/mn_sources.html">mn_citation</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"admin"</span>, <span class="st">"osm_roads"</span>, <span class="st">"osm_water"</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "Boundaries: NSO Mongolia &amp; OCHA (COD-AB), CC BY-IGO; Roads: (c) OpenStreetMap contributors, ODbL; Water: (c) OpenStreetMap contributors, ODbL"</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># Bayangol, Chingeltei, Sukhbaatar</span></span>
+<span><span class="va">central</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"MN1107"</span>, <span class="st">"MN1125"</span>, <span class="st">"MN1119"</span><span class="op">)</span></span>
+<span><span class="va">streets</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mn_roads.html">mn_roads</a></span><span class="op">(</span>class <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"main"</span>, <span class="st">"minor"</span><span class="op">)</span>, within <span class="op">=</span> <span class="va">central</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Re-reading with feature count reset from 20405 to 20404</span></span>
+<span><span class="fu"><a href="../reference/mn_map.html">mn_map</a></span><span class="op">(</span><span class="fu"><a href="../reference/mn_ub.html">mn_khoroos</a></span><span class="op">(</span>district <span class="op">=</span> <span class="va">central</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">streets</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>linewidth <span class="op">=</span> <span class="va">class</span><span class="op">)</span>, colour <span class="op">=</span> <span class="st">"grey25"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html" class="external-link">scale_linewidth_manual</a></span><span class="op">(</span>values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>main <span class="op">=</span> <span class="fl">0.45</span>, minor <span class="op">=</span> <span class="fl">0.12</span><span class="op">)</span>,</span>
+<span>                         breaks <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"main"</span>, <span class="st">"minor"</span><span class="op">)</span>, labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Гол"</span>, <span class="st">"Туслах"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"Улаанбаатарын төвийн гудамж, зам"</span>, linewidth <span class="op">=</span> <span class="st">"Зам"</span>,</span>
+<span>       caption <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/strwrap.html" class="external-link">strwrap</a></span><span class="op">(</span><span class="fu"><a href="../reference/mn_sources.html">mn_citation</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"admin"</span>, <span class="st">"khoroos"</span>, <span class="st">"osm_roads"</span><span class="op">)</span><span class="op">)</span>, width <span class="op">=</span> <span class="fl">95</span><span class="op">)</span>, collapse <span class="op">=</span> <span class="st">"\n"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p><img src="thematic-layers_files/figure-html/ub-1.png" class="r-plt" alt="Төвийн гурван дүүргийн хорооны хил, гол болон туслах замууд." width="100%"></p>
+</div>
+<div class="section level2">
+<h2 id="интернетгүй-ажиллах-эх-сурвалжийг-дурдах">Интернетгүй ажиллах, эх сурвалжийг дурдах<a class="anchor" aria-label="anchor" href="#%D0%B8%D0%BD%D1%82%D0%B5%D1%80%D0%BD%D0%B5%D1%82%D0%B3%D2%AF%D0%B9-%D0%B0%D0%B6%D0%B8%D0%BB%D0%BB%D0%B0%D1%85-%D1%8D%D1%85-%D1%81%D1%83%D1%80%D0%B2%D0%B0%D0%BB%D0%B6%D0%B8%D0%B9%D0%B3-%D0%B4%D1%83%D1%80%D0%B4%D0%B0%D1%85"></a>
+</h2>
+<p><code><a href="../reference/mn_cache_dir.html">mn_cache_dir()</a></code> хадгалсан хавтсыг,
+<code><a href="../reference/mn_cache_dir.html">mn_cache_list()</a></code> файлуудыг харуулна. Интернетгүй болохоос
+өмнө хэрэгтэй давхаргаа татна:</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/mn_cache_dir.html">mn_download</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"osm_roads"</span>, <span class="st">"osm_transport"</span>, <span class="st">"osm_water"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p>Давхарга хослуулахдаа бүх эх сурвалжийг тайлбарт оруулна.
+OpenStreetMap нь Open Database Licence-тэй. <code><a href="../reference/mn_sources.html">mn_citation()</a></code>
+ишлэх текстийг өгнө.</p>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

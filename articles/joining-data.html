@@ -40,7 +40,7 @@
 <li><a class="dropdown-item" href="../articles/ulaanbaatar.html">Maps of Ulaanbaatar</a></li>
     <li><a class="dropdown-item" href="../articles/joining-data.html">Putting your data on a map</a></li>
     <li><a class="dropdown-item" href="../articles/names-and-codes.html">Names and codes</a></li>
-    <li><a class="dropdown-item" href="../articles/audited-workflows.html">Auditable joins and comparable maps</a></li>
+    <li><a class="dropdown-item" href="../articles/audited-workflows.html">Check joins and compare maps</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><a class="dropdown-item" href="../articles/index.html">More articles...</a></li>
   </ul>
@@ -74,153 +74,192 @@
 
     
     
+<p>Use <code><a href="../reference/mn_join.html">mn_join()</a></code> to attach a table to boundaries, then
+<code><a href="../reference/mn_map.html">mn_map()</a></code> to draw the result. These examples use data
+included in the package.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/temuulene/mongolmaps" class="external-link">mongolmaps</a></span><span class="op">)</span></span></code></pre></div>
-<p>The usual workflow has three steps: get a table with one row per
-place, join it to boundaries with <code><a href="../reference/mn_join.html">mn_join()</a></code>, and draw it
-with <code><a href="../reference/mn_map.html">mn_map()</a></code>.</p>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/temuulene/mongolmaps" class="external-link">mongolmaps</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span></code></pre></div>
 <div class="section level2">
-<h2 id="a-small-table">A small table<a class="anchor" aria-label="anchor" href="#a-small-table"></a>
+<h2 id="start-with-a-small-table">Start with a small table<a class="anchor" aria-label="anchor" href="#start-with-a-small-table"></a>
 </h2>
-<p>Place names can be written any common way, in English or
-Cyrillic:</p>
+<p>This made-up case table uses several common spellings. Supply one row
+per place. Prefer official codes when your table has them.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">cases</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
-<span>  aimag <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Khovsgol"</span>, <span class="st">"Hovd"</span>, <span class="st">"\u0423\u0432\u0441"</span>, <span class="st">"Ulan Bator"</span>, <span class="st">"Dornogobi"</span><span class="op">)</span>,</span>
+<span>  aimag <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Khovsgol"</span>, <span class="st">"Hovd"</span>, <span class="st">"Увс"</span>, <span class="st">"Ulan Bator"</span>, <span class="st">"Dornogobi"</span><span class="op">)</span>,</span>
 <span>  cases <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">12</span>, <span class="fl">30</span>, <span class="fl">7</span>, <span class="fl">140</span>, <span class="fl">9</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
-<span><span class="va">cases_map</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mn_join.html">mn_join</a></span><span class="op">(</span><span class="va">cases</span>, by <span class="op">=</span> <span class="va">aimag</span><span class="op">)</span></span>
-<span><span class="va">cases_map</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"name"</span>, <span class="st">"cases"</span><span class="op">)</span><span class="op">]</span></span>
-<span><span class="co">#&gt; Simple feature collection with 22 features and 2 fields</span></span>
-<span><span class="co">#&gt; Geometry type: MULTIPOLYGON</span></span>
-<span><span class="co">#&gt; Dimension:     XY</span></span>
-<span><span class="co">#&gt; Bounding box:  xmin: 87.7345 ymin: 41.58183 xmax: 119.9315 ymax: 52.14835</span></span>
-<span><span class="co">#&gt; Geodetic CRS:  WGS 84</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 22 × 3</span></span></span>
-<span><span class="co">#&gt;    name        cases                                                    geometry</span></span>
-<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>                                          <span style="color: #949494; font-style: italic;">&lt;MULTIPOLYGON [°]&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> Ulaanbaatar   140 (((107.402 47.44143, 107.4284 47.43277, 107.4883 47.4369, …</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> Dornod         <span style="color: #BB0000;">NA</span> (((112.8455 49.52838, 112.8556 49.53561, 112.8548 49.54133…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> Sukhbaatar     <span style="color: #BB0000;">NA</span> (((112.4235 45.07442, 112.4136 45.07144, 112.3912 45.06256…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> Khentii        <span style="color: #BB0000;">NA</span> (((109.0694 49.32394, 109.1747 49.35551, 109.2381 49.34512…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> Tuv            <span style="color: #BB0000;">NA</span> (((106.5653 48.55343, 106.6387 48.54782, 106.6544 48.54902…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> Govisumber     <span style="color: #BB0000;">NA</span> (((108.9589 46.96853, 108.9515 46.83761, 109.0603 46.86484…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> Selenge        <span style="color: #BB0000;">NA</span> (((106.1047 50.33643, 106.1178 50.33467, 106.1268 50.33695…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> Dornogovi       9 (((108.6727 45.09002, 108.5957 45.22638, 108.5877 45.28667…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> Darkhan-Uul    <span style="color: #BB0000;">NA</span> (((105.8979 49.38937, 105.9035 49.39209, 105.9015 49.39707…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> Umnugovi       <span style="color: #BB0000;">NA</span> (((102.9931 42.03581, 102.8919 42.07717, 102.768 42.12758,…</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 12 more rows</span></span></span></code></pre></div>
-<p>Every aimag stays in the result, so places without data show up
-grey:</p>
+<span><span class="va">cases_map</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mn_join.html">mn_join</a></span><span class="op">(</span><span class="va">cases</span>, by <span class="op">=</span> <span class="st">"aimag"</span>, level <span class="op">=</span> <span class="st">"aimag"</span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/mn_map.html">mn_map</a></span><span class="op">(</span><span class="va">cases_map</span>, fill <span class="op">=</span> <span class="va">cases</span><span class="op">)</span></span></code></pre></div>
-<p><img src="joining-data_files/figure-html/small-map-1.png" class="r-plt" alt="" width="1400"></p>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/mn_map.html">mn_map</a></span><span class="op">(</span><span class="va">cases_map</span>, fill <span class="op">=</span> <span class="va">cases</span>, title <span class="op">=</span> <span class="st">"Example case counts"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="st">"Cases"</span>, subtitle <span class="op">=</span> <span class="st">"Made-up data for five places"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="joining-data_files/figure-html/small-map-1.png" class="r-plt" alt="Example case counts for five places; aimags without observations are grey." width="100%"></p>
+<p>Every aimag stays in the map. Grey means no observation was provided.
+Use <code>0</code> for a measured zero and <code>NA</code> for a missing
+value. These are counts; compare rates only after adding suitable
+denominators.</p>
 </div>
 <div class="section level2">
-<h2 id="nso-tables">NSO tables<a class="anchor" aria-label="anchor" href="#nso-tables"></a>
+<h2 id="join-an-nso-table-by-code">Join an NSO table by code<a class="anchor" aria-label="anchor" href="#join-an-nso-table-by-code"></a>
 </h2>
-<p>Tables from the National Statistics Office list several levels in one
-column (the national total, regions, aimags, soums …). Join them by the
-code column, not the label column: labels such as “Ulaanbaatar” name
-both a region and an aimag. <code><a href="../reference/mn_join.html">mn_join()</a></code> keeps the level you
-ask for and drops the rest with a message.</p>
+<p>National Statistics Office (NSO) tables often mix country totals,
+regions, aimags and smaller units. Join by the code column, usually
+<code>Region</code>, and choose the level you need.
+<code><a href="../reference/mn_join.html">mn_join()</a></code> leaves out rows for other levels.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">mn_example_population</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 6 × 4</span></span></span>
-<span><span class="co">#&gt;   Region  Region_en           Year   value</span></span>
-<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>              <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> 0       Total               <span style="text-decoration: underline;">2</span>015 2<span style="text-decoration: underline;">964</span>085</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> 1       Western region      <span style="text-decoration: underline;">2</span>015  <span style="text-decoration: underline;">381</span>840</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> 181     Zavkhan             <span style="text-decoration: underline;">2</span>015   <span style="text-decoration: underline;">69</span>637</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> 18101   Uliastai            <span style="text-decoration: underline;">2</span>015   <span style="text-decoration: underline;">15</span>871</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> 1810151 1-r bag, Jinst      <span style="text-decoration: underline;">2</span>015    <span style="text-decoration: underline;">3</span>333</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> 1810153 2-r bag, Jargalant  <span style="text-decoration: underline;">2</span>015    <span style="text-decoration: underline;">2</span>978</span></span>
-<span></span>
-<span><span class="va">pop_2025</span> <span class="op">&lt;-</span> <span class="va">mn_example_population</span><span class="op">[</span><span class="va">mn_example_population</span><span class="op">$</span><span class="va">Year</span> <span class="op">==</span> <span class="fl">2025</span>, <span class="op">]</span></span>
+<code class="sourceCode R"><span><span class="va">pop_2025</span> <span class="op">&lt;-</span> <span class="va">mn_example_population</span><span class="op">[</span><span class="va">mn_example_population</span><span class="op">$</span><span class="va">Year</span> <span class="op">==</span> <span class="fl">2025</span>, <span class="op">]</span></span>
 <span><span class="va">aimag_pop</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mn_join.html">mn_join</a></span><span class="op">(</span><span class="va">pop_2025</span>, by <span class="op">=</span> <span class="st">"Region"</span>, level <span class="op">=</span> <span class="st">"aimag"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Joining at the aimag level; dropped 5 rows for larger units (<span style="color: #0000BB;">"country"</span> and</span></span>
-<span><span class="co">#&gt;   <span style="color: #0000BB;">"region"</span>) and 2196 rows for smaller units (<span style="color: #0000BB;">"soum"</span> and <span style="color: #0000BB;">"bag"</span>).</span></span>
-<span><span class="fu"><a href="../reference/mn_map.html">mn_map</a></span><span class="op">(</span><span class="va">aimag_pop</span>, fill <span class="op">=</span> <span class="va">value</span> <span class="op">/</span> <span class="va">area_km2</span>, title <span class="op">=</span> <span class="st">"People per km2, 2025"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="joining-data_files/figure-html/nso-1.png" class="r-plt" alt="" width="1400"></p>
-<p>The same table has soum figures:</p>
+<span></span>
+<span><span class="fu"><a href="../reference/mn_map.html">mn_map</a></span><span class="op">(</span><span class="va">aimag_pop</span>, fill <span class="op">=</span> <span class="va">value</span> <span class="op">/</span> <span class="va">area_km2</span>, trans <span class="op">=</span> <span class="st">"log10"</span>,</span>
+<span>       title <span class="op">=</span> <span class="st">"Population density, 2025"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="st">"People per km²"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="joining-data_files/figure-html/nso-1.png" class="r-plt" alt="Population density of aimags and Ulaanbaatar in 2025 on a logarithmic colour scale." width="100%"></p>
+<p>A logarithmic colour scale helps when a few places have much higher
+values. Legend labels still show the original units. The same table has
+soum and district population:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">soum_pop</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mn_join.html">mn_join</a></span><span class="op">(</span><span class="va">pop_2025</span>, by <span class="op">=</span> <span class="st">"Region"</span>, level <span class="op">=</span> <span class="st">"soum"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Joining at the soum level; dropped 28 rows for larger units (<span style="color: #0000BB;">"country"</span>,</span></span>
-<span><span class="co">#&gt;   <span style="color: #0000BB;">"region"</span>, and <span style="color: #0000BB;">"aimag"</span>) and 1853 rows for smaller units (<span style="color: #0000BB;">"bag"</span>).</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> 4 matched places have no boundary and are left out:</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Tsagaannuur (MN8340, Bayan-Ulgii)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Khatgal (MN6770, Khuvsgul)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Berh (MN2355, Khentii)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Gurvanbayan (MN2358, Khentii)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Villages and rural bags have NSO codes but no public boundary; see</span></span>
-<span><span class="co">#&gt;   `?mongolmaps::mn_bags()`.</span></span>
-<span><span class="fu"><a href="../reference/mn_map.html">mn_map</a></span><span class="op">(</span><span class="va">soum_pop</span>, fill <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log10</a></span><span class="op">(</span><span class="va">value</span><span class="op">)</span>, title <span class="op">=</span> <span class="st">"Soum population (log10), 2025"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="joining-data_files/figure-html/soums-1.png" class="r-plt" alt="" width="1400"></p>
+<span><span class="fu"><a href="../reference/mn_map.html">mn_map</a></span><span class="op">(</span><span class="va">soum_pop</span>, fill <span class="op">=</span> <span class="va">value</span>, trans <span class="op">=</span> <span class="st">"log10"</span>, title <span class="op">=</span> <span class="st">"Population, 2025"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="st">"People"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="joining-data_files/figure-html/soums-1.png" class="r-plt" alt="Population of soums and city districts in 2025 on a logarithmic colour scale." width="100%"></p>
 </div>
 <div class="section level2">
-<h2 id="several-rows-per-place">Several rows per place<a class="anchor" aria-label="anchor" href="#several-rows-per-place"></a>
+<h2 id="compare-years">Compare years<a class="anchor" aria-label="anchor" href="#compare-years"></a>
 </h2>
-<p>Rows for several years give several copies of each polygon, ready for
-facets:</p>
+<p>Declare the columns that identify each observation, such as
+<code>Year</code>, in <code>strata</code>. Each boundary then appears
+once per year, including places with missing data. The panels below
+share one colour scale.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">pop_years</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mn_join.html">mn_join</a></span><span class="op">(</span><span class="va">mn_example_population</span>, by <span class="op">=</span> <span class="st">"Region"</span>, level <span class="op">=</span> <span class="st">"aimag"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Joining at the aimag level; dropped 15 rows for larger units (<span style="color: #0000BB;">"country"</span> and</span></span>
-<span><span class="co">#&gt;   <span style="color: #0000BB;">"region"</span>) and 6588 rows for smaller units (<span style="color: #0000BB;">"soum"</span> and <span style="color: #0000BB;">"bag"</span>).</span></span>
-<span><span class="fu"><a href="../reference/mn_map.html">mn_map</a></span><span class="op">(</span><span class="va">pop_years</span>, fill <span class="op">=</span> <span class="va">value</span> <span class="op">/</span> <span class="fl">1000</span><span class="op">)</span> <span class="op">+</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html" class="external-link">facet_wrap</a></span><span class="op">(</span><span class="op">~</span><span class="va">Year</span>, ncol <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></code></pre></div>
-<p><img src="joining-data_files/figure-html/facets-1.png" class="r-plt" alt="" width="1400"></p>
+<code class="sourceCode R"><span><span class="va">pop_years</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mn_join.html">mn_join</a></span><span class="op">(</span><span class="va">mn_example_population</span>, by <span class="op">=</span> <span class="st">"Region"</span>, level <span class="op">=</span> <span class="st">"aimag"</span>,</span>
+<span>                     strata <span class="op">=</span> <span class="st">"Year"</span>, value_cols <span class="op">=</span> <span class="st">"value"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/mn_map.html">mn_map</a></span><span class="op">(</span><span class="va">pop_years</span>, fill <span class="op">=</span> <span class="va">value</span> <span class="op">/</span> <span class="fl">1000</span>, title <span class="op">=</span> <span class="st">"Population by year"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html" class="external-link">facet_wrap</a></span><span class="op">(</span><span class="op">~</span><span class="va">Year</span>, ncol <span class="op">=</span> <span class="fl">2</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="st">"People (thousands)"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="joining-data_files/figure-html/facets-1.png" class="r-plt" alt="Population in 2015, 2020 and 2025 compared on maps with a shared colour scale." width="100%"></p>
+<p>Also declare age group, sex or other columns that define a distinct
+observation. Use <code>strict = TRUE</code> to stop if a place and group
+combination appears more than once.</p>
 </div>
 <div class="section level2">
-<h2 id="repeated-soum-names">Repeated soum names<a class="anchor" aria-label="anchor" href="#repeated-soum-names"></a>
+<h2 id="handle-repeated-soum-names">Handle repeated soum names<a class="anchor" aria-label="anchor" href="#handle-repeated-soum-names"></a>
 </h2>
-<p>Many soums share a name. Give each row’s aimag with
-<code>by_parent</code>:</p>
+<p>Several soums can share a name. Use <code>by_parent</code> to
+identify the aimag for each row, or <code>within</code> if all rows
+belong to the same aimag.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">soums</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
+<code class="sourceCode R"><span><span class="va">herders</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>  aimag <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Dornod"</span>, <span class="st">"Govi-Altai"</span>, <span class="st">"Khentii"</span><span class="op">)</span>,</span>
 <span>  soum <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Bayan-Uul"</span>, <span class="st">"Bayan-Uul"</span>, <span class="st">"Bayan-Adarga"</span><span class="op">)</span>,</span>
 <span>  herders <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">820</span>, <span class="fl">640</span>, <span class="fl">910</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
-<span><span class="va">joined</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mn_join.html">mn_join</a></span><span class="op">(</span><span class="va">soums</span>, by <span class="op">=</span> <span class="st">"soum"</span>, level <span class="op">=</span> <span class="st">"soum"</span>, by_parent <span class="op">=</span> <span class="st">"aimag"</span><span class="op">)</span></span>
-<span><span class="va">joined</span><span class="op">[</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">joined</span><span class="op">$</span><span class="va">herders</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"name"</span>, <span class="st">"aimag_pcode"</span>, <span class="st">"herders"</span><span class="op">)</span><span class="op">]</span></span>
-<span><span class="co">#&gt; Simple feature collection with 3 features and 3 fields</span></span>
-<span><span class="co">#&gt; Geometry type: MULTIPOLYGON</span></span>
-<span><span class="co">#&gt; Dimension:     XY</span></span>
-<span><span class="co">#&gt; Bounding box:  xmin: 94.1555 ymin: 46.7045 xmax: 113.3802 ymax: 49.52838</span></span>
-<span><span class="co">#&gt; Geodetic CRS:  WGS 84</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 3 × 4</span></span></span>
-<span><span class="co">#&gt;   name         aimag_pcode herders                                      geometry</span></span>
-<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>                            <span style="color: #949494; font-style: italic;">&lt;MULTIPOLYGON [°]&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> Bayan-Uul    MN21            820 (((113.2758 48.84648, 113.1614 48.77836, 113…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> Bayan-Adarga MN23            910 (((111.5415 48.76606, 111.5635 48.74407, 111…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> Bayan-Uul    MN82            640 (((95.4404 47.55974, 95.46455 47.55054, 95.7…</span></span></code></pre></div>
+<span><span class="va">joined</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mn_join.html">mn_join</a></span><span class="op">(</span><span class="va">herders</span>, by <span class="op">=</span> <span class="st">"soum"</span>, level <span class="op">=</span> <span class="st">"soum"</span>, by_parent <span class="op">=</span> <span class="st">"aimag"</span><span class="op">)</span></span>
+<span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_drop_geometry</a></span><span class="op">(</span><span class="va">joined</span><span class="op">)</span><span class="op">[</span></span>
+<span>  <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">joined</span><span class="op">$</span><span class="va">herders</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"name"</span>, <span class="st">"aimag_pcode"</span>, <span class="st">"herders"</span><span class="op">)</span></span>
+<span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
+<table class="table">
+<thead><tr class="header">
+<th align="left">name</th>
+<th align="left">aimag_pcode</th>
+<th align="right">herders</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left">Bayan-Uul</td>
+<td align="left">MN21</td>
+<td align="right">820</td>
+</tr>
+<tr class="even">
+<td align="left">Bayan-Adarga</td>
+<td align="left">MN23</td>
+<td align="right">910</td>
+</tr>
+<tr class="odd">
+<td align="left">Bayan-Uul</td>
+<td align="left">MN82</td>
+<td align="right">640</td>
+</tr>
+</tbody>
+</table>
+<p>These herder counts are made up to show the join.</p>
 </div>
 <div class="section level2">
-<h2 id="fetching-nso-data-with-mongolstats">Fetching NSO data with mongolstats<a class="anchor" aria-label="anchor" href="#fetching-nso-data-with-mongolstats"></a>
+<h2 id="check-your-matches">Check your matches<a class="anchor" aria-label="anchor" href="#check-your-matches"></a>
 </h2>
-<p>The mongolstats package downloads any NSO table. Its
-<code>Region</code> codes work directly with <code><a href="../reference/mn_join.html">mn_join()</a></code>:</p>
+<p>Review how each input row was handled. Row numbers refer to your
+original table.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="fu"><a href="../reference/mn_join_audit.html">mn_join_audit</a></span><span class="op">(</span><span class="va">cases_map</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"row"</span>, <span class="st">"x"</span>, <span class="st">"pcode"</span>, <span class="st">"status"</span>, <span class="st">"action"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
+<table class="table">
+<thead><tr class="header">
+<th align="right">row</th>
+<th align="left">x</th>
+<th align="left">pcode</th>
+<th align="left">status</th>
+<th align="left">action</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="right">1</td>
+<td align="left">Khovsgol</td>
+<td align="left">MN67</td>
+<td align="left">exact</td>
+<td align="left">joined</td>
+</tr>
+<tr class="even">
+<td align="right">2</td>
+<td align="left">Hovd</td>
+<td align="left">MN84</td>
+<td align="left">exact</td>
+<td align="left">joined</td>
+</tr>
+<tr class="odd">
+<td align="right">3</td>
+<td align="left">Увс</td>
+<td align="left">MN85</td>
+<td align="left">exact</td>
+<td align="left">joined</td>
+</tr>
+<tr class="even">
+<td align="right">4</td>
+<td align="left">Ulan Bator</td>
+<td align="left">MN11</td>
+<td align="left">exact</td>
+<td align="left">joined</td>
+</tr>
+<tr class="odd">
+<td align="right">5</td>
+<td align="left">Dornogobi</td>
+<td align="left">MN44</td>
+<td align="left">exact</td>
+<td align="left">joined</td>
+</tr>
+</tbody>
+</table>
+<p>To inspect possible matches, use
+<code>mn_match("Bayan-Uul", level = "soum", details = TRUE)</code>. A
+close spelling is not proof of the right place. See <a href="audited-workflows.html">Check joins and compare maps</a> for
+stricter checks and Ulaanbaatar’s region and capital codes.</p>
+</div>
+<div class="section level2">
+<h2 id="download-a-fresh-nso-table">Download a fresh NSO table<a class="anchor" aria-label="anchor" href="#download-a-fresh-nso-table"></a>
+</h2>
+<p>The optional mongolstats package downloads NSO tables. This recipe
+needs internet access and a working NSO API, so it is not run when
+building this guide. Check the table’s dimensions before changing
+selections.</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://temuulene.github.io/mongolstats/" class="external-link">mongolstats</a></span><span class="op">)</span></span>
+<span></span>
 <span><span class="va">tbl</span> <span class="op">&lt;-</span> <span class="st">"DT_NSO_0300_002V4"</span></span>
 <span><span class="va">regions</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://temuulene.github.io/mongolstats/reference/nso_dim_values.html" class="external-link">nso_dim_values</a></span><span class="op">(</span><span class="va">tbl</span>, <span class="st">"Region"</span><span class="op">)</span><span class="op">$</span><span class="va">code</span></span>
 <span><span class="va">years</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://temuulene.github.io/mongolstats/reference/nso_dim_values.html" class="external-link">nso_dim_values</a></span><span class="op">(</span><span class="va">tbl</span>, <span class="st">"Year"</span>, labels <span class="op">=</span> <span class="st">"en"</span><span class="op">)</span></span>
-<span><span class="va">latest</span> <span class="op">&lt;-</span> <span class="va">years</span><span class="op">$</span><span class="va">code</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span></span>
-<span><span class="va">pop</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://temuulene.github.io/mongolstats/reference/nso_data.html" class="external-link">nso_data</a></span><span class="op">(</span><span class="va">tbl</span>, selections <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>Region <span class="op">=</span> <span class="va">regions</span>, Year <span class="op">=</span> <span class="va">latest</span><span class="op">)</span>, labels <span class="op">=</span> <span class="st">"en"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/mn_map.html">mn_map</a></span><span class="op">(</span><span class="fu"><a href="../reference/mn_join.html">mn_join</a></span><span class="op">(</span><span class="va">pop</span>, by <span class="op">=</span> <span class="st">"Region"</span>, level <span class="op">=</span> <span class="st">"aimag"</span><span class="op">)</span>, fill <span class="op">=</span> <span class="va">value</span><span class="op">)</span></span></code></pre></div>
-</div>
-<div class="section level2">
-<h2 id="checking-the-matches">Checking the matches<a class="anchor" aria-label="anchor" href="#checking-the-matches"></a>
-</h2>
-<p><code><a href="../reference/mn_match.html">mn_match()</a></code> shows what each value matches, and warns
-about anything ambiguous or unmatched:</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/mn_match.html">mn_match</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Khovd"</span>, <span class="st">"Hovd"</span>, <span class="st">"Kobdo"</span>, <span class="st">"Jargalant"</span><span class="op">)</span>, to <span class="op">=</span> <span class="st">"name_en"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: 1 value matches more than one unit and became <span style="color: #0000BB;">"NA"</span>:</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Jargalant: Jargalant (MN4149, Tuv); Jargalant (MN6104, Orkhon); Jargalant</span></span>
-<span><span class="co">#&gt;   (MN6440, Bayankhongor); Jargalant (MN6510, Arkhangai); Jargalant (MN6719,</span></span>
-<span><span class="co">#&gt;   Khuvsgul); Jargalant (MN8401, Khovd)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Use `within` (for example the aimag) to choose one.</span></span>
-<span><span class="co">#&gt; [1] "Khovd" "Khovd" "Khovd" NA</span></span></code></pre></div>
+<span><span class="va">latest</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="va">years</span><span class="op">$</span><span class="va">code</span><span class="op">)</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="va">pop</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://temuulene.github.io/mongolstats/reference/nso_data.html" class="external-link">nso_data</a></span><span class="op">(</span><span class="va">tbl</span>, selections <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>Region <span class="op">=</span> <span class="va">regions</span>, Year <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="va">latest</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>                labels <span class="op">=</span> <span class="st">"en"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/mn_map.html">mn_map</a></span><span class="op">(</span><span class="fu"><a href="../reference/mn_join.html">mn_join</a></span><span class="op">(</span><span class="va">pop</span>, by <span class="op">=</span> <span class="st">"Region"</span>, level <span class="op">=</span> <span class="st">"aimag"</span><span class="op">)</span>, fill <span class="op">=</span> <span class="va">value</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="st">"People"</span><span class="op">)</span></span></code></pre></div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>
