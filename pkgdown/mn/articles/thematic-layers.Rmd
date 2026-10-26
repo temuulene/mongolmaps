@@ -1,79 +1,95 @@
 ---
-title: "Сэдэвчилсэн давхарга: зам, ус, суурин"
+title: "Зам, ус, суурин газар нэмэх"
 ---
 
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
-  collapse = TRUE,
-  message = FALSE,
-  comment = "#>",
-  fig.width = 7,
-  fig.height = 4.5,
-  dpi = 200,
-  eval = identical(Sys.getenv("NOT_CRAN"), "true")
+  collapse = TRUE, comment = "#>", message = FALSE,
+  fig.width = 8, fig.height = 5, out.width = "100%"
 )
 ```
 
+Нэмэлт давхаргууд нь газар хаана байгааг, хэрхэн холбогддогийг ойлгоход тусална. Гол, нуур, суурин газрын жижиг давхаргууд багцад бий. Замын өгөгдлийг анхны хэрэглээнд татаж хадгална.
+
 ```{r setup}
 library(mongolmaps)
-library(ggplot2)
 options(mongolmaps.lang = "mn")
+library(ggplot2)
 ```
 
-Хил хязгаараас гадна mongolmaps газрын зургийг уншигдахуйц болгох
-давхаргуудыг өгнө. Жижиг давхарга багцтай ирдэг; томыг нь нэг удаа татаж,
-хадгална (`mn_cache_dir()`).
+| Давхарга | Функц | Анхны хэрэглээ |
+|---|---|---|
+| Нийслэл, аймаг, сумын төв | `mn_settlements()` | Багцад бий |
+| Хөрш орнууд | `mn_neighbours()` | Багцад бий |
+| Голлох гол, нуур | `mn_rivers()`, `mn_lakes()` | Багцад бий |
+| Илүү дэлгэрэнгүй усны объект | `mn_rivers("all")`, `mn_lakes("all")` | Татна |
+| Авто зам, гудамж | `mn_roads()` | Ойролцоогоор 30 МБ татна |
+| Төмөр зам, өртөө, нисэх буудал | `mn_railways()`, `mn_airports()` | Татна |
+| Газрын зурагт бүртгэлтэй суурин | `mn_places()` | Татна |
 
-| Функц | Агуулга | Эх сурвалж | Хэрхэн авах |
-|---|---|---|---|
-| `mn_settlements()` | нийслэл, аймаг, сумын төв | Wikidata | багцад |
-| `mn_neighbours()` | Монголын эргэн тойрон дахь Орос, Хятад, Казахстан | Natural Earth | багцад |
-| `mn_rivers()`, `mn_lakes()` | томоохон гол, нуур | Natural Earth | багцад |
-| `mn_rivers("all")`, `mn_lakes("all")` | бүх гол, горхи, усан сан | OpenStreetMap | татна, ~20 МБ |
-| `mn_roads()` | авто зам, гудамж | OpenStreetMap | татна, ~30 МБ |
-| `mn_railways()`, `mn_airports()` | төмөр зам, өртөө, нисэх буудал | OpenStreetMap | татна, <1 МБ |
-| `mn_places()` | хот, тосгон, суурин | OpenStreetMap | татна, <1 МБ |
+"All" нь эх сурвалжид байгаа бүх объект гэсэн үг; бүрэн тооллого биш. OpenStreetMap-ийн хамралт газар бүрт өөр.
 
-## Улсын хэмжээнд
+## Өгөгдөл татахгүйгээр эхлэх
 
-```{r country}
+```{r bundled, fig.alt = "Аймгийн хил, гол ус, аймгийн төвүүд."}
+mn_map(mn_aimags(), context = TRUE) +
+  geom_sf(data = mn_settlements(type = c("capital", "aimag_centre")),
+          colour = "firebrick", size = 1) +
+  labs(title = "Аймаг, ус, суурин газрууд",
+       caption = paste(strwrap(mn_citation(c("admin", "naturalearth", "settlements")), width = 95), collapse = "\n"))
+```
+
+## Улсын тээврийн сүлжээ нэмэх
+
+`mn_roads()` анхдагчаар гол замыг сонгоно. Авто замыг нарийн, төмөр замыг бүдүүн зурвал ялгахад хялбар.
+
+```{r country, fig.alt = "Улсын авто зам, төмөр зам, нисэх буудал."}
 mn_map(mn_aimags(), context = TRUE) +
   geom_sf(data = mn_roads(), colour = "firebrick", linewidth = 0.25) +
-  geom_sf(data = mn_railways(), colour = "black", linewidth = 0.6) +
-  geom_sf(data = mn_airports(), shape = 17, colour = "navy") +
-  labs(title = "Гол авто зам, төмөр зам, нисэх буудал")
+  geom_sf(data = mn_railways(), colour = "black", linewidth = 0.5) +
+  geom_sf(data = mn_airports(), shape = 17, colour = "navy", size = 1.5) +
+  labs(title = "Гол авто зам, төмөр зам, нисэх буудал",
+       subtitle = "Авто зам: улаан | Төмөр зам: хар | Нисэх буудал: цэнхэр гурвалжин",
+       caption = paste(strwrap(mn_citation(c("admin", "naturalearth", "osm_roads", "osm_transport")), width = 95), collapse = "\n"))
 ```
 
-## Нэг аймаг
+## Нэг аймгийг харуулах
 
-`within` тухайн газар доторх объектуудыг үлдээж, шугамыг хил дээр нь
-тасална:
+`within` газар нутгийг сонгож, шугамыг хил дээр нь тасална. Доорх жишээ дэлгэрэнгүй усны болон замын давхаргыг татна.
 
-```{r khuvsgul, fig.height = 6}
-aimag <- "Хөвсгөл"
+```{r khuvsgul, fig.height = 6, fig.alt = "Хөвсгөл аймгийн сум, ус, зам, сумын төвүүд."}
+aimag <- "Khuvsgul"
 mn_map(mn_soums(aimag = aimag)) +
   geom_sf(data = mn_lakes("all", within = aimag), fill = "#9ecae1", colour = NA) +
   geom_sf(data = mn_rivers("all", within = aimag), colour = "#4292c6", linewidth = 0.2) +
   geom_sf(data = mn_roads(within = aimag), colour = "grey30", linewidth = 0.3) +
   geom_sf(data = mn_settlements(within = aimag), size = 1) +
-  labs(title = "Хөвсгөл: сум, ус, зам, сумын төв")
+  labs(title = "Хөвсгөл: сум, ус, зам, сумын төв",
+       caption = paste(strwrap(mn_citation(c("admin", "osm_roads", "osm_water", "settlements")), width = 95), collapse = "\n"))
 ```
 
-## Улаанбаатарын гудамж
+## Хотын гудамжийг ойртуулж харах
 
-```{r ub, fig.height = 6}
-central <- c("БГД", "БЗД", "ЧД", "ХУД", "СХД", "СБД")
+Бүх хотын оронд цөөн дүүрэг сонговол гудамж илүү тод харагдана. Энгийн дэвсгэр нь зам, хорооны заагийг ялгахад тусална.
+
+```{r ub, fig.height = 6, fig.alt = "Төвийн гурван дүүргийн хорооны хил, гол болон туслах замууд."}
+# Bayangol, Chingeltei, Sukhbaatar
+central <- c("MN1107", "MN1125", "MN1119")
 streets <- mn_roads(class = c("main", "minor"), within = central)
-mn_map(mn_khoroos(district = central), fill = parent_pcode) +
-  geom_sf(data = streets, aes(linewidth = class), colour = "grey20") +
-  scale_linewidth_manual(values = c(main = 0.5, minor = 0.1), guide = "none")
+mn_map(mn_khoroos(district = central)) +
+  geom_sf(data = streets, aes(linewidth = class), colour = "grey25") +
+  scale_linewidth_manual(values = c(main = 0.45, minor = 0.12),
+                         breaks = c("main", "minor"), labels = c("Гол", "Туслах")) +
+  labs(title = "Улаанбаатарын төвийн гудамж, зам", linewidth = "Зам",
+       caption = paste(strwrap(mn_citation(c("admin", "khoroos", "osm_roads")), width = 95), collapse = "\n"))
 ```
 
-## Эх сурвалжийг дурдах
+## Интернетгүй ажиллах, эх сурвалжийг дурдах
 
-OpenStreetMap-ийн давхарга Open Database License (ODbL) лицензтэй.
-Нийтлэхдээ дурдана уу:
+`mn_cache_dir()` хадгалсан хавтсыг, `mn_cache_list()` файлуудыг харуулна. Интернетгүй болохоос өмнө хэрэгтэй давхаргаа татна:
 
-```{r credits}
-mn_citation(c("admin", "osm_roads", "osm_water"))
+```{r download, eval = FALSE}
+mn_download(c("osm_roads", "osm_transport", "osm_water"))
 ```
+
+Давхарга хослуулахдаа бүх эх сурвалжийг тайлбарт оруулна. OpenStreetMap нь Open Database Licence-тэй. `mn_citation()` ишлэх текстийг өгнө.

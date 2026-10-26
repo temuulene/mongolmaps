@@ -1,111 +1,118 @@
 ---
-title: "Өөрийн өгөгдлөө газрын зураг дээр"
+title: "Өгөгдлөө газрын зурагтай холбох"
 ---
 
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
-  collapse = TRUE,
-  message = FALSE,
-  comment = "#>",
-  fig.width = 7,
-  fig.height = 4.2,
-  dpi = 200
+  collapse = TRUE, comment = "#>", message = FALSE,
+  fig.width = 8, fig.height = 5, out.width = "100%",
+  eval = rlang::is_installed("ggplot2")
 )
 ```
+
+`mn_join()` хүснэгтийг хил заагтай холбож, `mn_map()` үр дүнг зурна. Доорх жишээнүүд багцад орсон өгөгдөл ашиглана.
 
 ```{r setup}
 library(mongolmaps)
 options(mongolmaps.lang = "mn")
+library(ggplot2)
 ```
 
-Ихэвчлэн гурван алхамтай: газар тус бүрт нэг мөртэй хүснэгт бэлтгэх,
-`mn_join()`-оор хилтэй холбох, `mn_map()`-аар зурах.
+## Жижиг хүснэгтээс эхлэх
 
-## Жижиг хүснэгт
-
-Газрын нэрийг англи эсвэл кирилээр, ямар ч түгээмэл бичлэгээр бичиж
-болно:
+Энэ зохиомол хүснэгт нэрийн өөр бичлэгүүдийг харуулна. Газар бүр нэг мөртэй байна. Албан ёсны код байвал түүнийг ашиглах нь дээр.
 
 ```{r small}
 cases <- data.frame(
-  aimag = c("Хөвсгөл", "Hovd", "Увс", "Ulan Bator", "Dornogobi"),
+  aimag = c("Khovsgol", "Hovd", "Увс", "Ulan Bator", "Dornogobi"),
   cases = c(12, 30, 7, 140, 9)
 )
-cases_map <- mn_join(cases, by = aimag)
-cases_map[c("name", "cases")]
+cases_map <- mn_join(cases, by = "aimag", level = "aimag")
 ```
 
-Бүх аймаг үр дүнд үлддэг тул өгөгдөлгүй газар саарал өнгөөр харагдана:
-
-```{r small-map}
-mn_map(cases_map, fill = cases)
+```{r small-map, fig.alt = "Таван газрын зохиомол тохиолдлын тоо; өгөгдөлгүй аймаг саарал."}
+mn_map(cases_map, fill = cases, title = "Жишээ: тохиолдлын тоо") +
+  labs(fill = "Тохиолдлын тоо", subtitle = "Таван газрын зохиомол өгөгдөл")
 ```
 
-## ҮСХ-ны хүснэгт
+Зурагт бүх аймаг үлдэнэ. Саарал нь өгөгдөл өгөөгүйг илэрхийлнэ. Ажигласан тэг утгад `0`, дутуу утгад `NA` хэрэглэнэ. Тоог түвшин болгон харьцуулах бол тохирох хуваарь буюу хүн амын суурь хэрэгтэй.
 
-Үндэсний статистикийн хорооны хүснэгтүүд нэг баганад хэд хэдэн түвшнийг
-(улсын дүн, бүс, аймаг, сум ...) агуулдаг. Эдгээрийг нэрийн бус **кодын**
-баганаар (жишээ нь `Region`) холбоно уу: "Улаанбаатар" гэх мэт нэр нь бүс,
-аймгийн аль алиныг заадаг. `mn_join()` хүссэн түвшнээ үлдээж, бусдыг
-мэдэгдэлтэйгээр хасна.
+## ҮСХ-ны хүснэгтийг кодоор холбох
 
-```{r nso}
-head(mn_example_population)
+ҮСХ-ны хүснэгтэд улсын дүн, бүс, аймаг, сумын мөрүүд хамт байдаг. Ихэвчлэн `Region` нэртэй кодын баганаар холбоод шаардлагатай түвшингээ сонгоно. Бусад түвшний мөрийг `mn_join()` хасна.
 
+```{r nso, fig.alt = "Аймаг, нийслэлийн 2025 оны хүн амын нягтрал."}
 pop_2025 <- mn_example_population[mn_example_population$Year == 2025, ]
 aimag_pop <- mn_join(pop_2025, by = "Region", level = "aimag")
-mn_map(aimag_pop, fill = value / area_km2, trans = "log10", title = "Хүн амын нягтрал (хүн/км²), 2025")
+
+mn_map(aimag_pop, fill = value / area_km2, trans = "log10",
+       title = "Хүн амын нягтрал, 2025") +
+  labs(fill = "Хүн/км²")
 ```
 
-Ижил хүснэгтэд сумын тоо ч бий:
+Зарим газар маш өндөр утгатай үед логарифмын өнгөний хуваарь тусална. Тайлбарын тоонууд анхны нэгжээрээ харагдана. Ижил хүснэгтээс сум, дүүргийн хүн амыг авч болно:
 
-```{r soums}
+```{r soums, fig.alt = "Сум, дүүргийн 2025 оны хүн ам."}
 soum_pop <- mn_join(pop_2025, by = "Region", level = "soum")
-mn_map(soum_pop, fill = value, trans = "log10", title = "Сумын хүн ам, 2025")
+mn_map(soum_pop, fill = value, trans = "log10", title = "Хүн ам, 2025") +
+  labs(fill = "Хүн")
 ```
 
-## Нэг газарт олон мөр
+## Онуудаар харьцуулах
 
-Олон жилийн мөр бүр олигоны хуулбар үүсгэх тул facet-д бэлэн:
+`strata`-д ажиглалтыг ялгах багана, жишээ нь `Year`-ийг өгнө. Ингэснээр хил зааг бүр он тус бүрт нэг удаа орно. Бүх зураг ижил өнгөний хуваарьтай.
 
-```{r facets, fig.height = 6}
-pop_years <- mn_join(mn_example_population, by = "Region", level = "aimag")
-mn_map(pop_years, fill = value, trans = "log10") + ggplot2::facet_wrap(~Year, ncol = 2)
+```{r facets, fig.height = 7, fig.alt = "2015, 2020, 2025 оны хүн амыг ижил өнгөний хуваариар харьцуулсан зураг."}
+pop_years <- mn_join(mn_example_population, by = "Region", level = "aimag",
+                     strata = "Year", value_cols = "value")
+mn_map(pop_years, fill = value / 1000, title = "Хүн ам, оноор") +
+  facet_wrap(~Year, ncol = 2) +
+  labs(fill = "Хүн ам (мянга)")
 ```
 
-## Давхардсан сумын нэр
+Нас, хүйс болон тусдаа ажиглалт үүсгэх бусад баганыг мөн зарлана. Газар, бүлгийн хослол давхардвал зогсоохын тулд `strict = TRUE` хэрэглэнэ.
 
-Олон сум ижил нэртэй. Мөр бүрийн аймгийг `by_parent`-ээр зааж өгнө:
+## Ижил нэртэй сумдыг ялгах
+
+Мөр бүрийн аймгийг `by_parent`-аар өгнө. Бүх мөр нэг аймгийнх бол `within` хэрэглэж болно.
 
 ```{r parent}
-soums <- data.frame(
-  aimag = c("Дорнод", "Говь-Алтай", "Хэнтий"),
-  soum = c("Баян-Уул", "Баян-Уул", "Баян-Адарга"),
+herders <- data.frame(
+  aimag = c("Dornod", "Govi-Altai", "Khentii"),
+  soum = c("Bayan-Uul", "Bayan-Uul", "Bayan-Adarga"),
   herders = c(820, 640, 910)
 )
-joined <- mn_join(soums, by = "soum", level = "soum", by_parent = "aimag")
-joined[!is.na(joined$herders), c("name", "aimag_pcode", "herders")]
+joined <- mn_join(herders, by = "soum", level = "soum", by_parent = "aimag")
+knitr::kable(sf::st_drop_geometry(joined)[
+  !is.na(joined$herders), c("name", "aimag_pcode", "herders")
+])
 ```
 
-## mongolstats-аар ҮСХ-ны өгөгдөл татах
+Малчдын тоо нь холболтыг тайлбарлах зохиомол өгөгдөл.
 
-mongolstats багц ҮСХ-ны дурын хүснэгтийг татдаг. Түүний `Region` код
-`mn_join()`-д шууд ажиллана:
+## Холболтоо шалгах
+
+Анхны мөр бүрийг хэрхэн боловсруулсныг шалгана. Мөрийн дугаар нь эх хүснэгтийн дугаар юм.
+
+```{r audit}
+knitr::kable(mn_join_audit(cases_map)[c("row", "x", "pcode", "status", "action")])
+```
+
+`mn_match("Bayan-Uul", level = "soum", details = TRUE)` нь боломжит тохирлуудыг харуулна. Бичлэг ойролцоо байх нь зөв газар гэдгийг батлахгүй. [Холболтыг шалгах, зураг харьцуулах](audited-workflows.html)-аас дэлгэрэнгүйг үзнэ үү.
+
+## ҮСХ-ноос шинэ хүснэгт татах
+
+mongolstats нэмэлт багц ҮСХ-ны хүснэгт татна. Доорх жорт интернет, ажиллаж буй API хэрэгтэй тул энэ гарын авлагыг бүтээхэд ажиллуулаагүй. Сонголтыг өөрчлөхөөс өмнө хүснэгтийн хэмжээсийг шалгана.
 
 ```{r mongolstats, eval = FALSE}
 library(mongolstats)
+
 tbl <- "DT_NSO_0300_002V4"
 regions <- nso_dim_values(tbl, "Region")$code
 years <- nso_dim_values(tbl, "Year", labels = "en")
-pop <- nso_data(tbl, selections = list(Region = regions, Year = years$code[1]), labels = "mn")
-mn_map(mn_join(pop, by = "Region", level = "aimag"), fill = value)
-```
-
-## Тохирлыг шалгах
-
-`mn_match()` утга бүр юутай тохирсныг харуулж, давхардсан эсвэл тохироогүй
-утгыг анхааруулна:
-
-```{r check}
-mn_match(c("Ховд", "Hovd", "Kobdo", "Жаргалант"), to = "name_mn")
+latest <- max(as.integer(years$code), na.rm = TRUE)
+pop <- nso_data(tbl, selections = list(Region = regions, Year = as.character(latest)),
+                labels = "en")
+mn_map(mn_join(pop, by = "Region", level = "aimag"), fill = value) +
+  ggplot2::labs(fill = "Хүн")
 ```

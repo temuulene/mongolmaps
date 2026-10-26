@@ -28,7 +28,15 @@ jobs:
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
-          extra-packages: any::pkgdown, any::ggrepel, local::.
+          extra-packages: |
+            any::pkgdown
+            any::ggrepel
+            any::patchwork
+            any::leaflet
+            any::terra
+            any::ragg
+            any::xml2
+            local::.
           needs: website
 
       - name: Build site
@@ -44,6 +52,9 @@ jobs:
 
       - name: Check Mongolian reference translations
         run: Rscript pkgdown/mn-reference.R check
+
+      - name: Verify article maps and links
+        run: Rscript pkgdown/verify-articles.R
 
       - name: Deploy to GitHub pages
         uses: JamesIves/github-pages-deploy-action@v4

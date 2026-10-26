@@ -9,109 +9,135 @@ vignette: >
 
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>",
-  fig.width = 7,
-  fig.height = 4.2,
-  # Sharp figures on the website; small ones in the CRAN package.
-  dpi = if (identical(Sys.getenv("IN_PKGDOWN"), "true")) 200 else 96,
+  collapse = TRUE, comment = "#>", message = FALSE,
+  fig.width = 8, fig.height = 5, out.width = "100%",
   eval = rlang::is_installed("ggplot2")
 )
 ```
 
+Use `mn_join()` to attach a table to boundaries, then `mn_map()` to draw
+the result. These examples use data included in the package.
+
 ```{r setup}
 library(mongolmaps)
+library(ggplot2)
 ```
 
-The usual workflow has three steps: get a table with one row per place,
-join it to boundaries with `mn_join()`, and draw it with `mn_map()`.
+## Start with a small table
 
-## A small table
-
-Place names can be written any common way, in English or Cyrillic:
+This made-up case table uses several common spellings. Supply one row
+per place. Prefer official codes when your table has them.
 
 ```{r small}
 cases <- data.frame(
-  aimag = c("Khovsgol", "Hovd", "\u0423\u0432\u0441", "Ulan Bator", "Dornogobi"),
+  aimag = c("Khovsgol", "Hovd", "Увс", "Ulan Bator", "Dornogobi"),
   cases = c(12, 30, 7, 140, 9)
 )
-cases_map <- mn_join(cases, by = aimag)
-cases_map[c("name", "cases")]
+cases_map <- mn_join(cases, by = "aimag", level = "aimag")
 ```
 
-Every aimag stays in the result, so places without data show up grey:
-
-```{r small-map}
-mn_map(cases_map, fill = cases)
+```{r small-map, fig.alt = "Example case counts for five places; aimags without observations are grey."}
+mn_map(cases_map, fill = cases, title = "Example case counts") +
+  labs(fill = "Cases", subtitle = "Made-up data for five places")
 ```
 
-## NSO tables
+Every aimag stays in the map. Grey means no observation was provided.
+Use `0` for a measured zero and `NA` for a missing value. These are
+counts; compare rates only after adding suitable denominators.
 
-Tables from the National Statistics Office list several levels in one
-column (the national total, regions, aimags, soums ...). Join them by the
-code column, not the label column: labels such as "Ulaanbaatar" name both a
-region and an aimag. `mn_join()` keeps the level you ask for and drops the
-rest with a message.
+## Join an NSO table by code
 
-```{r nso}
-head(mn_example_population)
+National Statistics Office (NSO) tables often mix country totals,
+regions, aimags and smaller units. Join by the code column, usually
+`Region`, and choose the level you need. `mn_join()` leaves out rows
+for other levels.
 
+```{r nso, fig.alt = "Population density of aimags and Ulaanbaatar in 2025 on a logarithmic colour scale."}
 pop_2025 <- mn_example_population[mn_example_population$Year == 2025, ]
 aimag_pop <- mn_join(pop_2025, by = "Region", level = "aimag")
-mn_map(aimag_pop, fill = value / area_km2, title = "People per km2, 2025")
+
+mn_map(aimag_pop, fill = value / area_km2, trans = "log10",
+       title = "Population density, 2025") +
+  labs(fill = "People per km²")
 ```
 
-The same table has soum figures:
+A logarithmic colour scale helps when a few places have much higher
+values. Legend labels still show the original units. The same table
+has soum and district population:
 
-```{r soums}
+```{r soums, fig.alt = "Population of soums and city districts in 2025 on a logarithmic colour scale."}
 soum_pop <- mn_join(pop_2025, by = "Region", level = "soum")
-mn_map(soum_pop, fill = log10(value), title = "Soum population (log10), 2025")
+mn_map(soum_pop, fill = value, trans = "log10", title = "Population, 2025") +
+  labs(fill = "People")
 ```
 
-## Several rows per place
+## Compare years
 
-Rows for several years give several copies of each polygon, ready for
-facets:
+Declare the columns that identify each observation, such as `Year`,
+in `strata`. Each boundary then appears once per year, including places
+with missing data. The panels below share one colour scale.
 
-```{r facets, fig.height = 6}
-pop_years <- mn_join(mn_example_population, by = "Region", level = "aimag")
-mn_map(pop_years, fill = value / 1000) + ggplot2::facet_wrap(~Year, ncol = 2)
+```{r facets, fig.height = 7, fig.alt = "Population in 2015, 2020 and 2025 compared on maps with a shared colour scale."}
+pop_years <- mn_join(mn_example_population, by = "Region", level = "aimag",
+                     strata = "Year", value_cols = "value")
+mn_map(pop_years, fill = value / 1000, title = "Population by year") +
+  facet_wrap(~Year, ncol = 2) +
+  labs(fill = "People (thousands)")
 ```
 
-## Repeated soum names
+Also declare age group, sex or other columns that define a distinct
+observation. Use `strict = TRUE` to stop if a place and group combination
+appears more than once.
 
-Many soums share a name. Give each row's aimag with `by_parent`:
+## Handle repeated soum names
+
+Several soums can share a name. Use `by_parent` to identify the aimag
+for each row, or `within` if all rows belong to the same aimag.
 
 ```{r parent}
-soums <- data.frame(
+herders <- data.frame(
   aimag = c("Dornod", "Govi-Altai", "Khentii"),
   soum = c("Bayan-Uul", "Bayan-Uul", "Bayan-Adarga"),
   herders = c(820, 640, 910)
 )
-joined <- mn_join(soums, by = "soum", level = "soum", by_parent = "aimag")
-joined[!is.na(joined$herders), c("name", "aimag_pcode", "herders")]
+joined <- mn_join(herders, by = "soum", level = "soum", by_parent = "aimag")
+knitr::kable(sf::st_drop_geometry(joined)[
+  !is.na(joined$herders), c("name", "aimag_pcode", "herders")
+])
 ```
 
-## Fetching NSO data with mongolstats
+These herder counts are made up to show the join.
 
-The mongolstats package downloads any NSO table. Its `Region` codes work
-directly with `mn_join()`:
+## Check your matches
+
+Review how each input row was handled. Row numbers refer to your
+original table.
+
+```{r audit}
+knitr::kable(mn_join_audit(cases_map)[c("row", "x", "pcode", "status", "action")])
+```
+
+To inspect possible matches, use
+`mn_match("Bayan-Uul", level = "soum", details = TRUE)`. A close spelling
+is not proof of the right place. See
+[Check joins and compare maps](audited-workflows.html) for stricter checks
+and Ulaanbaatar's region and capital codes.
+
+## Download a fresh NSO table
+
+The optional mongolstats package downloads NSO tables. This recipe
+needs internet access and a working NSO API, so it is not run when
+building this guide. Check the table's dimensions before changing selections.
 
 ```{r mongolstats, eval = FALSE}
 library(mongolstats)
+
 tbl <- "DT_NSO_0300_002V4"
 regions <- nso_dim_values(tbl, "Region")$code
 years <- nso_dim_values(tbl, "Year", labels = "en")
-latest <- years$code[1]
-pop <- nso_data(tbl, selections = list(Region = regions, Year = latest), labels = "en")
-mn_map(mn_join(pop, by = "Region", level = "aimag"), fill = value)
-```
-
-## Checking the matches
-
-`mn_match()` shows what each value matches, and warns about anything
-ambiguous or unmatched:
-
-```{r check}
-mn_match(c("Khovd", "Hovd", "Kobdo", "Jargalant"), to = "name_en")
+latest <- max(as.integer(years$code), na.rm = TRUE)
+pop <- nso_data(tbl, selections = list(Region = regions, Year = as.character(latest)),
+                labels = "en")
+mn_map(mn_join(pop, by = "Region", level = "aimag"), fill = value) +
+  ggplot2::labs(fill = "People")
 ```

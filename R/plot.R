@@ -317,7 +317,9 @@ mn_label_points <- function(x) {
     r <- terra::spatSample(r, max_cells, method = "regular", as.raster = TRUE)
   }
   layer <- names(r)
-  df <- terra::as.data.frame(r, xy = TRUE, na.rm = TRUE)
+  # Keep empty rows and columns so geom_raster sees a complete regular grid.
+  # Dropping them shifts pixels between detached areas such as UB districts.
+  df <- terra::as.data.frame(r, xy = TRUE, na.rm = FALSE)
   names(df) <- c("x", "y", "value")
   # Projected cell centres carry floating-point noise; snap them to the grid.
   res <- terra::res(r)
@@ -334,9 +336,9 @@ mn_label_points <- function(x) {
     } else {
       leg$colour[match(lv[[1]], leg$value)]
     }
-    ggplot2::scale_fill_manual(values = stats::setNames(pal, lv[[2]]), na.value = "transparent", drop = TRUE)
+    ggplot2::scale_fill_manual(values = stats::setNames(pal, lv[[2]]), na.value = "transparent", drop = TRUE, na.translate = FALSE)
   } else if (layer == "hillshade") {
-    ggplot2::scale_fill_gradient(low = "grey10", high = "white", guide = "none")
+    ggplot2::scale_fill_gradient(low = "grey10", high = "white", guide = "none", na.value = "transparent")
   } else {
     ggplot2::scale_fill_viridis_c(labels = .mm_number_labels, transform = trans, na.value = "transparent", limits = limits,
                                   breaks = breaks %||% ggplot2::waiver())
@@ -348,7 +350,7 @@ mn_label_points <- function(x) {
   }
   ggplot2::ggplot() +
     ggplot2::geom_sf(data = outline, fill = NA, colour = NA) +
-    ggplot2::geom_raster(data = df, ggplot2::aes(x = .data$x, y = .data$y, fill = .data$value)) +
+    ggplot2::geom_raster(data = df, ggplot2::aes(x = .data$x, y = .data$y, fill = .data$value), na.rm = TRUE) +
     scale +
     ggplot2::coord_sf(crs = crs, datum = NA, default = TRUE) +
     ggplot2::labs(title = title, caption = cap, fill = if (layer != "hillshade") layer) +

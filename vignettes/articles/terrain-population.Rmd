@@ -1,16 +1,20 @@
 ---
-title: "Terrain, land cover, population and protected areas"
+title: "Map terrain, land cover and population"
 ---
 
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>",
-  fig.width = 7,
-  dpi = 200,
-  fig.height = 4.5,
-  eval = identical(Sys.getenv("NOT_CRAN"), "true") && rlang::is_installed("terra")
+  collapse = TRUE, comment = "#>", message = FALSE,
+  fig.width = 8, fig.height = 5.5, out.width = "100%"
 )
+```
+
+These layers are grids of cells, also called rasters. Each cell stores a
+value such as elevation or population. The examples download national
+1 km grids once and save them for later use. Install terra and ggplot2 first:
+
+```{r install, eval = FALSE}
+install.packages(c("terra", "ggplot2"))
 ```
 
 ```{r setup}
@@ -18,65 +22,120 @@ library(mongolmaps)
 library(ggplot2)
 ```
 
-These layers are rasters (grids of cells), returned as `terra` SpatRasters.
-National 1 km grids are downloaded once and cached; finer grids are read
-directly from the cloud for one area at a time.
-
-| Function | Resolutions | Source |
+| Function | Value | Source |
 |---|---|---|
-| `mn_elevation()`, `mn_hillshade()` | 1 km (national), 90 m (by area) | Copernicus DEM GLO-90 |
-| `mn_landcover()` | 1 km (national), 10 m (by area) | ESA WorldCover 2021 |
-| `mn_population()` | 1 km, 100 m; years 2015 to 2030 | WorldPop |
+| `mn_elevation()` | Height in metres | Copernicus DEM GLO-90 |
+| `mn_hillshade()` | Shaded relief calculated from elevation | Copernicus DEM GLO-90 |
+| `mn_landcover()` | Land cover category | ESA WorldCover 2021 |
+| `mn_population(2025)` | Estimated people per cell | WorldPop R2025A |
 
-`mn_map()` draws rasters too, with the right colours and credits.
+## Elevation
 
-## Terrain
-
-```{r elevation}
-mn_map(mn_elevation(), title = "Elevation (m)") +
-  geom_sf(data = mn_aimags(), fill = NA, colour = "white", linewidth = 0.2)
+```{r elevation, fig.alt = "Elevation of Mongolia in metres with aimag boundaries."}
+elevation <- mn_elevation()
+mn_map(elevation, title = "Elevation") +
+  geom_sf(data = mn_aimags(), fill = NA, colour = "white", linewidth = 0.2) +
+  labs(fill = "Metres")
 ```
 
-Shaded relief makes a good background under other layers:
+## Shaded relief
 
-```{r hillshade}
-mn_map(mn_hillshade(), caption = FALSE) +
+Hillshade makes terrain easier to see. It represents simulated lighting,
+not a measurement of elevation or vegetation.
+
+```{r hillshade, fig.alt = "Shaded relief of Mongolia with aimag outlines and centres."}
+mn_map(mn_hillshade()) +
   geom_sf(data = mn_aimags(), fill = NA, colour = "white", linewidth = 0.3) +
-  geom_sf(data = mn_settlements(type = c("capital", "aimag_centre")), colour = "firebrick", size = 1)
+  geom_sf(data = mn_settlements(type = c("capital", "aimag_centre")),
+          colour = "firebrick", size = 1) +
+  labs(title = "Terrain and aimag centres",
+       caption = paste(strwrap(mn_citation(c("admin", "elevation_1km", "settlements")), width = 95), collapse = "\n"))
 ```
 
-For one area, 90 m detail:
+Select `within` to show one area. This example uses the same cached
+1 km grid, so it does not need a separate high-resolution download.
 
-```{r bogd}
-mn_map(mn_hillshade("90m", within = "Ulaanbaatar"), caption = FALSE) +
-  geom_sf(data = mn_ub_districts(), fill = NA, colour = "firebrick")
+```{r local-terrain, fig.alt = "Shaded relief around Ulaanbaatar from the 1 km grid, with district outlines."}
+mn_map(mn_hillshade(within = "Ulaanbaatar")) +
+  geom_sf(data = mn_ub_districts(), fill = NA, colour = "firebrick", linewidth = 0.4) +
+  labs(title = "Terrain around Ulaanbaatar", subtitle = "1 km grid",
+       caption = paste(strwrap(mn_citation(c("admin", "khoroos", "elevation_1km")), width = 95), collapse = "\n"))
 ```
 
 ## Land cover
 
-```{r landcover}
-mn_map(mn_landcover(), title = "Land cover, 2021")
+```{r landcover, fig.alt = "Mongolia's land cover in 2021, using the WorldCover category colours."}
+mn_map(mn_landcover(), title = "Land cover, 2021") +
+  labs(fill = "Land cover") +
+  theme(legend.text = element_text(size = 8))
 ```
+
+The 1 km layer is a generalized view of the 10 m source. It is useful
+for a national overview, but does not describe every small patch of land.
 
 ## Population
 
-`mn_zonal()` adds up the grid for any set of polygons, for example soums:
+WorldPop values are **people per cell**. They are modelled estimates,
+and can differ from official NSO population totals. Values after the
+last census are projections.
 
-```{r population}
-pop <- mn_population(2025)
-soums <- mn_zonal(pop, mn_soums(), name = "population")
-mn_map(soums, fill = population / area_km2, trans = "log10",
-       title = "People per km2 by soum, 2025 (WorldPop)")
+`mn_zonal()` sums the grid within each polygon. Use the original
+population grid for this calculation, then divide by polygon area
+to calculate density. Start with one aimag to keep the example quick.
+For a national summary, omit both `within = "Khovd"` and `aimag = "Khovd"`;
+summing all soums will take longer.
+
+```{r population, fig.alt = "WorldPop estimated population density for Khovd soums in 2025, using a logarithmic colour scale."}
+pop <- mn_population(2025, within = "Khovd")
+soums <- mn_zonal(pop, mn_soums(aimag = "Khovd"), fun = "sum", name = "population")
+soums$density <- soums$population / soums$area_km2
+soums$density[soums$density == 0] <- NA_real_
+mn_map(soums, fill = density, trans = "log10",
+       title = "Estimated population density, 2025",
+       na_label = "Zero estimate or no grid coverage") +
+  labs(fill = "People per km²", subtitle = "Khovd soums | WorldPop estimates")
 ```
+
+A logarithmic scale cannot show zero. In this display, zero estimates
+are grey alongside missing grid coverage; the original `population`
+column is kept unchanged. For official population maps, use the NSO
+workflow in [Putting your data on a map](joining-data.html).
+
+At polygon edges, the sum uses the fraction of each cell covered by the
+polygon. This assumes an even distribution within each cell. A 1 km
+grid cannot locate people at individual buildings. Means use cell
+coverage fractions, which are not physical area weights on a
+longitude/latitude grid. For medians use `exact = FALSE`.
 
 ## Protected areas
 
-The World Database on Protected Areas may not be redistributed, so it is
-downloaded from UNEP-WCMC on first use:
+This layer downloads from UNEP-WCMC and refreshes after 90 days. Check
+the provider's terms before using it; the raw dataset is not included
+or redistributed with the package.
 
-```{r protected}
+```{r protected, fig.alt = "Protected areas of Mongolia shown over aimag boundaries."}
 pa <- mn_protected_areas()
-mn_map(mn_aimags(), caption = FALSE) +
-  geom_sf(data = pa, aes(fill = desig_eng), alpha = 0.6, colour = NA) +
-  labs(fill = NULL, caption = mn_citation(c("admin", "wdpa")))
+mn_map(mn_aimags()) +
+  geom_sf(data = pa, fill = "#238b45", alpha = 0.6, colour = NA) +
+  labs(title = "Protected areas", subtitle = "Green areas: WDPA polygons",
+       caption = paste(strwrap(mn_citation(c("admin", "wdpa")), width = 95), collapse = "\n"))
 ```
+
+## When you need finer detail
+
+The commands below are optional recipes, not the sources of the
+1 km maps above. They stream data from the provider, need internet
+access each time, and are not run for this guide.
+
+```{r fine-detail, eval = FALSE}
+# Limit fine grids to a small area.
+elevation_90m <- mn_elevation("90m", within = "Nalaikh")
+cover_10m <- mn_landcover("10m", within = "Nalaikh")
+mn_map(elevation_90m)
+mn_map(cover_10m)
+```
+
+`mn_population(2025, resolution = "100m")` downloads a finer national
+population grid. More detail does not remove the model's uncertainty.
+Keep population data in their original grid for analysis; changing grids
+preserves the retained total but changes how people are allocated locally.

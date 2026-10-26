@@ -8,81 +8,102 @@ vignette: >
 ---
 
 ```{r, include = FALSE}
-knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", message = FALSE)
 ```
+
+A place can have several spellings. Khovsgol, Khuvsgul, Khövsgöl and
+Хөвсгөл refer to the same aimag. mongolmaps connects these names to one
+place code. Use codes when joining data; use names for labels.
 
 ```{r setup}
 library(mongolmaps)
 ```
 
-Mongolian place names are written in many ways: Khovsgol, Khuvsgul,
-Hovsgol, Khövsgöl or Хөвсгөл are the same aimag. mongolmaps gives every
-unit one code and knows its other names.
+## Find a place code
 
-## The codes
-
-`pcode` is unique across all levels:
-
-| Unit | pcode | NSO code | ISO 3166-2 |
-|---|---|---|---|
-| Mongolia | `MN` | `0` | `MN` |
-| Western region | `MNR1` | `1` | |
-| Khovd aimag | `MN84` | `184` | `MN-043` |
-| Jargalant soum (Khovd) | `MN8401` | `18401` | |
-| Ulaanbaatar | `MN11` | `511` | `MN-1` |
-| Bayangol district | `MN1107` | `51107` | |
-| Bayangol, 1st khoroo | `MN110751` | `5110751` | |
-
-pcodes match the humanitarian Common Operational Dataset (COD) and are the
-NSO codes without their leading region digit. `mn_codes()` lists them all:
-
-```{r codes}
-mn_codes("aimag")
-mn_codes("bag", within = "Baganuur")
-```
-
-Bags and villages (tosgon) have codes and names but no public boundary
-(`has_geometry` is `FALSE`).
-
-## Matching names
-
-`mn_match()` turns names or codes into pcodes (or any other column):
+`mn_match()` returns a P-code by default. You can ask for another
+column, such as `name_mn` or `nso_code`, with `to`.
 
 ```{r match}
-mn_match(c("Khuvsgul", "Hovsgol", "Kh\u00f6vsg\u00f6l", "\u0425\u04e9\u0432\u0441\u0433\u04e9\u043b", "MN-041", "267"))
+mn_match(c("Khuvsgul", "Hovsgol", "Khövsgöl", "Хөвсгөл", "MN-041", "267"))
 mn_match(c("MN84", "MN8401"), to = "name_mn")
 ```
 
-It ignores case, punctuation and words such as "aimag", "province",
-"soum" or "district" -- but uses them as hints when a name is shared:
+## Choose a code system
 
-```{r hints}
-mn_match(c("Sukhbaatar", "Sukhbaatar district", "Sukhbaatar soum"), within = c(NA, NA, "Selenge"))
+- `pcode`: a unique code across the package's administrative levels.
+- `nso_code`: the code used in National Statistics Office tables.
+- `iso_code`: ISO 3166-2 for aimags and Ulaanbaatar; not available at every level.
+
+This table comes from the package's crosswalk rather than a hand-written
+list. Store codes as text to preserve their formatting.
+
+```{r code-table}
+examples <- mn_codes()
+examples <- examples[examples$pcode %in% c(
+  "MN", "MNR1", "MN84", "MN8401", "MN11", "MN1107", "MN110751"
+), ]
+knitr::kable(examples[c("name_en", "pcode", "nso_code", "iso_code")])
 ```
 
-Small typos are matched and reported:
+Use `mn_codes("aimag")` for all aimags and the capital. To see a few
+khoroos and whether they have a boundary:
+
+```{r codes}
+knitr::kable(mn_codes("bag", within = "Baganuur")[
+  c("name_en", "pcode", "nso_code", "has_geometry")
+])
+```
+
+Rural bags and villages have names and codes, but their boundaries are
+not included. `has_geometry = FALSE` identifies these entries. See
+[Bring your own bag boundaries](bags-from-nso.html).
+
+## Resolve repeated names
+
+Several soums share names such as Bayan-Uul. Restrict the search to the
+right parent with `within`.
+
+```{r scoped}
+mn_match("Bayan-Uul", level = "soum", within = "Dornod")
+mn_match("Sukhbaatar district", within = "Ulaanbaatar")
+```
+
+Without enough information, `mn_match()` returns `NA` and warns about
+the possible matches. Inspect the candidates before choosing:
+
+```{r candidates}
+matches <- mn_match("Bayan-Uul", level = "soum", details = TRUE)
+matches[c("x", "pcode", "status")]
+```
+
+The warning in this example is intentional. When joining rows from
+several aimags, use `by_parent`; see [Putting your data on a map](joining-data.html).
+
+## Check spelling corrections
+
+The matcher ignores case and punctuation and uses words such as
+"aimag" or "district" to help identify the level. It can also suggest
+a close spelling. Review these suggestions before using them.
 
 ```{r typo}
-mn_match("Ulanbaatr")
+mn_match("Ulanbaatr", details = TRUE)[c("x", "pcode", "status")]
 ```
 
-When a name is shared by several units, `mn_match()` returns `NA` and says
-which ones; add `within` to choose:
+To disallow approximate spelling matches, set `fuzzy = FALSE`.
+For a join that must stop on uncertain matches, use
+`mn_join(..., strict = TRUE)`.
 
-```{r ambiguous}
-mn_match("Bayan-Uul", level = "soum")
-mn_match("Bayan-Uul", level = "soum", within = "Dornod")
-```
+## Convert Cyrillic to Latin letters
 
-## Transliteration
-
-`mn_translit()` romanises Cyrillic with a fixed table:
+`mn_translit()` converts spelling; it does not identify a place or
+check that it exists.
 
 ```{r translit}
-x <- c("\u04e8\u0432\u04e9\u0440\u0445\u0430\u043d\u0433\u0430\u0439", "\u0421\u04af\u0445\u0431\u0430\u0430\u0442\u0430\u0440")
+x <- c("Өвөрхангай", "Сүхбаатар")
 mn_translit(x)
 mn_translit(x, to = "nso")
 ```
 
-The default is the national standard MNS 5217:2012; `to = "nso"` gives the
-plain-ASCII spellings used in NSO English tables.
+The default uses MNS 5217:2012. `to = "nso"` gives the plain Latin
+spellings used in NSO English tables.

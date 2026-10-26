@@ -1,84 +1,117 @@
 ---
-title: "Гадаргуу, газрын бүрхэвч, хүн ам, тусгай хамгаалалттай газар"
+title: "Газрын гадарга, бүрхэвч, хүн амыг зурах"
 ---
 
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
-  collapse = TRUE,
-  message = FALSE,
-  comment = "#>",
-  fig.width = 7,
-  fig.height = 4.5,
-  dpi = 200,
-  eval = identical(Sys.getenv("NOT_CRAN"), "true") && rlang::is_installed("terra")
+  collapse = TRUE, comment = "#>", message = FALSE,
+  fig.width = 8, fig.height = 5.5, out.width = "100%"
 )
+```
+
+Растер нь нүд бүртээ өндөршил, хүн ам зэрэг утга хадгалсан тор юм. Эдгээр жишээ улсын 1 км-ийн торыг нэг удаа татаж хадгална. Эхлээд terra, ggplot2-ийг суулгана:
+
+```{r install, eval = FALSE}
+install.packages(c("terra", "ggplot2"))
 ```
 
 ```{r setup}
 library(mongolmaps)
-library(ggplot2)
 options(mongolmaps.lang = "mn")
+library(ggplot2)
 ```
 
-Эдгээр давхарга нь растер (нүдэн тор) бөгөөд `terra` багцын SpatRaster
-хэлбэрээр ирнэ. Улсын 1 км-ийн торыг нэг удаа татаж хадгална; илүү нарийн
-торыг нэг газраар нь үүлнээс шууд уншина.
-
-| Функц | Нарийвчлал | Эх сурвалж |
+| Функц | Утга | Эх сурвалж |
 |---|---|---|
-| `mn_elevation()`, `mn_hillshade()` | 1 км (улсаар), 90 м (газраар) | Copernicus DEM GLO-90 |
-| `mn_landcover()` | 1 км (улсаар), 10 м (газраар) | ESA WorldCover 2021 |
-| `mn_population()` | 1 км, 100 м; 2015-2030 он | WorldPop |
+| `mn_elevation()` | Өндөршил, метрээр | Copernicus DEM GLO-90 |
+| `mn_hillshade()` | Өндөршлөөс тооцсон сүүдэрлэл | Copernicus DEM GLO-90 |
+| `mn_landcover()` | Газрын бүрхэвчийн ангилал | ESA WorldCover 2021 |
+| `mn_population(2025)` | Нүд бүрийн тооцоолсон хүн ам | WorldPop R2025A |
 
-`mn_map()` растерийг ч зохих өнгө, эх сурвалжийн тэмдэглэлтэй зурна.
+## Өндөршил
 
-## Гадаргуу
-
-```{r elevation}
-mn_map(mn_elevation(), title = "Өндөршил (м)") +
-  geom_sf(data = mn_aimags(), fill = NA, colour = "white", linewidth = 0.2)
+```{r elevation, fig.alt = "Монгол Улсын өндөршил, метрээр."}
+elevation <- mn_elevation()
+mn_map(elevation, title = "Өндөршил") +
+  geom_sf(data = mn_aimags(), fill = NA, colour = "white", linewidth = 0.2) +
+  labs(fill = "Метр")
 ```
 
-Рельефийн сүүдэр бусад давхаргын дэвсгэрт тохиромжтой:
+## Сүүдэрлэсэн газрын гадарга
 
-```{r hillshade}
-mn_map(mn_hillshade(), caption = FALSE) +
+Сүүдэрлэл нь хэлбэрийг тодруулсан хийсвэр гэрэлтүүлэг; өндөршил эсвэл ургамлын хэмжилт биш.
+
+```{r hillshade, fig.alt = "Сүүдэрлэсэн газрын гадарга, аймгийн хил, төвүүд."}
+mn_map(mn_hillshade()) +
   geom_sf(data = mn_aimags(), fill = NA, colour = "white", linewidth = 0.3) +
-  geom_sf(data = mn_settlements(type = c("capital", "aimag_centre")), colour = "firebrick", size = 1)
+  geom_sf(data = mn_settlements(type = c("capital", "aimag_centre")),
+          colour = "firebrick", size = 1) +
+  labs(title = "Газрын гадарга, аймгийн төвүүд",
+       caption = paste(strwrap(mn_citation(c("admin", "elevation_1km", "settlements")), width = 95), collapse = "\n"))
 ```
 
-Нэг газарт 90 м-ийн нарийвчлалаар:
+`within`-ээр нэг газар сонгож болно. Энэ жишээ хадгалсан 1 км-ийн тороо ашиглах тул тусдаа нарийн файл татахгүй.
 
-```{r bogd}
-mn_map(mn_hillshade("90m", within = "Улаанбаатар"), caption = FALSE) +
-  geom_sf(data = mn_ub_districts(), fill = NA, colour = "firebrick")
+```{r local-terrain, fig.alt = "Улаанбаатар орчмын 1 км-ийн газрын гадаргын тор, дүүргийн хил."}
+mn_map(mn_hillshade(within = "Ulaanbaatar")) +
+  geom_sf(data = mn_ub_districts(), fill = NA, colour = "firebrick", linewidth = 0.4) +
+  labs(title = "Улаанбаатар орчмын газрын гадарга", subtitle = "1 км-ийн тор",
+       caption = paste(strwrap(mn_citation(c("admin", "khoroos", "elevation_1km")), width = 95), collapse = "\n"))
 ```
 
 ## Газрын бүрхэвч
 
-```{r landcover}
-mn_map(mn_landcover(), title = "Газрын бүрхэвч, 2021")
+```{r landcover, fig.alt = "2021 оны газрын бүрхэвчийн ангилал."}
+mn_map(mn_landcover(), title = "Газрын бүрхэвч, 2021") +
+  labs(fill = "Бүрхэвч") +
+  theme(legend.text = element_text(size = 8))
 ```
+
+1 км-ийн давхарга нь 10 м-ийн эх сурвалжийг ерөнхийлсөн зураг. Улсын тоймд тохиромжтой ч жижиг хэсэг бүрийг нарийн илэрхийлэхгүй.
 
 ## Хүн ам
 
-`mn_zonal()` торыг дурын олигоноор, жишээ нь сумаар нэгтгэнэ:
+WorldPop нь **нүд бүрийн хүн амын тооцоо**. ҮСХ-ны албан ёсны дүнгээс зөрж болно. Сүүлийн тооллогоос хойших онууд нь төсөөлөл юм.
 
-```{r population}
-pop <- mn_population(2025)
-soums <- mn_zonal(pop, mn_soums(), name = "population")
-mn_map(soums, fill = population / area_km2, trans = "log10",
-       title = "Сумын хүн амын нягтрал (хүн/км²), 2025 (WorldPop)")
+`mn_zonal()` олон өнцөгтийн доторх утгыг нэгтгэнэ. Анхны хүн амын тор дээр тооцоод, талбайд хувааж нягтрал гаргана. Хурдан ажиллуулахын тулд нэг аймгаас эхэлнэ. Улсын дүн гаргахдаа `within = "Khovd"` болон `aimag = "Khovd"` хоёуланг хасна; бүх сумыг нэгтгэхэд илүү удаан.
+
+```{r population, fig.alt = "Ховд аймгийн сумдын 2025 оны хүн амын тооцоолсон нягтрал, WorldPop."}
+pop <- mn_population(2025, within = "Khovd")
+soums <- mn_zonal(pop, mn_soums(aimag = "Khovd"), fun = "sum", name = "population")
+soums$density <- soums$population / soums$area_km2
+soums$density[soums$density == 0] <- NA_real_
+mn_map(soums, fill = density, trans = "log10",
+       title = "Хүн амын тооцоолсон нягтрал, 2025",
+       na_label = "Тэг үнэлгээ эсвэл торон өгөгдөлгүй") +
+  labs(fill = "Хүн/км²", subtitle = "Ховдын сумд | WorldPop тооцоолол")
 ```
+
+Логарифмын өнгөний хуваарьт тэгийг дүрслэх боломжгүй. Энэ зурагт тэг тооцоог торон өгөгдөлгүй газартай хамт саарлаар харуулсан. Анхны `population` багана өөрчлөгдөөгүй. Албан ёсны тоонд [ҮСХ-ны өгөгдөл холбох жишээ](joining-data.html)-г ашиглана.
+
+Хил дээр нүдний хамрагдсан хувиар жигнэнэ. Энэ нь нүд дотор хүн ам жигд тархсан гэж үздэг. 1 км-ийн тор барилга тус бүрийн хүн амыг тогтоохгүй. Дундаж нь нүдний хамралтын хувиар жигнэгддэг; өргөрөг, уртрагийн тор дээр энэ нь бодит талбайн жин биш. Медианд `exact = FALSE` хэрэглэнэ.
 
 ## Тусгай хамгаалалттай газар
 
-Дэлхийн тусгай хамгаалалттай газрын мэдээллийн сан (WDPA)-г дахин тараах
-эрхгүй тул анх ашиглахад UNEP-WCMC-ээс татна:
+UNEP-WCMC-ээс татаж, 90 хоногийн дараа шинэчилнэ. Ашиглахын өмнө нөхцөлийг шалгана. Эх өгөгдөл багцад ордоггүй, дахин түгээгддэггүй.
 
-```{r protected}
+```{r protected, fig.alt = "Монгол Улсын тусгай хамгаалалттай газрууд."}
 pa <- mn_protected_areas()
-mn_map(mn_aimags(), caption = FALSE) +
-  geom_sf(data = pa, aes(fill = desig_eng), alpha = 0.6, colour = NA) +
-  labs(fill = NULL, caption = mn_citation(c("admin", "wdpa")))
+mn_map(mn_aimags()) +
+  geom_sf(data = pa, fill = "#238b45", alpha = 0.6, colour = NA) +
+  labs(title = "Тусгай хамгаалалттай газар", subtitle = "Ногоон: WDPA-д бүртгэлтэй газар",
+       caption = paste(strwrap(mn_citation(c("admin", "wdpa")), width = 95), collapse = "\n"))
 ```
+
+## Илүү нарийн зураг хэрэгтэй үед
+
+Доорх нь нэмэлт жор; дээрх 1 км-ийн зурагт ашиглаагүй. Эх сурвалжаас шууд унших тул ажиллуулах бүрт интернет хэрэгтэй. Энэ гарын авлагыг бүтээхэд ажиллуулаагүй.
+
+```{r fine-detail, eval = FALSE}
+# Limit fine grids to a small area.
+elevation_90m <- mn_elevation("90m", within = "Nalaikh")
+cover_10m <- mn_landcover("10m", within = "Nalaikh")
+mn_map(elevation_90m)
+mn_map(cover_10m)
+```
+
+`mn_population(2025, resolution = "100m")` нь улсын илүү нарийн хүн амын тор татна. Нарийвчлал ихсэх нь загварын тодорхойгүй байдлыг арилгахгүй. Шинжилгээнд анхны торыг ашиглана. Тор солиход үлдсэн нийт дүн хадгалагдах ч орон нутгийн хуваарилалт өөрчлөгдөнө.

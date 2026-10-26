@@ -9,121 +9,122 @@ vignette: >
 
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>",
-  fig.width = 7,
-  fig.height = 4.2,
-  # Sharp figures on the website; small ones in the CRAN package.
-  dpi = if (identical(Sys.getenv("IN_PKGDOWN"), "true")) 200 else 96,
+  collapse = TRUE, comment = "#>", message = FALSE,
+  fig.width = 8, fig.height = 5, out.width = "100%",
   eval = rlang::is_installed("ggplot2")
 )
 ```
 
-mongolmaps gives you ready-made maps of Mongolia. Everything in this
-vignette works offline: simplified boundaries ship with the package.
+mongolmaps provides boundaries, place names and mapping helpers for Mongolia.
+The simplified boundaries are included in the package, so the examples
+below work without internet access.
 
-```{r setup}
+Install the packages once:
+
+```{r install, eval = FALSE}
+install.packages(c("mongolmaps", "ggplot2"))
+```
+
+## Your first map
+
+```{r first-map, fig.alt = "Mongolia showing the boundaries of its aimags and Ulaanbaatar."}
 library(mongolmaps)
-```
-
-## Administrative levels
-
-Mongolia has 21 aimags (provinces) and the capital, Ulaanbaatar. Aimags are
-divided into soums, and soums into bags. Ulaanbaatar is divided into 9
-districts (duureg) and those into khoroos.
-
-| Level in mongolmaps | Rural units | Ulaanbaatar units |
-|---|---|---|
-| `"country"` | Mongolia | |
-| `"region"` | 4 economic regions | Ulaanbaatar is the 5th |
-| `"aimag"` | 21 aimags | Ulaanbaatar |
-| `"soum"` | 330 soums | 9 districts |
-| `"bag"` | ~1,650 bags | 204 khoroos |
-
-Each level has a function:
-
-```{r levels}
-mn_aimags()
-```
-
-All of them return the same columns:
-
-* `pcode`: a code that identifies the unit at any level;
-* `name`, `name_en`, `name_mn`, `name_mns`: the name in the chosen
-  language, in English (as NSO writes it), in Cyrillic, and in Latin with
-  diacritics;
-* `level`, `type`, `number`: what kind of unit it is;
-* `iso_code`, `nso_code`: ISO 3166-2 and NSO statistical codes;
-* `parent_pcode`, `region_pcode`, `aimag_pcode`, `soum_pcode`: the units it
-  sits in;
-* `area_km2` and the `geometry`.
-
-## Filtering
-
-Pass the places you want. Names can be spelled any common way.
-
-```{r filter}
-mn_soums(aimag = "Khovd")
-mn_aimags(region = "Western")
-```
-
-## Drawing maps
-
-`mn_map()` draws any of these with ggplot2.
-
-```{r map-soums}
-mn_map(mn_soums(aimag = c("Khovd", "Uvs", "Bayan-Ulgii")), fill = aimag_pcode, label = TRUE)
-```
-
-It returns a normal ggplot, so you can keep adding to it:
-
-```{r map-add}
 library(ggplot2)
-mn_map(mn_aimags()) +
-  geom_sf(data = mn_settlements(type = c("capital", "aimag_centre")), colour = "firebrick") +
-  labs(title = "Aimag centres")
+
+mn_map(mn_aimags(), title = "Mongolia: aimags and Ulaanbaatar")
 ```
 
-With `context = TRUE` you get neighbouring countries, rivers and lakes:
+`mn_aimags()` gets the boundaries. `mn_map()` draws them and returns a
+ggplot, which you can change with the usual ggplot2 functions.
 
-```{r map-context}
-mn_map(mn_regions(), fill = name, context = TRUE)
+## Choose the right boundaries
+
+Mongolia has 21 aimags (provinces) and the capital, Ulaanbaatar. Aimags
+contain soums, which contain bags. Ulaanbaatar contains districts
+(duureg), which contain khoroos.
+
+| What you need | Function | Included? |
+|---|---|---|
+| Country outline | `mn_country()` | Yes |
+| Four economic regions and Ulaanbaatar | `mn_regions()` | Yes |
+| 21 aimags and Ulaanbaatar | `mn_aimags()` | Yes |
+| 330 soums and 9 city districts | `mn_soums()` | Yes |
+| Ulaanbaatar outline | `mn_ub()` | Yes |
+| Nine city districts | `mn_ub_districts()` | Yes |
+| 204 khoroos | `mn_khoroos()` | Yes, unofficial boundaries |
+| Rural bags | `mn_bags()` | Names and codes; supply your own boundaries |
+
+These functions return an `sf` object: a table with a `geometry` column
+that stores the shapes. Useful columns include `pcode` (a unique place
+code), `name`, `nso_code`, `parent_pcode` and `area_km2`.
+
+```{r columns}
+aimags <- mn_aimags()
+knitr::kable(head(sf::st_drop_geometry(aimags)[c("name", "pcode", "nso_code")]))
 ```
 
-## Projections
+Use `name_en`, `name_mn` or `name_mns` for English, Cyrillic Mongolian or
+Latin Mongolian names. [Names and codes](names-and-codes.html) explains
+the codes and spelling variants.
 
-Boundaries come in longitude and latitude (EPSG:4326). `mn_map()` projects
-them for you; to project them yourself use `crs`:
+## Show part of the country
 
-```{r crs}
-mn_aimags(crs = "albers")
+Select places with `aimag` or `region`. Common spelling variants work too.
+
+```{r map-soums, fig.alt = "Soum boundaries in Khovd, Uvs and Bayan-Ulgii in western Mongolia."}
+west <- mn_soums(aimag = c("Khovd", "Uvs", "Bayan-Ulgii"))
+mn_map(west, title = "Soums in western Mongolia")
 ```
 
-`mn_crs()` returns the projections: Albers equal-area for national maps,
-UTM zone 48N for Ulaanbaatar.
+Use `mn_aimags(region = "Western")` for the whole western region.
+Labels are easier to read when you show one aimag at a time.
 
-## Languages
+## Add towns, rivers and neighbouring countries
 
-```{r mongolian}
-mn_map(mn_aimags(lang = "mn"), label = TRUE, lang = "mn")
+These small background layers are included in the package.
+
+```{r map-context, fig.alt = "Mongolia's economic regions with major water features, neighbours and aimag centres."}
+mn_map(mn_regions(), fill = name, context = TRUE) +
+  geom_sf(
+    data = mn_settlements(type = c("capital", "aimag_centre")),
+    colour = "firebrick", size = 1
+  ) +
+  labs(title = "Economic regions and aimag centres", fill = "Region",
+       caption = paste(strwrap(mn_citation(c("admin", "naturalearth", "settlements")), width = 95), collapse = "\n"))
 ```
 
-Set `options(mongolmaps.lang = "mn")` to use Mongolian everywhere.
+## Use Mongolian labels
 
-## Higher resolution
+```{r mongolian, fig.alt = "Aimags labelled in Cyrillic Mongolian."}
+mn_map(mn_aimags(), label = TRUE, lang = "mn", label_size = 2.5)
+```
 
-The bundled boundaries are simplified. For detailed work, use
-`resolution = "high"`: the full-resolution boundaries (about 10 MB) are
-downloaded once and cached.
+Set `options(mongolmaps.lang = "mn")` to use Mongolian names by default.
+If Cyrillic letters appear as boxes, choose a font that supports them,
+for example `+ theme_mn(base_family = "Arial")`.
+
+## Coordinates and detail
+
+Boundaries use longitude and latitude (EPSG:4326). `mn_map()` chooses a
+suitable projection for display. Use `mn_aimags(crs = "albers")` for
+national equal-area coordinates or `mn_ub(crs = "utm")` for Ulaanbaatar
+in UTM zone 48N.
+
+The included shapes are simplified for fast plotting. This optional
+command downloads full-resolution boundaries once and saves them for
+later use. It needs internet access the first time.
 
 ```{r high, eval = FALSE}
-mn_soums(aimag = "Khovd", resolution = "high")
+khovd <- mn_soums(aimag = "Khovd", resolution = "high")
 ```
 
-## Where the data come from
+## Where to go next
 
-```{r sources}
-mn_sources()[c("id", "provider", "license")]
-```
+- [Put your data on a map](joining-data.html).
+- [Map Ulaanbaatar districts and khoroos](ulaanbaatar.html).
+- [Add roads, water and settlements](thematic-layers.html).
+- [Map elevation, land cover and population grids](terrain-population.html).
 
-Please credit the providers; `mn_citation()` gives the text.
+`mn_sources()` lists providers and licences. Use `mn_citation()` for
+credit text. Khoroo boundaries and the district lines derived from them
+are unofficial; a source snapshot does not establish their effective date.

@@ -4,92 +4,88 @@ title: "Улаанбаатарын газрын зураг"
 
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
-  collapse = TRUE,
-  message = FALSE,
-  comment = "#>",
-  fig.width = 7,
-  fig.height = 5,
-  dpi = 200
+  collapse = TRUE, comment = "#>", message = FALSE,
+  fig.width = 8, fig.height = 6, out.width = "100%",
+  eval = rlang::is_installed("ggplot2")
 )
 ```
+
+`mn_ub()` нийслэлийн хил, `mn_ub_districts()` есөн дүүрэг, `mn_khoroos()` 204 хороог авна. Бүгд багцад багтсан.
 
 ```{r setup}
 library(mongolmaps)
 options(mongolmaps.lang = "mn")
+library(ggplot2)
 ```
 
-Улаанбаатар гурван түвшний газрын зурагтай: хот, 9 дүүрэг, 204 хороо.
-Давхаргууд хоорондоо яг таарна.
+## Есөн дүүргийг харуулах
 
-```{r levels}
-mn_ub()
-mn_ub_districts()
-mn_khoroos()
+```{r districts, fig.alt = "Улаанбаатарын есөн дүүрэг бодит байрлалаараа."}
+districts <- mn_ub_districts()
+mn_map(districts, fill = name, label = TRUE,
+       title = "Улаанбаатарын есөн дүүрэг") +
+  guides(fill = "none")
 ```
 
-## Дүүрэг
+Багануур, Багахангай нь хотын үндсэн хэсгээс зайтай. Тэдгээрийг тусдаа хэсэгт зурвал үндсэн хот том харагдана. Энэ жишээнд patchwork хэрэгтэй: `install.packages("patchwork")`.
 
-```{r districts}
-mn_map(mn_ub_districts(), fill = name, label = TRUE)
+```{r district-panels, eval = rlang::is_installed(c("ggplot2", "patchwork")), fig.alt = "Улаанбаатар, Багануур, Багахангайг тусдаа хэсгүүдэд харуулсан зураг."}
+mn_map_ub(fill = name, label = TRUE, title = "Улаанбаатарын дүүргүүд") &
+  guides(fill = "none")
 ```
 
-Багануур, Багахангай нь хотын төвөөс зүүн болон зүүн өмнө зүгт тусдаа
-байрладаг. Хотын төвд анхаарах бол хэрэгтэй дүүргүүдээ сонгоно:
+Хэсэг бүр өөр газарзүйн масштабтай. Дүүргүүдийн хоорондох зайг харьцуулахдаа эхний зургийг ашиглана.
 
-```{r central}
-central <- c("Баянгол", "Баянзүрх", "Чингэлтэй", "Хан-Уул", "Сонгинохайрхан", "Сүхбаатар дүүрэг")
-mn_map(mn_khoroos(district = central), fill = parent_pcode)
+## Төвийн хороодыг сонгох
+
+Дүүргийн нэр эсвэл `"BZD"`, `"SBD"`, `"KhUD"` зэрэг товчлол хэрэглэнэ. Кирилл нэр, товчлолыг мөн танина.
+
+```{r central, fig.alt = "Баянгол, Сүхбаатар, Чингэлтэй дүүргийн хороод."}
+central <- mn_khoroos(district = c("Bayangol", "Sukhbaatar", "Chingeltei"))
+central$district <- districts$name[match(central$parent_pcode, districts$pcode)]
+mn_map(central, fill = district, title = "Төвийн гурван дүүргийн хороод") +
+  labs(fill = "Дүүрэг")
 ```
 
-Дүүргийн нэрийг "БЗД", "СБД", "ХУД" гэх мэт товчлолоор, мөн латинаар
-бичиж болно:
+Хорооны дугаар дүүрэг бүрт давтагдана. Дугаарыг харагдахуйц тэмдэглэхийн тулд нэг дүүргийг сонгоод `label = TRUE` хэрэглэнэ.
 
-```{r abbrev}
-mn_khoroos(district = "БЗД")
+```{r khoroos, fig.alt = "Сүхбаатар дүүргийн хороодыг дугаараар тэмдэглэсэн зураг."}
+mn_map(mn_khoroos(district = "Sukhbaatar"), label = TRUE,
+       title = "Сүхбаатар дүүрэг: хорооны дугаар")
 ```
 
-## Хороо
-
-Хороо дүүрэг дотроо дугаартай; дугаар нь `number` баганад байна, мөн
-`mn_map(label = TRUE)` үүнийг харуулна.
-
-```{r khoroos}
-mn_map(mn_khoroos(district = "Сүхбаатар дүүрэг"), fill = area_km2, label = TRUE)
-```
-
-Нэг хороог олох бол `mn_match()`-д дүүргийг нь зааж өгнө:
+Нэг хороо хайхдаа дүүргийг нь хамт өгнө:
 
 ```{r match}
-mn_match("15-р хороо", level = "bag", within = "Баянгол дүүрэг")
-mn_match("Баянгол 15")
+mn_match("15-r khoroo", level = "bag", within = "Bayangol")
 ```
 
-## Статистик холбох
+## Хүн амын өгөгдөл холбох
 
-ҮСХ олон үзүүлэлтийг хороогоор нийтэлдэг. Жишээ өгөгдөлд жилийн дундаж
-хүн ам байна:
+Багцын ҮСХ-ны жишээ хүснэгтэд 2015, 2020, 2025 оны жилийн дундаж хүн ам бий. Нэг оноо сонгоод `Region` кодоор холбоно. Багцын кодын системд хороод `level = "bag"` түвшинд орно.
 
-```{r join, fig.height = 5.5}
+```{r join, fig.alt = "Төвийн гурван дүүргийн 2025 оны хүн амын нягтрал."}
 pop <- mn_example_population[mn_example_population$Year == 2025, ]
-khoroo_pop <- mn_join(pop, by = "Region", level = "bag", within = "Улаанбаатар")
+khoroo_pop <- mn_join(pop, by = "Region", level = "bag", within = "Ulaanbaatar")
+central_pop <- khoroo_pop[khoroo_pop$parent_pcode %in% central$parent_pcode, ]
 
-mn_map(
-  khoroo_pop[khoroo_pop$parent_pcode %in% c("MN1107", "MN1119", "MN1125"), ],
-  fill = value / area_km2,
-  title = "Хүн амын нягтрал (хүн/км²): Баянгол, Сүхбаатар, Чингэлтэй"
-)
+mn_map(central_pop, fill = value / area_km2, trans = "log10",
+       title = "Хүн амын нягтрал, 2025") +
+  labs(fill = "Хүн/км²", subtitle = "Баянгол, Сүхбаатар, Чингэлтэй")
 ```
 
-## Интерактив газрын зураг
+Логарифмын өнгөний хуваарь нь нягтралын өргөн хүрээний ялгааг харуулна. Саарал нь утга байхгүйг илэрхийлнэ; хүн ам тэг гэсэн үг биш.
 
-```{r leaflet, eval = FALSE}
-mn_leaflet(khoroo_pop, fill = value)
+## Интерактив зураг
+
+leaflet-ийг нэг удаа суулгана: `install.packages("leaflet")`. Хулганаа аваачвал нэр, дарвал дэлгэрэнгүй мэдээлэл гарна. Суурь зургийн тайлд интернет хэрэгтэй.
+
+```{r leaflet, eval = identical(Sys.getenv("IN_PKGDOWN"), "true") && rlang::is_installed("leaflet")}
+mn_leaflet(central_pop, fill = value)
 ```
 
-## Хорооны хилийн тухай
+Интерактив зураг багцын вебсайтад харагдана. Ижил кодыг R-д ажиллуулбал Viewer эсвэл хөтөч дээр нээгдэнэ.
 
-Хорооны хилийг гарал үүслээ заагаагүй нээлттэй khoroo-map төслөөс авсан
-тул **албан бус** гэж үзнэ үү. Хилийг Улаанбаатарын албан ёсны хилд
-тааруулсан; `mn_ub_districts()` дахь дүүргийн хил нь хороодынх нь нийлбэр
-бөгөөд хотын одоогийн хуваарийг дагана. Дэлгэрэнгүйг `?mn_khoroos`-оос
-харна уу.
+## Хил заагийн хязгаарлалт
+
+Хорооны дүрсийг khoroo-map төслөөс авсан бөгөөд анхны мэдээллийн эх сурвалж нь тодорхойгүй. Иймээс **албан бус** гэж үзнэ. Багц тэдгээрийг нийслэлийн албан ёсны гадна хилд тааруулж, хороодыг нэгтгэн дүүргийн дүрс үүсгэдэг. Давхаргууд таарч байгаа нь хууль ёсны хил, хүчин төгөлдөр огноог батлахгүй. `?mn_khoroos`-оос дэлгэрэнгүйг үзнэ үү.

@@ -82,3 +82,26 @@ test_that("labels fall back to geom_sf_label() without ggrepel", {
   expect_s3_class(p$layers[[2]]$geom, "GeomLabel")
   expect_equal(nrow(ggplot2::layer_data(p, 2)), 22)
 })
+
+test_that("raster maps keep regular spacing across empty rows and columns", {
+  skip_if_not_installed("terra")
+  r <- terra::rast(
+    nrows = 5, ncols = 8, xmin = 0, xmax = 8000, ymin = 0, ymax = 5000,
+    crs = mn_crs("albers")$wkt
+  )
+  values <- matrix(seq_len(40), nrow = 5, ncol = 8)
+  values[, 3:5] <- NA_real_
+  values[3, ] <- NA_real_
+  terra::values(r) <- as.vector(t(values))
+
+  p <- mn_map(r, caption = FALSE)
+  expect_no_warning(ggplot2::ggplotGrob(p))
+  cells <- ggplot2::layer_data(p, 2)
+  expect_equal(unique(cells$xmax - cells$xmin), 1000)
+  expect_equal(unique(cells$ymax - cells$ymin), 1000)
+  expect_equal(terra::values(r, mat = FALSE), as.vector(t(values)))
+
+  names(r) <- "hillshade"
+  shade <- ggplot2::layer_data(mn_map(r, caption = FALSE), 2)
+  expect_true(all(shade$fill[is.na(as.vector(t(values)))] == "transparent"))
+})
