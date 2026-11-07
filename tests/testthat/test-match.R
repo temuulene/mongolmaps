@@ -127,3 +127,10 @@ test_that("the quiet option silences fuzzy-match messages", {
   withr::local_options(mongolmaps.quiet = TRUE)
   expect_no_message(mn_match("Ulanbaatr"))
 })
+
+test_that("missing values and the text \"NA\" are kept apart", {
+  res <- suppressWarnings(mn_match(c("NA", NA), details = TRUE))
+  expect_equal(res$status, c("unmatched", "missing"))
+  res <- suppressWarnings(mn_match(c(NA, "NA"), details = TRUE))
+  expect_equal(res$status, c("missing", "unmatched"))
+})

@@ -1,5 +1,29 @@
 # mongolmaps (development version)
 
+* `mn_join()` no longer drops khoroos or bags numbered 1 to 5 when `within`
+  names a district or soum; these numbers were taken for region codes.
+* `mn_join()` no longer fills Ulaanbaatar from the region row when `within`
+  leaves Ulaanbaatar out. The region row now also stands in for a missing
+  capital row when the table has no numeric columns, and the audit keeps how
+  that row was matched.
+* `mn_match()` keeps missing values apart from the text `"NA"`.
+* Automatic bins (`bins = <number>`) no longer add empty open-ended classes
+  at both ends of the legend. Using `bins` with `midpoint` is now an error
+  instead of silently ignoring `midpoint`. Inset maps keep the level order of
+  factor fills.
+* `mn_erase_water()` and clipping with `within` handle geometry collections
+  and features that only touch the border.
+* `mn_roads()`, `mn_railways()` and `mn_airports()` gain `lang`, and all
+  OpenStreetMap layers follow `getOption("mongolmaps.lang")`, as documented.
+* `mn_leaflet()` draws point and line layers, not only polygons, and gives a
+  clear error for empty layers or layers that mix geometry types.
+* Remote 90 m elevation and 10 m land cover reads no longer stop when the
+  connectivity probe fails on networks where HTTPS still works.
+* `mn_cache_clear()` rejects unknown layers, `mn_cache_list()` names the layer
+  of unpacked archive files, and `mn_cache_verify()` returns unnamed columns.
+* `mn_bags()` keeps the aimag limit when several aimags and a soum are given,
+  and checks `path` before reading.
+* Errors from internal checks now name the function you called.
 * Fixed shifted raster pixels across empty rows or columns, including terrain
   maps of detached Ulaanbaatar districts. Empty cells remain transparent.
 * Reworked all English and Mongolian guides with clearer examples, readable

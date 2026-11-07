@@ -60,9 +60,12 @@ mn_bags <- function(aimag = NULL, soum = NULL, path = getOption("mongolmaps.bags
       "data_unavailable"
     )
   }
+  .mm_check_string(path)
   aimag_targets <- .mm_resolve_within(aimag, levels = c("aimag", "region"), arg = "aimag")
   soum_parent <- if (length(aimag_targets) == 1) unname(aimag_targets)
-  soum_targets <- .mm_resolve_within(soum, levels = "soum", parent = soum_parent, arg = "soum")
+  # With several aimags, soums are still searched only inside them.
+  soum_scope <- if (length(aimag_targets) > 1) unname(aimag_targets)
+  soum_targets <- .mm_resolve_within(soum, levels = "soum", parent = soum_parent, scope = soum_scope, arg = "soum")
   targets <- soum_targets %||% aimag_targets
   bags <- .mm_bags_cached(path)
   .mm_finish(bags, targets, lang, crs)

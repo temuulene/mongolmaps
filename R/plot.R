@@ -202,7 +202,8 @@ mn_label_points <- function(x) {
   if (small && central) mn_crs("utm") else mn_crs("albers")
 }
 
-.mm_fill_layers <- function(x, fill_q, trans = "identity", limits = NULL, breaks = NULL, bins = NULL, midpoint = NULL) {
+.mm_fill_layers <- function(x, fill_q, trans = "identity", limits = NULL, breaks = NULL, bins = NULL, midpoint = NULL,
+                            call = rlang::caller_env()) {
   border <- if (nrow(x) > 150) 0.1 else 0.25
   if (rlang::quo_is_null(fill_q)) {
     return(list(ggplot2::geom_sf(data = x, fill = "grey95", colour = "grey40", linewidth = border)))
@@ -213,16 +214,20 @@ mn_label_points <- function(x) {
   }
   values <- rlang::eval_tidy(fill_q, data = sf::st_drop_geometry(x))
   if (!is.null(bins)) {
-    if (!is.numeric(values)) .mm_abort("Binning requires numeric fill values.", "input")
+    if (!is.numeric(values)) .mm_abort("Binning requires numeric fill values.", "input", call = call)
+    if (!is.null(midpoint)) {
+      .mm_abort("Use either {.arg bins} or {.arg midpoint}, not both.", "input", call = call)
+    }
     cuts <- bins
     if (length(bins) == 1) {
-      if (!rlang::is_scalar_integerish(bins) || bins < 2) .mm_abort("{.arg bins} must be at least 2.", "input")
+      if (!rlang::is_scalar_integerish(bins) || bins < 2) .mm_abort("{.arg bins} must be at least 2.", "input", call = call)
       finite <- values[is.finite(values)]
-      if (!length(finite)) .mm_abort("Cannot derive bins without finite values; supply cut points.", "input")
-      cuts <- unique(c(-Inf, pretty(range(finite), n = bins), Inf))
+      if (!length(finite)) .mm_abort("Cannot derive bins without finite values; supply cut points.", "input", call = call)
+      # pretty() already spans the data, so open-ended outer bins would be empty.
+      cuts <- pretty(range(finite), n = bins)
     }
     if (!is.numeric(cuts) || length(cuts) < 2 || anyNA(cuts) || is.unsorted(cuts, strictly = TRUE)) {
-      .mm_abort("Bin cut points must be increasing numeric values.", "input")
+      .mm_abort("Bin cut points must be increasing numeric values.", "input", call = call)
     }
     x$..fill_bin <- cut(values, cuts, include.lowest = TRUE, ordered_result = TRUE)
     fill_q <- rlang::new_quosure(quote(..fill_bin), rlang::empty_env())
@@ -236,7 +241,9 @@ mn_label_points <- function(x) {
     if (is.null(midpoint)) {
       scale <- do.call(ggplot2::scale_fill_viridis_c, args)
     } else {
-      if (!is.numeric(midpoint) || length(midpoint) != 1 || !is.finite(midpoint)) .mm_abort("{.arg midpoint} must be finite.", "input")
+      if (!is.numeric(midpoint) || length(midpoint) != 1 || !is.finite(midpoint)) {
+        .mm_abort("{.arg midpoint} must be finite.", "input", call = call)
+      }
       scale <- do.call(ggplot2::scale_fill_gradient2,
                        c(args, list(low = "#2166ac", mid = "#f7f7f7", high = "#b2182b", midpoint = midpoint)))
     }

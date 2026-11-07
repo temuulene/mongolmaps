@@ -89,9 +89,9 @@ mn_map_ub <- function(x = NULL, fill = NULL, label = FALSE, title = NULL,
   out
 }
 
-.mm_check_inset_data <- function(x) {
+.mm_check_inset_data <- function(x, arg = rlang::caller_arg(x), call = rlang::caller_env()) {
   if (!inherits(x, "sf") || !all(sf::st_geometry_type(x) %in% c("POLYGON", "MULTIPOLYGON"))) {
-    .mm_abort("Inset data must be an sf polygon object.", "input")
+    .mm_abort("{.arg {arg}} must be an {.cls sf} object with polygons.", "input", call = call)
   }
 }
 
@@ -104,12 +104,14 @@ mn_map_ub <- function(x = NULL, fill = NULL, label = FALSE, title = NULL,
       if (is.null(limits)) {
         limits <- if (is.numeric(v)) {
           if (any(is.finite(v))) range(v[is.finite(v)]) else NULL
+        } else if (is.factor(v)) {
+          levels(v)
         } else {
           unique(as.character(v[!is.na(v)]))
         }
       }
       if (length(dots$bins) == 1 && is.numeric(v) && any(is.finite(v))) {
-        dots$bins <- unique(c(-Inf, pretty(range(v[is.finite(v)]), n = dots$bins), Inf))
+        dots$bins <- pretty(range(v[is.finite(v)]), n = dots$bins)
       }
     }
   }

@@ -69,3 +69,52 @@ test_that("label points are recomputed for modified geometries", {
   p <- mn_label_points(x)
   expect_true(lengths(sf::st_intersects(p, x)) > 0)
 })
+
+test_that("automatic bins do not add empty classes at either end", {
+  skip_if_not_installed("ggplot2")
+  x <- mn_aimags()
+  x$value <- seq_len(nrow(x))
+  p <- mn_map(x, fill = value, bins = 4)
+  bins <- p$layers[[1]]$data$..fill_bin
+  expect_true(all(table(bins) > 0))
+  expect_false(any(grepl("Inf", levels(bins))))
+})
+
+test_that("binned maps reject a midpoint", {
+  skip_if_not_installed("ggplot2")
+  x <- mn_aimags()
+  x$value <- seq_len(nrow(x)) - 10
+  expect_error(mn_map(x, fill = value, bins = 4, midpoint = 0), class = "mongolmaps_input_error")
+})
+
+test_that("inset scales keep factor level order", {
+  skip_if_not_installed("ggplot2")
+  skip_if_not_installed("patchwork")
+  x <- mn_aimags()
+  x$grp <- factor(ifelse(seq_len(nrow(x)) %% 2 == 0, "high", "low"), levels = c("low", "high", "none"))
+  args <- .mm_panel_scale(list(x), rlang::quo(grp), NULL, NULL, list())
+  expect_equal(args$limits, c("low", "high", "none"))
+})
+
+test_that("mn_erase_water() names its own argument in errors", {
+  expect_snapshot(mn_erase_water(123), error = TRUE)
+})
+
+test_that("water erasing keeps polygon parts when the difference is a collection", {
+  rect <- function(a, b) sf::st_polygon(list(matrix(c(a, 0, b, 0, b, 100, a, 100, a, 0), ncol = 2, byrow = TRUE)))
+  x <- sf::st_sf(area_km2 = 0.01, geometry = sf::st_sfc(rect(0, 100), crs = 32648))
+  # Taller than the land, so it splits it in two after reprojection.
+  band <- sf::st_polygon(list(matrix(c(40, -10, 60, -10, 60, 110, 40, 110, 40, -10), ncol = 2, byrow = TRUE)))
+  water <- sf::st_sf(geometry = sf::st_sfc(band, crs = 32648))
+  y <- mn_erase_water(x, water)
+  expect_equal(as.character(sf::st_geometry_type(y)), "MULTIPOLYGON")
+  expect_length(sf::st_geometry(y)[[1]], 2)
+  local_mocked_bindings(st_difference = function(x, y, ...) {
+    sf::st_sfc(sf::st_geometrycollection(list(rect(0, 40), rect(60, 100),
+                                              sf::st_linestring(rbind(c(40, 0), c(40, 100))))),
+               crs = sf::st_crs(x))
+  }, .package = "sf")
+  y <- mn_erase_water(x, water)
+  expect_equal(as.character(sf::st_geometry_type(y)), "MULTIPOLYGON")
+  expect_length(sf::st_geometry(y)[[1]], 2)
+})

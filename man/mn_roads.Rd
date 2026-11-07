@@ -7,11 +7,11 @@
 \alias{mn_places}
 \title{Roads, railways, airports and places from OpenStreetMap}
 \usage{
-mn_roads(class = "main", within = NULL, crs = NULL)
+mn_roads(class = "main", within = NULL, lang = NULL, crs = NULL)
 
-mn_railways(stations = FALSE, within = NULL, crs = NULL)
+mn_railways(stations = FALSE, within = NULL, lang = NULL, crs = NULL)
 
-mn_airports(within = NULL, crs = NULL)
+mn_airports(within = NULL, lang = NULL, crs = NULL)
 
 mn_places(
   type = c("city", "town", "village"),
@@ -28,6 +28,10 @@ streets), \code{"track"}, \code{"path"}, or \code{"all"}.}
 \item{within}{Keep only features inside these places (names or codes of
 any level with a boundary, such as \code{"Ulaanbaatar"} or \code{"Khovd"}).}
 
+\item{lang}{Language of the \code{name} column: \code{"en"} (English, as in NSO
+tables), \code{"mn"} (Cyrillic) or \code{"mns"} (Latin with diacritics, MNS
+5217). Defaults to \code{getOption("mongolmaps.lang", "en")}.}
+
 \item{crs}{Coordinate reference system of the result. \code{NULL} (default)
 keeps longitude/latitude (EPSG:4326). Use \code{"albers"}, \code{"lcc"} or
 \code{"utm"} for a projection suited to Mongolia (see \code{\link[=mn_crs]{mn_crs()}}), or any
@@ -38,10 +42,6 @@ points instead of the lines.}
 
 \item{type}{Place types for \code{mn_places()}: any of \code{"city"}, \code{"town"},
 \code{"village"}, \code{"hamlet"}, \code{"suburb"} and \code{"isolated_dwelling"}.}
-
-\item{lang}{Language of the \code{name} column: \code{"en"} (English, as in NSO
-tables), \code{"mn"} (Cyrillic) or \code{"mns"} (Latin with diacritics, MNS
-5217). Defaults to \code{getOption("mongolmaps.lang", "en")}.}
 }
 \value{
 An \code{sf} tibble with \code{osm_id}, \code{name} (in the chosen language,

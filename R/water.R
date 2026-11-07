@@ -33,8 +33,13 @@ mn_erase_water <- function(x, water = NULL, min_area_km2 = 0) {
       mask <- sf::st_union(sf::st_geometry(wet))
       geom <- lapply(sf::st_geometry(area), function(g) {
         d <- suppressWarnings(sf::st_difference(sf::st_sfc(g, crs = sf::st_crs(area)), mask))
-        if (!length(d) || all(sf::st_is_empty(d))) return(sf::st_multipolygon())
-        sf::st_cast(d, "MULTIPOLYGON")[[1]]
+        # Invalid or touching inputs can give a collection with lines or points.
+        if (any(sf::st_geometry_type(d) %in% c("GEOMETRY", "GEOMETRYCOLLECTION"))) {
+          d <- suppressWarnings(sf::st_collection_extract(d, "POLYGON"))
+        }
+        d <- d[!sf::st_is_empty(d) & sf::st_geometry_type(d) %in% c("POLYGON", "MULTIPOLYGON")]
+        if (!length(d)) return(sf::st_multipolygon())
+        sf::st_cast(sf::st_union(d), "MULTIPOLYGON")[[1]]
       })
       sf::st_geometry(area) <- sf::st_sfc(geom, crs = sf::st_crs(area))
     }

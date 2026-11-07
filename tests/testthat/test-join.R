@@ -117,3 +117,38 @@ test_that(".mm_detect_level() picks the most common level", {
 test_that("mn_join() checks `by_parent` is a single string", {
   expect_snapshot(mn_join(pop, "Region", by_parent = 1), error = TRUE)
 })
+
+test_that("mn_join() keeps khoroos numbered 1 to 5 when `within` is a district", {
+  df <- data.frame(khoroo = 1:34, value = seq_len(34))
+  out <- suppressMessages(mn_join(df, khoroo, level = "bag", within = "MN1107"))
+  audit <- mn_join_audit(out)
+  expect_equal(unique(audit$action), "joined")
+  expect_equal(sum(!is.na(out$value)), 34)
+})
+
+test_that("mn_join() leaves Ulaanbaatar alone when `within` excludes it", {
+  expect_no_message(
+    out <- mn_join(pop, "Region", level = "aimag", within = "Western"),
+    class = "mongolmaps_ub_from_region"
+  )
+  audit <- mn_join_audit(out)
+  expect_equal(audit$action[audit$x == "5"], "other_level")
+  expect_equal(audit$action[audit$x == "511"], "outside_scope")
+})
+
+test_that("mn_join() uses the Ulaanbaatar region row without numeric columns", {
+  df <- data.frame(Region = c("181", "5"), label = c("a", "b"))
+  out <- suppressMessages(mn_join(df, "Region", level = "aimag"))
+  expect_equal(out$label[out$pcode == "MN11"], "b")
+  audit <- mn_join_audit(out)
+  expect_equal(audit$status[audit$x == "5"], "code")
+  # Text values are reconciled when named in `value_cols`
+  df <- data.frame(Region = c("181", "5", "511"), label = c("a", "b", NA))
+  out <- suppressMessages(mn_join(df, "Region", level = "aimag", value_cols = "label"))
+  expect_equal(out$label[out$pcode == "MN11"], "b")
+})
+
+test_that("mn_join() reports a non-column `by` as an input error", {
+  expect_error(mn_join(pop, NULL), class = "mongolmaps_input_error")
+  expect_error(mn_join(pop, c("a", "b")), class = "mongolmaps_input_error")
+})

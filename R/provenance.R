@@ -94,12 +94,13 @@ mn_vintages <- function(layer = NULL) {
   .mm_set_provenance(x, p)
 }
 
-.mm_check_boundary_version <- function(boundary_version) {
+.mm_check_boundary_version <- function(boundary_version, call = rlang::caller_env()) {
   if (!is.null(boundary_version) && !identical(boundary_version, .mm_data_version)) {
     .mm_abort(
       c("Unsupported boundary version {.val {boundary_version}}.",
         "i" = "Only {.val {(.mm_data_version)}} is available; see {.fn mn_vintages}. Statistical years do not select historical geometry."),
-      "input"
+      "input",
+      call = call
     )
   }
   invisible(.mm_data_version)

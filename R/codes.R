@@ -56,7 +56,7 @@ mn_codes <- function(level = NULL, within = NULL, aliases = FALSE, lang = NULL) 
     return(tibble::as_tibble(a[c("pcode", "level", "name_en", "alias", "source")]))
   }
   path <- getOption("mongolmaps.bags_path")
-  if (!is.null(path)) {
+  if (!is.null(path) && any(u$level == "bag")) {
     bags <- .mm_bags_cached(path)
     idx <- match(u$pcode, bags$pcode)
     found <- !is.na(idx)

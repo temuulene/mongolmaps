@@ -25,6 +25,7 @@ mn_leaflet <- function(x = NULL, fill = NULL, popup = NULL, lang = NULL, tiles =
   if (!inherits(x, "sf")) {
     .mm_abort("{.arg x} must be an {.cls sf} object, not {.obj_type_friendly {x}}.", "input")
   }
+  if (!nrow(x)) .mm_abort("{.arg x} has no rows to map.", "input")
   x <- sf::st_transform(x, 4326)
   df <- sf::st_drop_geometry(x)
 
@@ -57,13 +58,26 @@ mn_leaflet <- function(x = NULL, fill = NULL, popup = NULL, lang = NULL, tiles =
     .mm_default_popup(df, values, if (!is.null(values)) rlang::as_label(fill_q))
   }
 
-  m <- leaflet::leaflet(x) |>
-    leaflet::addProviderTiles(tiles) |>
+  types <- as.character(sf::st_geometry_type(x))
+  family <- unique(sub("^MULTI", "", types))
+  if (length(family) > 1) {
+    .mm_abort("{.arg x} mixes geometry types ({.val {family}}); map each type separately.", "input")
+  }
+  m <- leaflet::addProviderTiles(leaflet::leaflet(x), tiles)
+  m <- if (identical(family, "POINT")) {
+    leaflet::addCircleMarkers(
+      m, radius = 5, fillColor = colour, fillOpacity = opacity, color = "white", weight = 1,
+      label = labels, popup = popups
+    )
+  } else if (identical(family, "LINESTRING")) {
+    leaflet::addPolylines(m, color = colour, opacity = opacity, weight = 2, label = labels, popup = popups)
+  } else {
     leaflet::addPolygons(
-      fillColor = colour, fillOpacity = opacity, color = "white", weight = 1,
+      m, fillColor = colour, fillOpacity = opacity, color = "white", weight = 1,
       label = labels, popup = popups,
       highlightOptions = leaflet::highlightOptions(weight = 2, color = "#333333", bringToFront = TRUE)
     )
+  }
   if (!is.null(pal)) {
     m <- leaflet::addLegend(m, pal = pal, values = values, title = rlang::as_label(fill_q), opacity = opacity)
   }

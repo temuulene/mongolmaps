@@ -47,7 +47,8 @@
 #'   `c("Year", "Sex")`. `NULL` recognizes common dimension names.
 #'   Supply this explicitly for other dimensions or repeated records.
 #' @param value_cols Columns to reconcile for Ulaanbaatar. `NULL` uses
-#'   numeric columns except keys and recognized dimensions.
+#'   numeric columns except keys and recognized dimensions. Name the columns
+#'   for tables whose values are not numeric, such as categories.
 #' @param ub_policy `"prefer_city"` (default), `"prefer_region"`,
 #'   `"error"` on conflicting values, or `"none"` to disable reconciliation.
 #' @param duplicates `"allow"` (default), `"warn"` or `"error"` for repeated
@@ -90,7 +91,10 @@ mn_join <- function(data,
   if (!is.data.frame(data)) {
     .mm_abort("{.arg data} must be a data frame, not {.obj_type_friendly {data}}.", "input")
   }
-  by <- rlang::as_name(rlang::ensym(by))
+  env <- rlang::current_env()
+  by <- tryCatch(rlang::as_name(rlang::ensym(by)), error = function(e) {
+    .mm_abort("{.arg by} must be one column name, as a string or a bare name.", "input", call = env)
+  })
   if (!by %in% names(data)) .mm_abort("Column {.field {by}} is not in {.arg data}.", "input")
   parent <- if (!is.null(by_parent)) {
     .mm_check_string(by_parent)
@@ -123,16 +127,20 @@ mn_join <- function(data,
   failed <- which(res$status == "unmatched")
   other <- rep(NA_character_, length(values))
   other_pcode <- rep(NA_character_, length(values))
+  other_status <- rep(NA_character_, length(values))
   if (length(failed)) {
     alt <- .mm_match_df(values[failed], levels = setdiff(.mm_levels, level), fuzzy = FALSE)
     hit <- alt$status %in% c("code", "exact")
     other_pcode[failed[hit]] <- alt$pcode[hit]
+    other_status[failed[hit]] <- alt$status[hit]
     other[failed[hit]] <- .mm_units$level[match(alt$pcode[hit], .mm_units$pcode)]
   }
   selected <- res$status %in% c("code", "exact", "fuzzy")
   action <- ifelse(selected, "joined", res$status)
-  if (level == "aimag" && ub_policy != "none") {
-    ub <- .mm_reconcile_ub(data, res, other, other_pcode, selected, action, cols, ub_policy, strict)
+  # Only reconcile when the capital is inside the requested area.
+  ub_in_scope <- is.null(targets) || .mm_in_targets("MN11", targets)
+  if (level == "aimag" && ub_policy != "none" && ub_in_scope) {
+    ub <- .mm_reconcile_ub(data, res, other, other_pcode, other_status, selected, action, cols, ub_policy, strict)
     data <- ub$data
     res <- ub$res
     other <- ub$other
@@ -220,7 +228,7 @@ mn_join_audit <- function(x) {
   audit
 }
 
-.mm_join_columns <- function(data, by, by_parent, strata, value_cols) {
+.mm_join_columns <- function(data, by, by_parent, strata, value_cols, call = rlang::caller_env()) {
   if (is.null(strata)) {
     pattern <- "^(year|month|quarter|date|period|sex|gender|age|age_group|indicator|variable|measure|unit|frequency)(_(en|mn|code|label))?$"
     strata <- grep(pattern, names(data), value = TRUE, ignore.case = TRUE)
@@ -231,17 +239,22 @@ mn_join_audit <- function(x) {
   }
   for (cols in list(strata, value_cols)) {
     if (!is.character(cols) || anyNA(cols) || any(!cols %in% names(data))) {
-      .mm_abort("{.arg strata} and {.arg value_cols} must name columns of {.arg data}.", "input")
+      .mm_abort("{.arg strata} and {.arg value_cols} must name columns of {.arg data}.", "input", call = call)
     }
   }
-  if (length(intersect(strata, value_cols))) .mm_abort("Stratum columns cannot also be value columns.", "input")
+  if (length(intersect(strata, value_cols))) {
+    .mm_abort("Stratum columns cannot also be value columns.", "input", call = call)
+  }
   list(strata = unique(strata), values = unique(value_cols))
 }
 
-.mm_reconcile_ub <- function(data, res, other, other_pcode, selected, action, cols, policy, strict) {
+.mm_reconcile_ub <- function(data, res, other, other_pcode, other_status, selected, action, cols, policy, strict,
+                             call = rlang::caller_env()) {
   region <- which(other_pcode == "MNR5")
   city <- which(res$pcode %in% "MN11" & selected)
-  if (length(region) && length(cols$values)) {
+  # Without value columns there is nothing to copy, but a region-only row
+  # still stands in for the capital.
+  if (length(region)) {
     rows <- c(region, city)
     groups <- if (length(cols$strata)) {
       grouped <- dplyr::group_by(data[rows, cols$strata, drop = FALSE], dplyr::across(dplyr::everything()))
@@ -256,14 +269,15 @@ mn_join_audit <- function(x) {
       cty <- intersect(idx, city)
       if (!length(r)) next
       if (length(r) > 1 || length(cty) > 1) {
-        .mm_abort("Ulaanbaatar has repeated records within a stratum. Supply all statistical dimensions in {.arg strata}.", "join")
+        .mm_abort("Ulaanbaatar has repeated records within a stratum. Supply all statistical dimensions in {.arg strata}.",
+                  "join", call = call)
       }
       conflict <- if (length(cty)) cols$values[vapply(cols$values, function(v) {
         !is.na(data[[v]][r]) && !is.na(data[[v]][cty]) && !isTRUE(all.equal(data[[v]][r], data[[v]][cty]))
       }, logical(1))] else character()
       if (length(conflict)) {
         msg <- "Conflicting Ulaanbaatar region/capital values in {.val {conflict}} (input row {r})."
-        if (strict || policy == "error") .mm_abort(msg, "ub_conflict") else .mm_warn(msg, "ub_conflict")
+        if (strict || policy == "error") .mm_abort(msg, "ub_conflict", call = call) else .mm_warn(msg, "ub_conflict")
       }
       prefer_r <- policy == "prefer_region" || !length(cty) ||
         (length(cty) && all(is.na(data[cty, cols$values, drop = FALSE])) && any(!is.na(data[r, cols$values, drop = FALSE])))
@@ -279,7 +293,7 @@ mn_join_audit <- function(x) {
       # A region-only row with no values is still a recognized fallback record.
       selected[r] <- prefer_r
       res$pcode[r] <- "MN11"
-      res$status[r] <- "code"
+      res$status[r] <- other_status[r]
       other[r] <- NA_character_
       action[r] <- if (prefer_r) "joined" else if (copied) "coalesced" else "superseded"
       if (length(cty)) {
@@ -297,17 +311,17 @@ mn_join_audit <- function(x) {
 }
 
 # The level with the most matches; ties go to the finer level outside strict mode.
-.mm_detect_level <- function(values, parent = NULL, scope = NULL, strict = FALSE) {
+.mm_detect_level <- function(values, parent = NULL, scope = NULL, strict = FALSE, call = rlang::caller_env()) {
   m <- suppressWarnings(suppressMessages(.mm_match_df(values, within = parent, fuzzy = FALSE, scope = scope)))
   m <- m[!duplicated(m[c("x", "within_pcode")]), ]
   lv <- .mm_units$level[match(m$pcode, .mm_units$pcode)]
   lv <- lv[!is.na(lv)]
   if (!length(lv)) {
-    if (strict) .mm_abort("Cannot infer an administrative level; supply {.arg level}.", "join")
+    if (strict) .mm_abort("Cannot infer an administrative level; supply {.arg level}.", "join", call = call)
     return("aimag")
   }
   counts <- table(factor(lv, levels = .mm_levels))
   best <- .mm_levels[counts == max(counts)]
-  if (strict && length(best) > 1) .mm_abort("Level inference is tied; supply {.arg level}.", "join")
+  if (strict && length(best) > 1) .mm_abort("Level inference is tied; supply {.arg level}.", "join", call = call)
   best[length(best)]
 }

@@ -87,3 +87,21 @@ test_that("mn_download() accepts layer groups", {
   local_mocked_bindings(.mm_asset = function(id, ...) paste0("/cache/", id))
   expect_setequal(names(mn_download("osm")), c("osm_roads", "osm_transport", "osm_water", "osm_places"))
 })
+
+test_that("clipping drops lines that only touch the area", {
+  area <- sf::st_sfc(sf::st_polygon(list(rbind(c(0, 0), c(1, 0), c(1, 1), c(0, 1), c(0, 0)))), crs = 3857)
+  touch <- sf::st_sf(id = 1, geometry = sf::st_sfc(sf::st_linestring(rbind(c(1, 0.5), c(2, 0.5))), crs = 3857))
+  out <- suppressWarnings(.mm_clip(touch, area))
+  expect_equal(nrow(out), 0)
+  inside <- sf::st_sf(id = 1, geometry = sf::st_sfc(sf::st_linestring(rbind(c(0.2, 0.5), c(0.8, 0.5))), crs = 3857))
+  expect_no_warning(out <- .mm_clip(inside, area))
+  expect_equal(as.character(sf::st_geometry_type(out)), "MULTILINESTRING")
+})
+
+test_that("OSM layers follow the language option", {
+  local_osm_fixture()
+  withr::local_options(mongolmaps.lang = "mn")
+  expect_equal(mn_places(type = "city")$name, "Ховд")
+  roads <- mn_roads(lang = "en")
+  expect_equal(roads$name, "Main St")
+})

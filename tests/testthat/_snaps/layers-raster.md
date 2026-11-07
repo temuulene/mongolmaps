@@ -31,7 +31,7 @@
       .mm_remote_mosaic("https://example.org/a.tif", NULL, "elevation")
     Condition
       Error:
-      ! Can't read elevation data: no internet connection or offline mode is on.
+      ! Can't read elevation data: offline mode is on.
 
 # mn_population() checks the year and downloads the right file
 

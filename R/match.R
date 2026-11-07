@@ -99,7 +99,7 @@ mn_match <- function(x,
 # error. Ambiguous values are an error too, unless `allow_multiple` is TRUE:
 # then every candidate is kept, joined with "|".
 .mm_resolve_within <- function(within, levels = NULL, parent = NULL, allow_multiple = FALSE,
-                               arg = "within", call = rlang::caller_env()) {
+                               arg = "within", call = rlang::caller_env(), scope = NULL) {
   if (is.null(within)) {
     return(NULL)
   }
@@ -107,7 +107,7 @@ mn_match <- function(x,
   if (!length(w)) {
     return(NULL)
   }
-  m <- .mm_match_df(w, levels = levels, within = parent)
+  m <- .mm_match_df(w, levels = levels, within = parent, scope = scope)
   if (allow_multiple) {
     amb <- m$status == "ambiguous"
     m$pcode[amb] <- purrr::map_chr(m$candidates[amb], \(cand) paste(cand, collapse = "|"))
@@ -184,11 +184,13 @@ mn_match <- function(x,
       (is.null(scope) || .mm_in_targets(code_pc[i], scope))
   }
   # Known identifiers at a different level must not become numbered bags.
-  # Bare small numbers are allowed as bag numbers only inside a soum/district.
-  number_context <- vapply(pairs$within_pcode, function(p) {
-    targets <- .mm_within_targets(p)
-    length(targets) > 0 && all(.mm_units$level[match(targets, .mm_units$pcode)] == "soum")
-  }, logical(1))
+  # Bare small numbers are allowed as bag numbers only inside a soum/district,
+  # given either per row (`within`) or for the whole call (`scope`).
+  in_soums <- function(targets) {
+    length(targets) > 0 && all(.mm_units$level[match(targets, .mm_units$pcode)] %in% "soum")
+  }
+  number_context <- in_soums(scope) |
+    vapply(pairs$within_pcode, \(p) in_soums(.mm_within_targets(p)), logical(1), USE.NAMES = FALSE)
   wrong_code <- !missing & !is.na(code_pc) & !code_hit &
     !(is_digits & nchar(trimmed) <= 2 & number_context & (is.null(levels) || "bag" %in% levels))
   pairs$status[wrong_code] <- "unmatched"
@@ -227,9 +229,9 @@ mn_match <- function(x,
     }
   }
 
-  idx <- match(paste(x, within_pcode, sep = "
-"), paste(pairs$x, pairs$within_pcode, sep = "
-"))
+  # Encode missingness so NA and the text "NA" stay distinct keys.
+  pair_key <- function(a, b) paste(is.na(a), a, is.na(b), b, sep = "\r")
+  idx <- match(pair_key(x, within_pcode), pair_key(pairs$x, pairs$within_pcode))
   tibble::as_tibble(pairs[idx, , drop = FALSE])
 }
 

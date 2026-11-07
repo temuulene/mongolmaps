@@ -45,3 +45,26 @@ test_that("mn_cache_clear() with no layers empties the cache", {
   suppressMessages(mn_cache_clear())
   expect_equal(nrow(mn_cache_list()), 0)
 })
+
+test_that("mn_cache_list() names the layer of unpacked archive files", {
+  withr::local_options(mongolmaps.cache_dir = withr::local_tempdir())
+  dir.create(file.path(mn_cache_dir(), "data-v1", "admin_high"), recursive = TRUE)
+  writeLines("x", file.path(mn_cache_dir(), "data-v1", "admin_high.gpkg.zip"))
+  writeLines("y", file.path(mn_cache_dir(), "data-v1", "admin_high", "admin_high.gpkg"))
+  writeLines("z", file.path(mn_cache_dir(), "data-v1", "admin_high", ".archive.sha256"))
+  listing <- mn_cache_list()
+  expect_equal(listing$layer, c("admin_high", "admin_high"))
+})
+
+test_that("mn_cache_clear() rejects unknown layers", {
+  expect_error(mn_cache_clear("nope"), class = "mongolmaps_input_error")
+})
+
+test_that("mn_cache_verify() returns unnamed columns", {
+  withr::local_options(mongolmaps.cache_dir = withr::local_tempdir())
+  dir.create(file.path(mn_cache_dir(), "data-v1"), recursive = TRUE)
+  writeLines("x", file.path(mn_cache_dir(), "data-v1", "admin_high.gpkg.zip"))
+  res <- mn_cache_verify("admin_high")
+  expect_null(names(res$actual_sha256))
+  expect_null(names(res$expected_sha256))
+})

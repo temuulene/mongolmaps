@@ -16,8 +16,8 @@ test_that("mn_settlements() filters by type and place and switches language", {
 })
 
 test_that("settlements lie inside their soum", {
-  suppressMessages(sf::sf_use_s2(FALSE))
-  withr::defer(suppressMessages(sf::sf_use_s2(TRUE)))
+  old_s2 <- suppressMessages(sf::sf_use_s2(FALSE))
+  withr::defer(suppressMessages(sf::sf_use_s2(old_s2)))
   s <- mn_settlements(type = "soum_centre")
   soums <- mn_soums()
   hit <- sf::st_intersects(s, soums)

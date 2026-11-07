@@ -7,8 +7,8 @@ test_that("bundled boundaries are valid under GEOS and S2", {
 })
 
 test_that("soum label points fall inside their aimag", {
-  suppressMessages(sf::sf_use_s2(FALSE))
-  withr::defer(suppressMessages(sf::sf_use_s2(TRUE)))
+  old_s2 <- suppressMessages(sf::sf_use_s2(FALSE))
+  withr::defer(suppressMessages(sf::sf_use_s2(old_s2)))
   soums <- mn_label_points(mn_soums())
   aimags <- mn_aimags()
   hit <- sf::st_intersects(soums, aimags)
@@ -17,8 +17,8 @@ test_that("soum label points fall inside their aimag", {
 })
 
 test_that("khoroos tile their districts and districts tile Ulaanbaatar", {
-  suppressMessages(sf::sf_use_s2(FALSE))
-  withr::defer(suppressMessages(sf::sf_use_s2(TRUE)))
+  old_s2 <- suppressMessages(sf::sf_use_s2(FALSE))
+  withr::defer(suppressMessages(sf::sf_use_s2(old_s2)))
   utm <- \(x) sf::st_transform(x, 32648)
   km2 <- \(g) if (length(g) == 0) 0 else sum(as.numeric(sf::st_area(g))) / 1e6
   kh <- utm(mn_khoroos())

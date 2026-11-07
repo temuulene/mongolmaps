@@ -34,41 +34,35 @@
 #' mn_railways()
 #' mn_airports()
 #' mn_places(within = "Khovd")
-mn_roads <- function(class = "main", within = NULL, crs = NULL) {
+mn_roads <- function(class = "main", within = NULL, lang = NULL, crs = NULL) {
   class <- rlang::arg_match(class, c("main", "minor", "track", "path", "all"), multiple = TRUE)
   where <- if (!"all" %in% class) sprintf("class IN (%s)", paste0("'", class, "'", collapse = ", "))
-  .mm_osm_read("osm_roads", "roads", where = where, within = within, crs = crs)
+  .mm_osm_read("osm_roads", "roads", where = where, within = within, lang = lang, crs = crs)
 }
 
 #' @rdname mn_roads
 #' @export
-mn_railways <- function(stations = FALSE, within = NULL, crs = NULL) {
-  .mm_osm_read("osm_transport", if (isTRUE(stations)) "stations" else "railways", within = within, crs = crs)
+mn_railways <- function(stations = FALSE, within = NULL, lang = NULL, crs = NULL) {
+  .mm_osm_read("osm_transport", if (isTRUE(stations)) "stations" else "railways", within = within, lang = lang, crs = crs)
 }
 
 #' @rdname mn_roads
 #' @export
-mn_airports <- function(within = NULL, crs = NULL) {
-  .mm_osm_read("osm_transport", "airports", within = within, crs = crs)
+mn_airports <- function(within = NULL, lang = NULL, crs = NULL) {
+  .mm_osm_read("osm_transport", "airports", within = within, lang = lang, crs = crs)
 }
 
 #' @rdname mn_roads
 #' @export
 mn_places <- function(type = c("city", "town", "village"), within = NULL, lang = NULL, crs = NULL) {
   type <- rlang::arg_match(type, c("city", "town", "village", "hamlet", "suburb", "isolated_dwelling"), multiple = TRUE)
-  lang <- .mm_arg_lang(lang)
   where <- sprintf("place IN (%s)", paste0("'", type, "'", collapse = ", "))
-  x <- .mm_osm_read("osm_places", "places", where = where, within = within, crs = crs)
-  x$name <- switch(lang,
-    en = x$name_en,
-    mn = x$name_mn,
-    mns = ifelse(is.na(x$name_mn), x$name_en, mn_translit(x$name_mn, "mns"))
-  )
-  x[c("osm_id", "name", setdiff(names(x), c("osm_id", "name")))]
+  .mm_osm_read("osm_places", "places", where = where, within = within, lang = lang, crs = crs)
 }
 
 # Reads one layer of an OSM asset, optionally limited to places.
-.mm_osm_read <- function(id, layer, where = NULL, within = NULL, crs = NULL, call = rlang::caller_env()) {
+.mm_osm_read <- function(id, layer, where = NULL, within = NULL, lang = NULL, crs = NULL, call = rlang::caller_env()) {
+  lang <- .mm_arg_lang(lang, call = call)
   targets <- .mm_resolve_within(within, call = call)
   path <- .mm_asset(id, call = call)
   query <- if (!is.null(where)) sprintf("SELECT * FROM \"%s\" WHERE %s", layer, where)
@@ -82,7 +76,11 @@ mn_places <- function(type = c("city", "town", "village"), within = NULL, lang =
   if (!is.null(area)) x <- .mm_clip(x, area)
   x <- sf::st_as_sf(tibble::as_tibble(x))
   sf::st_geometry(x) <- "geometry"
-  x$name <- x$name_en
+  x$name <- switch(lang,
+    en = x$name_en,
+    mn = x$name_mn,
+    mns = ifelse(is.na(x$name_mn), x$name_en, mn_translit(x$name_mn, "mns"))
+  )
   x <- x[c("osm_id", "name", setdiff(names(x), c("osm_id", "name")))]
   .mm_tag(.mm_transform(x, crs, call = call), id)
 }
@@ -115,6 +113,10 @@ mn_places <- function(type = c("city", "town", "village"), within = NULL, lang =
   }
   base <- if (any(grepl("POLYGON", types))) "POLYGON" else "LINESTRING"
   x <- suppressWarnings(sf::st_intersection(x, area))
-  x <- suppressWarnings(sf::st_collection_extract(x, base))
+  if (any(sf::st_geometry_type(x) %in% c("GEOMETRY", "GEOMETRYCOLLECTION"))) {
+    x <- suppressWarnings(sf::st_collection_extract(x, base))
+  }
+  # Features that only touch the border leave points; drop them.
+  x <- x[sf::st_geometry_type(x) %in% c(base, paste0("MULTI", base)), ]
   sf::st_cast(x, paste0("MULTI", base))
 }

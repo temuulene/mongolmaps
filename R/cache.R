@@ -57,6 +57,9 @@ mn_cache_list <- function() {
   out$modified <- info$mtime
   assets <- .mm_assets_manifest()
   idx <- match(out$file, assets$file)
+  # Unpacked archives live in a folder named after the layer.
+  unpacked <- is.na(idx) & grepl("/", out$file, fixed = TRUE)
+  idx[unpacked] <- match(sub("/.*$", "", out$file[unpacked]), assets$id)
   out$layer <- assets$id[idx]
   out$has_checksum <- file.exists(paste0(files, ".sha256"))
   out
@@ -74,6 +77,8 @@ mn_cache_clear <- function(layers = NULL, old_versions = FALSE) {
   } else {
     m <- .mm_assets_manifest()
     layers <- .mm_expand_layers(layers, m)
+    unknown <- setdiff(layers, m$id)
+    if (length(unknown)) .mm_abort("Unknown downloadable layer{?s}: {.val {unknown}}.", "input")
     rows <- m[m$id %in% layers & m$delivery != "bundled", ]
     dir <- file.path(root, rows$data_version)
     targets <- c(
@@ -137,8 +142,8 @@ mn_cache_verify <- function(layers = NULL) {
   path <- path[exists]
   recorded <- vapply(paste0(path, ".sha256"), function(p) {
     if (file.exists(p)) readLines(p, warn = FALSE)[1] else NA_character_
-  }, character(1))
-  actual <- vapply(path, .mm_sha256, character(1))
+  }, character(1), USE.NAMES = FALSE)
+  actual <- vapply(path, .mm_sha256, character(1), USE.NAMES = FALSE)
   expected <- ifelse(is.na(m$sha256), recorded, m$sha256)
   tibble::tibble(id = m$id, path = path, expected_sha256 = expected,
                  actual_sha256 = actual, checksum_ok = !is.na(expected) & expected == actual)

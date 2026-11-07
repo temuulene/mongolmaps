@@ -68,7 +68,8 @@ Deliberately excluded levels and geographic areas are allowed.}
 Supply this explicitly for other dimensions or repeated records.}
 
 \item{value_cols}{Columns to reconcile for Ulaanbaatar. \code{NULL} uses
-numeric columns except keys and recognized dimensions.}
+numeric columns except keys and recognized dimensions. Name the columns
+for tables whose values are not numeric, such as categories.}
 
 \item{ub_policy}{\code{"prefer_city"} (default), \code{"prefer_region"},
 \code{"error"} on conflicting values, or \code{"none"} to disable reconciliation.}

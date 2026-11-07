@@ -25,3 +25,15 @@ test_that("mn_leaflet() escapes HTML in pop-ups", {
 test_that("mn_leaflet() validates `x`", {
   expect_snapshot(mn_leaflet("aimags"), error = TRUE)
 })
+
+test_that("mn_leaflet() draws points and lines", {
+  skip_if_not_installed("leaflet")
+  pts <- mn_leaflet(mn_settlements())
+  expect_true("addCircleMarkers" %in% vapply(pts$x$calls, `[[`, "", "method"))
+  lines <- mn_leaflet(mn_rivers())
+  expect_true("addPolylines" %in% vapply(lines$x$calls, `[[`, "", "method"))
+  expect_error(mn_leaflet(mn_aimags()[0, ]), class = "mongolmaps_input_error")
+  mixed <- rbind(sf::st_sf(geometry = sf::st_geometry(mn_aimags()[1, ])),
+                 sf::st_sf(geometry = sf::st_geometry(mn_settlements()[1, ])))
+  expect_error(mn_leaflet(mixed), class = "mongolmaps_input_error")
+})

@@ -288,9 +288,15 @@ mn_zonal <- function(r, x = NULL, fun = c("sum", "mean", "min", "max", "median")
   }
   v <- terra::vect(sf::st_transform(x, terra::crs(r)))
   vals <- terra::extract(r, v, fun = fun, na.rm = TRUE, ID = FALSE, exact = exact)
-  covered <- terra::extract(!is.na(r), v, fun = "sum", na.rm = TRUE, ID = FALSE, exact = exact)
   value <- vals[[1]]
-  value[is.na(covered[[1]]) | covered[[1]] == 0] <- NA_real_
+  if (fun == "sum") {
+    # A sum over no data is 0, so coverage needs its own pass.
+    covered <- terra::extract(!is.na(r), v, fun = "sum", na.rm = TRUE, ID = FALSE, exact = exact)
+    value[is.na(covered[[1]]) | covered[[1]] == 0] <- NA_real_
+  } else {
+    # The other summaries return NA, NaN or Inf when no cell has data.
+    value[!is.finite(value)] <- NA_real_
+  }
   x[[name]] <- value
   .mm_set_provenance(x, .mm_combine_provenance(x, r))
 }
@@ -339,8 +345,10 @@ mn_zonal <- function(r, x = NULL, fun = c("sum", "mean", "min", "max", "median")
 
 # Reads cloud-optimised GeoTIFFs over HTTP, cropped to `area`.
 .mm_remote_mosaic <- function(urls, area, name, call = rlang::caller_env()) {
-  if (isTRUE(getOption("mongolmaps.offline", FALSE)) || !curl::has_internet()) {
-    .mm_abort("Can't read {name} data: no internet connection or offline mode is on.", "offline", call = call)
+  # No connectivity probe: it fails on networks where HTTPS still works, and
+  # an unreachable source is reported below anyway.
+  if (isTRUE(getOption("mongolmaps.offline", FALSE))) {
+    .mm_abort("Can't read {name} data: offline mode is on.", "offline", call = call)
   }
   old <- terra::getGDALconfig(c("GDAL_DISABLE_READDIR_ON_OPEN", "GDAL_HTTP_MULTIRANGE"))
   terra::setGDALconfig("GDAL_DISABLE_READDIR_ON_OPEN", "EMPTY_DIR")
@@ -348,7 +356,7 @@ mn_zonal <- function(r, x = NULL, fun = c("sum", "mean", "min", "max", "median")
   on.exit({
     terra::setGDALconfig("GDAL_DISABLE_READDIR_ON_OPEN", old[[1]])
     terra::setGDALconfig("GDAL_HTTP_MULTIRANGE", old[[2]])
-  })
+  }, add = TRUE)
   sources <- paste0("/vsicurl/", urls)
   ok <- purrr::map_lgl(sources, \(u) !inherits(try(terra::rast(u), silent = TRUE), "try-error"))
   if (!any(ok)) {
