@@ -10,14 +10,14 @@
   map](https://temuulene.github.io/mongolmaps/dev/articles/joining-data.md):
 - [Names and
   codes](https://temuulene.github.io/mongolmaps/dev/articles/names-and-codes.md):
-- [Auditable joins and comparable
+- [Check joins and compare
   maps](https://temuulene.github.io/mongolmaps/dev/articles/audited-workflows.md):
 
 ### More
 
-- [Thematic layers: roads, water,
-  places](https://temuulene.github.io/mongolmaps/dev/articles/thematic-layers.md):
-- [Terrain, land cover, population and protected
-  areas](https://temuulene.github.io/mongolmaps/dev/articles/terrain-population.md):
-- [Bags: using boundaries from
-  NSO](https://temuulene.github.io/mongolmaps/dev/articles/bags-from-nso.md):
+- [Add roads, water and
+  settlements](https://temuulene.github.io/mongolmaps/dev/articles/thematic-layers.md):
+- [Map terrain, land cover and
+  population](https://temuulene.github.io/mongolmaps/dev/articles/terrain-population.md):
+- [Bring your own bag
+  boundaries](https://temuulene.github.io/mongolmaps/dev/articles/bags-from-nso.md):

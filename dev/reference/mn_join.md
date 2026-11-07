@@ -105,7 +105,8 @@ mn_join(
 - value_cols:
 
   Columns to reconcile for Ulaanbaatar. `NULL` uses numeric columns
-  except keys and recognized dimensions.
+  except keys and recognized dimensions. Name the columns for tables
+  whose values are not numeric, such as categories.
 
 - ub_policy:
 

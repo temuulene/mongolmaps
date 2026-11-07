@@ -2,6 +2,56 @@
 
 ## mongolmaps (development version)
 
+- [`mn_join()`](https://temuulene.github.io/mongolmaps/dev/reference/mn_join.md)
+  no longer drops khoroos or bags numbered 1 to 5 when `within` names a
+  district or soum; these numbers were taken for region codes.
+- [`mn_join()`](https://temuulene.github.io/mongolmaps/dev/reference/mn_join.md)
+  no longer fills Ulaanbaatar from the region row when `within` leaves
+  Ulaanbaatar out. The region row now also stands in for a missing
+  capital row when the table has no numeric columns, and the audit keeps
+  how that row was matched.
+- [`mn_match()`](https://temuulene.github.io/mongolmaps/dev/reference/mn_match.md)
+  keeps missing values apart from the text `"NA"`.
+- Automatic bins (`bins = <number>`) no longer add empty open-ended
+  classes at both ends of the legend. Using `bins` with `midpoint` is
+  now an error instead of silently ignoring `midpoint`. Inset maps keep
+  the level order of factor fills.
+- [`mn_erase_water()`](https://temuulene.github.io/mongolmaps/dev/reference/mn_erase_water.md)
+  and clipping with `within` handle geometry collections and features
+  that only touch the border.
+- [`mn_roads()`](https://temuulene.github.io/mongolmaps/dev/reference/mn_roads.md),
+  [`mn_railways()`](https://temuulene.github.io/mongolmaps/dev/reference/mn_roads.md)
+  and
+  [`mn_airports()`](https://temuulene.github.io/mongolmaps/dev/reference/mn_roads.md)
+  gain `lang`, and all OpenStreetMap layers follow
+  `getOption("mongolmaps.lang")`, as documented.
+- [`mn_leaflet()`](https://temuulene.github.io/mongolmaps/dev/reference/mn_leaflet.md)
+  draws point and line layers, not only polygons, and gives a clear
+  error for empty layers or layers that mix geometry types.
+- Remote 90 m elevation and 10 m land cover reads no longer stop when
+  the connectivity probe fails on networks where HTTPS still works.
+- [`mn_cache_clear()`](https://temuulene.github.io/mongolmaps/dev/reference/mn_cache_dir.md)
+  rejects unknown layers,
+  [`mn_cache_list()`](https://temuulene.github.io/mongolmaps/dev/reference/mn_cache_dir.md)
+  names the layer of unpacked archive files, and
+  [`mn_cache_verify()`](https://temuulene.github.io/mongolmaps/dev/reference/mn_cache_dir.md)
+  returns unnamed columns.
+- [`mn_bags()`](https://temuulene.github.io/mongolmaps/dev/reference/mn_bags.md)
+  keeps the aimag limit when several aimags and a soum are given, and
+  checks `path` before reading.
+- Errors from internal checks now name the function you called.
+- Fixed shifted raster pixels across empty rows or columns, including
+  terrain maps of detached Ulaanbaatar districts. Empty cells remain
+  transparent.
+- Reworked all English and Mongolian guides with clearer examples,
+  readable legends, complete district charts and an interactive khoroo
+  map. Website builds now check figures, image files, article links and
+  unexpected warnings.
+
+## mongolmaps 0.2.0
+
+CRAN release: 2026-10-25
+
 - Raster summaries now use fractional cell coverage by default; empty
   coverage returns NA. Median extraction explicitly requires exact =
   FALSE. Population export reprojection preserves the retained
@@ -53,11 +103,9 @@
   1.1.1.
 
 - [`mn_join()`](https://temuulene.github.io/mongolmaps/dev/reference/mn_join.md)
-  no longer leaves Ulaanbaatar blank for NSO tables that give the
-  capital’s figures only on the Ulaanbaatar region row (code 5) and
-  leave the capital’s own row (511) empty or out, as many health tables
-  do. At the aimag level the region rows are used for Ulaanbaatar when
-  they hold more values than the 511 rows.
+  fills missing Ulaanbaatar values from NSO region code 5 when capital
+  code 511 is empty or absent. Conflicting values prefer the capital row
+  by default with a warning; `ub_policy` makes the decision explicit.
 
 - The package has a hex logo.
 

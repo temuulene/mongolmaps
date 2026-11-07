@@ -39,5 +39,7 @@ Other mapping helpers:
 
 ``` r
 library(ggplot2)
-ggplot(mn_aimags()) + geom_sf() + theme_mn()
+ggplot(mn_aimags()) +
+  geom_sf() +
+  theme_mn()
 ```

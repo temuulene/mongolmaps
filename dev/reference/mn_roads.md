@@ -8,11 +8,11 @@ Humanitarian OpenStreetMap Team exports. Each layer is downloaded once
 ## Usage
 
 ``` r
-mn_roads(class = "main", within = NULL, crs = NULL)
+mn_roads(class = "main", within = NULL, lang = NULL, crs = NULL)
 
-mn_railways(stations = FALSE, within = NULL, crs = NULL)
+mn_railways(stations = FALSE, within = NULL, lang = NULL, crs = NULL)
 
-mn_airports(within = NULL, crs = NULL)
+mn_airports(within = NULL, lang = NULL, crs = NULL)
 
 mn_places(
   type = c("city", "town", "village"),
@@ -35,6 +35,12 @@ mn_places(
   Keep only features inside these places (names or codes of any level
   with a boundary, such as `"Ulaanbaatar"` or `"Khovd"`).
 
+- lang:
+
+  Language of the `name` column: `"en"` (English, as in NSO tables),
+  `"mn"` (Cyrillic) or `"mns"` (Latin with diacritics, MNS 5217).
+  Defaults to `getOption("mongolmaps.lang", "en")`.
+
 - crs:
 
   Coordinate reference system of the result. `NULL` (default) keeps
@@ -53,12 +59,6 @@ mn_places(
 
   Place types for `mn_places()`: any of `"city"`, `"town"`, `"village"`,
   `"hamlet"`, `"suburb"` and `"isolated_dwelling"`.
-
-- lang:
-
-  Language of the `name` column: `"en"` (English, as in NSO tables),
-  `"mn"` (Cyrillic) or `"mns"` (Latin with diacritics, MNS 5217).
-  Defaults to `getOption("mongolmaps.lang", "en")`.
 
 ## Value
 
