@@ -75,8 +75,8 @@ mn_bags <- function(aimag = NULL, soum = NULL, path = getOption("mongolmaps.bags
 #' @export
 mn_read_bags <- function(path, code_col = NULL, check_nesting = TRUE, nesting_tolerance = 0.001) {
   .mm_check_string(path)
-  if (!is.numeric(nesting_tolerance) || length(nesting_tolerance) != 1 || is.na(nesting_tolerance) ||
-        nesting_tolerance < 0 || nesting_tolerance > 1) {
+  ok_tolerance <- is.numeric(nesting_tolerance) && length(nesting_tolerance) == 1 && !is.na(nesting_tolerance)
+  if (!ok_tolerance || nesting_tolerance < 0 || nesting_tolerance > 1) {
     .mm_abort("{.arg nesting_tolerance} must be a number from 0 to 1.", "input")
   }
   if (!file.exists(path)) {
@@ -150,7 +150,9 @@ mn_read_bags <- function(path, code_col = NULL, check_nesting = TRUE, nesting_to
   bags <- sf::st_transform(geom, .mm_albers)
   share <- purrr::map_dbl(seq_len(nrow(bags)), function(i) {
     parent <- soums[soums$pcode %in% soum_pcode[i], ]
-    if (!nrow(parent)) return(1)
+    if (!nrow(parent)) {
+      return(1)
+    }
     outside <- suppressWarnings(sf::st_difference(sf::st_geometry(bags)[i], sf::st_geometry(parent)))
     sum(as.numeric(sf::st_area(outside))) / as.numeric(sf::st_area(bags[i, ]))
   })
@@ -162,7 +164,8 @@ mn_read_bags <- function(path, code_col = NULL, check_nesting = TRUE, nesting_to
         .mm_bullets(.mm_describe_each(bad)),
         "i" = "Check codes and boundary vintages, or use {.code check_nesting = FALSE}."
       ),
-      "input", call = call
+      "input",
+      call = call
     )
   }
   invisible(TRUE)

@@ -66,14 +66,16 @@ mn_leaflet <- function(x = NULL, fill = NULL, popup = NULL, lang = NULL, tiles =
   m <- leaflet::addProviderTiles(leaflet::leaflet(x), tiles)
   m <- if (identical(family, "POINT")) {
     leaflet::addCircleMarkers(
-      m, radius = 5, fillColor = colour, fillOpacity = opacity, color = "white", weight = 1,
+      m,
+      radius = 5, fillColor = colour, fillOpacity = opacity, color = "white", weight = 1,
       label = labels, popup = popups
     )
   } else if (identical(family, "LINESTRING")) {
     leaflet::addPolylines(m, color = colour, opacity = opacity, weight = 2, label = labels, popup = popups)
   } else {
     leaflet::addPolygons(
-      m, fillColor = colour, fillOpacity = opacity, color = "white", weight = 1,
+      m,
+      fillColor = colour, fillOpacity = opacity, color = "white", weight = 1,
       label = labels, popup = popups,
       highlightOptions = leaflet::highlightOptions(weight = 2, color = "#333333", bringToFront = TRUE)
     )

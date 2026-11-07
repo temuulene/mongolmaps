@@ -43,8 +43,10 @@ mn_cache_list <- function() {
   files <- list.files(root, recursive = TRUE, full.names = TRUE)
   files <- files[!grepl("\\.(sha256|part)$", files)]
   if (!length(files)) {
-    return(tibble::tibble(data_version = character(), file = character(), size_mb = numeric(), path = character(),
-                          modified = as.POSIXct(character()), layer = character(), has_checksum = logical()))
+    return(tibble::tibble(
+      data_version = character(), file = character(), size_mb = numeric(), path = character(),
+      modified = as.POSIXct(character()), layer = character(), has_checksum = logical()
+    ))
   }
   rel <- substring(normalizePath(files, winslash = "/"), nchar(normalizePath(root, winslash = "/")) + 2)
   out <- tibble::tibble(
@@ -145,8 +147,10 @@ mn_cache_verify <- function(layers = NULL) {
   }, character(1), USE.NAMES = FALSE)
   actual <- vapply(path, .mm_sha256, character(1), USE.NAMES = FALSE)
   expected <- ifelse(is.na(m$sha256), recorded, m$sha256)
-  tibble::tibble(id = m$id, path = path, expected_sha256 = expected,
-                 actual_sha256 = actual, checksum_ok = !is.na(expected) & expected == actual)
+  tibble::tibble(
+    id = m$id, path = path, expected_sha256 = expected,
+    actual_sha256 = actual, checksum_ok = !is.na(expected) & expected == actual
+  )
 }
 
 .mm_assets_manifest <- function() {

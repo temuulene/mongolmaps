@@ -72,7 +72,8 @@ test_that("strict joins and diagnostic matching are inspectable", {
   expect_equal(nrow(mn_match(character(), details = TRUE)), 0)
   expect_error(mn_join(data.frame(p = NA_character_), "p", strict = TRUE), class = "mongolmaps_join_error")
   expect_error(suppressWarnings(mn_join(data.frame(p = "Narnia"), "p", level = "aimag", strict = TRUE)),
-               class = "mongolmaps_join_error")
+    class = "mongolmaps_join_error"
+  )
   d <- data.frame(p = c("Uvs", "Uvs"), Year = c(2024, 2025), value = 1:2)
   expect_s3_class(mn_join(d, "p", strict = TRUE), "sf")
   d$Year <- 2024
@@ -140,7 +141,9 @@ test_that("cache integrity and failed publication preserve old bytes", {
   expect_false(.mm_cached_ok(old, list(sha256 = NA_character_)))
   writeLines("replacement", new)
   local_mocked_bindings(.mm_move_file = function(from, to) {
-    if (identical(from, new)) return(FALSE)
+    if (identical(from, new)) {
+      return(FALSE)
+    }
     file.rename(from, to)
   })
   expect_error(.mm_publish_files(new, old), class = "mongolmaps_cache_error")

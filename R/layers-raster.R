@@ -353,10 +353,13 @@ mn_zonal <- function(r, x = NULL, fun = c("sum", "mean", "min", "max", "median")
   old <- terra::getGDALconfig(c("GDAL_DISABLE_READDIR_ON_OPEN", "GDAL_HTTP_MULTIRANGE"))
   terra::setGDALconfig("GDAL_DISABLE_READDIR_ON_OPEN", "EMPTY_DIR")
   terra::setGDALconfig("GDAL_HTTP_MULTIRANGE", "YES")
-  on.exit({
-    terra::setGDALconfig("GDAL_DISABLE_READDIR_ON_OPEN", old[[1]])
-    terra::setGDALconfig("GDAL_HTTP_MULTIRANGE", old[[2]])
-  }, add = TRUE)
+  on.exit(
+    {
+      terra::setGDALconfig("GDAL_DISABLE_READDIR_ON_OPEN", old[[1]])
+      terra::setGDALconfig("GDAL_HTTP_MULTIRANGE", old[[2]])
+    },
+    add = TRUE
+  )
   sources <- paste0("/vsicurl/", urls)
   ok <- purrr::map_lgl(sources, \(u) !inherits(try(terra::rast(u), silent = TRUE), "try-error"))
   if (!any(ok)) {
@@ -366,7 +369,9 @@ mn_zonal <- function(r, x = NULL, fun = c("sum", "mean", "min", "max", "median")
     msg <- "Failed to read {sum(!ok)} of {length(ok)} requested {name} tiles; coverage is incomplete."
     if (!isTRUE(getOption("mongolmaps.allow_partial_tiles", FALSE))) {
       .mm_abort(c(msg, "i" = "Retry, or explicitly allow partial coverage with options(mongolmaps.allow_partial_tiles = TRUE)."),
-                "http", call = call)
+        "http",
+        call = call
+      )
     }
     .mm_warn(msg, "partial_coverage")
   }

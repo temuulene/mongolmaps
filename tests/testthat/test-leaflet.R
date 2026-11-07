@@ -33,7 +33,9 @@ test_that("mn_leaflet() draws points and lines", {
   lines <- mn_leaflet(mn_rivers())
   expect_true("addPolylines" %in% vapply(lines$x$calls, `[[`, "", "method"))
   expect_error(mn_leaflet(mn_aimags()[0, ]), class = "mongolmaps_input_error")
-  mixed <- rbind(sf::st_sf(geometry = sf::st_geometry(mn_aimags()[1, ])),
-                 sf::st_sf(geometry = sf::st_geometry(mn_settlements()[1, ])))
+  mixed <- rbind(
+    sf::st_sf(geometry = sf::st_geometry(mn_aimags()[1, ])),
+    sf::st_sf(geometry = sf::st_geometry(mn_settlements()[1, ]))
+  )
   expect_error(mn_leaflet(mixed), class = "mongolmaps_input_error")
 })

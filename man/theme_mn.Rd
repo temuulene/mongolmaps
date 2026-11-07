@@ -21,7 +21,9 @@ small grey caption.
 \examples{
 \dontshow{if (rlang::is_installed("ggplot2")) withAutoprint(\{ # examplesIf}
 library(ggplot2)
-ggplot(mn_aimags()) + geom_sf() + theme_mn()
+ggplot(mn_aimags()) +
+  geom_sf() +
+  theme_mn()
 \dontshow{\}) # examplesIf}
 }
 \seealso{

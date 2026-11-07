@@ -57,7 +57,9 @@ mn_match <- function(x,
   levels <- .mm_arg_level(level, multiple = TRUE)
   res <- .mm_match_df(x, levels = levels, within = within, fuzzy = fuzzy, max_dist = max_dist)
   .mm_report_match(res, quiet = quiet)
-  if (details) return(.mm_match_details(res))
+  if (details) {
+    return(.mm_match_details(res))
+  }
   if (to == "pcode") {
     return(res$pcode)
   }

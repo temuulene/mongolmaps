@@ -24,8 +24,10 @@ mn_provenance <- function(x) {
 #' @export
 mn_vintages <- function(layer = NULL) {
   s <- mn_sources(layer)
-  s[s$group == "admin", c("id", "data_version", "geometry_vintage", "code_vintage",
-                          "source_revision", "effective_date", "authority", "notes")]
+  s[s$group == "admin", c(
+    "id", "data_version", "geometry_vintage", "code_vintage",
+    "source_revision", "effective_date", "authority", "notes"
+  )]
 }
 
 .mm_source_metadata <- function(m) {
@@ -59,7 +61,9 @@ mn_vintages <- function(layer = NULL) {
   p$resolution <- rep_len(as.character(resolution), nrow(p))
   p$retrieved_on <- vapply(seq_len(nrow(p)), function(i) {
     row <- .mm_manifest_row(p$id[i])
-    if (is.na(row$file)) return(NA_character_)
+    if (is.na(row$file)) {
+      return(NA_character_)
+    }
     path <- file.path(mn_cache_dir(), row$data_version, row$file)
     if (file.exists(path)) as.character(as.Date(file.info(path)$mtime)) else NA_character_
   }, character(1))
@@ -69,7 +73,9 @@ mn_vintages <- function(layer = NULL) {
 
 .mm_combine_provenance <- function(...) {
   p <- dplyr::bind_rows(lapply(list(...), mn_provenance))
-  if (!nrow(p)) return(p)
+  if (!nrow(p)) {
+    return(p)
+  }
   p[!duplicated(p), , drop = FALSE]
 }
 
@@ -98,7 +104,8 @@ mn_vintages <- function(layer = NULL) {
   if (!is.null(boundary_version) && !identical(boundary_version, .mm_data_version)) {
     .mm_abort(
       c("Unsupported boundary version {.val {boundary_version}}.",
-        "i" = "Only {.val {(.mm_data_version)}} is available; see {.fn mn_vintages}. Statistical years do not select historical geometry."),
+        "i" = "Only {.val {(.mm_data_version)}} is available; see {.fn mn_vintages}. Statistical years do not select historical geometry."
+      ),
       "input",
       call = call
     )

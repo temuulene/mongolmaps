@@ -66,7 +66,8 @@ test_that("mn_bags() keeps the aimag limit when several aimags are given", {
   path <- local_bag_file()
   # Khovd soum is in Khovd aimag; asking for it within Uvs and Zavkhan finds nothing
   expect_error(mn_bags(aimag = c("Uvs", "Zavkhan"), soum = "MN8401", path = path),
-               class = "mongolmaps_input_error")
+    class = "mongolmaps_input_error"
+  )
   out <- mn_bags(aimag = c("Khovd", "Uvs"), soum = "MN8401", path = path)
   expect_true(all(out$parent_pcode == "MN8401"))
   # Jargalant is a soum name in several aimags, but only one is in Khovd or Uvs

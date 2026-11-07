@@ -135,7 +135,9 @@ mn_map <- function(x = NULL,
 #' @export
 #' @examplesIf rlang::is_installed("ggplot2")
 #' library(ggplot2)
-#' ggplot(mn_aimags()) + geom_sf() + theme_mn()
+#' ggplot(mn_aimags()) +
+#'   geom_sf() +
+#'   theme_mn()
 theme_mn <- function(base_size = 11, base_family = "") {
   rlang::check_installed("ggplot2", reason = "to use `theme_mn()`.")
   ggplot2::theme_void(base_size = base_size, base_family = base_family) +
@@ -244,8 +246,10 @@ mn_label_points <- function(x) {
       if (!is.numeric(midpoint) || length(midpoint) != 1 || !is.finite(midpoint)) {
         .mm_abort("{.arg midpoint} must be finite.", "input", call = call)
       }
-      scale <- do.call(ggplot2::scale_fill_gradient2,
-                       c(args, list(low = "#2166ac", mid = "#f7f7f7", high = "#b2182b", midpoint = midpoint)))
+      scale <- do.call(
+        ggplot2::scale_fill_gradient2,
+        c(args, list(low = "#2166ac", mid = "#f7f7f7", high = "#b2182b", midpoint = midpoint))
+      )
     }
   } else {
     args <- list(na.value = "grey85", drop = FALSE)
@@ -297,7 +301,9 @@ mn_label_points <- function(x) {
     if (context) cap <- c(cap, mn_citation("naturalearth"))
     return(paste(unique(cap), collapse = "; "))
   }
-  if (!"pcode" %in% names(x)) return(NULL)
+  if (!"pcode" %in% names(x)) {
+    return(NULL)
+  }
   layers <- "admin"
   if ("type" %in% names(x) && any(x$type %in% c("khoroo", "district"))) layers <- c(layers, "khoroos")
   if (context) layers <- c(layers, "naturalearth")
@@ -347,8 +353,10 @@ mn_label_points <- function(x) {
   } else if (layer == "hillshade") {
     ggplot2::scale_fill_gradient(low = "grey10", high = "white", guide = "none", na.value = "transparent")
   } else {
-    ggplot2::scale_fill_viridis_c(labels = .mm_number_labels, transform = trans, na.value = "transparent", limits = limits,
-                                  breaks = breaks %||% ggplot2::waiver())
+    ggplot2::scale_fill_viridis_c(
+      labels = .mm_number_labels, transform = trans, na.value = "transparent", limits = limits,
+      breaks = breaks %||% ggplot2::waiver()
+    )
   }
   cap <- if (isTRUE(caption)) {
     if (nrow(provenance)) paste(unique(provenance$attribution), collapse = "; ") else .mm_raster_caption(layer)

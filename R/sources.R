@@ -30,15 +30,19 @@ mn_sources <- function(layer = NULL) {
     m <- m[m$id %in% layer, ]
   }
   m <- .mm_source_metadata(m)
-  m[c("id", "title", "group", "delivery", "provider", "license", "license_url", "valid_on",
-      "source_url", "attribution", "notes", "data_version", "source_revision", "geometry_vintage",
-      "code_vintage", "effective_date", "authority")]
+  m[c(
+    "id", "title", "group", "delivery", "provider", "license", "license_url", "valid_on",
+    "source_url", "attribution", "notes", "data_version", "source_revision", "geometry_vintage",
+    "code_vintage", "effective_date", "authority"
+  )]
 }
 
 #' @rdname mn_sources
 #' @export
 mn_citation <- function(layers = "admin") {
   s <- if (is.character(layers)) mn_sources(layers) else mn_provenance(layers)
-  if (!nrow(s)) return("")
+  if (!nrow(s)) {
+    return("")
+  }
   paste(unique(s$attribution), collapse = "; ")
 }

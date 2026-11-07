@@ -122,14 +122,18 @@ mn_map_ub <- function(x = NULL, fill = NULL, label = FALSE, title = NULL,
   # Bin cut points derived across all panels must also be shared.
   dots <- scale$dots
   dots$caption <- FALSE
-  call <- rlang::expr(mn_map(x = !!x, fill = !!fill_q, label = !!label,
-                             title = !!title, limits = !!scale$limits, breaks = !!scale$breaks, !!!dots))
+  call <- rlang::expr(mn_map(
+    x = !!x, fill = !!fill_q, label = !!label,
+    title = !!title, limits = !!scale$limits, breaks = !!scale$breaks, !!!dots
+  ))
   rlang::eval_tidy(call)
 }
 
 .mm_layout_caption <- function(parts, dots) {
   caption <- dots$caption %||% TRUE
-  if (isFALSE(caption)) return(NULL)
+  if (isFALSE(caption)) {
+    return(NULL)
+  }
   text <- if (is.character(caption)) {
     caption
   } else {

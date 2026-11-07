@@ -118,8 +118,10 @@ mn_join <- function(data,
   # Recognized units deliberately outside the global scope are not bad keys.
   if (!is.null(targets)) {
     failed <- which(res$status %in% c("unmatched", "ambiguous"))
-    alt <- .mm_match_df(values[failed], levels = level, within = if (!is.null(parent)) parent[failed],
-                        fuzzy = fuzzy, max_dist = max_dist)
+    alt <- .mm_match_df(values[failed],
+      levels = level, within = if (!is.null(parent)) parent[failed],
+      fuzzy = fuzzy, max_dist = max_dist
+    )
     outside <- alt$status %in% c("code", "exact", "fuzzy") & !.mm_in_targets(alt$pcode, targets)
     res$pcode[failed[outside]] <- alt$pcode[outside]
     res$status[failed[outside]] <- "outside_scope"
@@ -158,7 +160,8 @@ mn_join <- function(data,
         if (n_up && n_down) " and ",
         if (n_down) "{n_down} row{?s} for smaller units ({.val {unique(other[rank > 0 & !is.na(rank)])}})",
         "."
-      )), class = "dropped_levels"
+      )),
+      class = "dropped_levels"
     )
     res$status[!is.na(other)] <- "other_level"
     action[!is.na(other)] <- "other_level"
@@ -170,7 +173,8 @@ mn_join <- function(data,
   }
   .mm_report_match(res[!res$status %in% c("other_level", "outside_scope"), ])
   bnd <- suppressMessages(mn_admin(level, within = targets, resolution = resolution, lang = lang),
-                          classes = "mongolmaps_message")
+    classes = "mongolmaps_message"
+  )
   no_geom <- setdiff(unique(res$pcode[selected]), bnd$pcode)
   if (length(no_geom)) {
     .mm_inform(
@@ -178,13 +182,16 @@ mn_join <- function(data,
         "i" = "{length(no_geom)} matched place{?s} ha{?s/ve} no boundary and {?is/are} left out:",
         .mm_bullets(.mm_describe_each(no_geom), max = 5),
         "i" = "Villages and rural bags have NSO codes but no public boundary; see {.help mongolmaps::mn_bags}."
-      ), class = "no_boundary"
+      ),
+      class = "no_boundary"
     )
     action[selected & res$pcode %in% no_geom] <- "no_boundary"
   }
   if (strict && any(action %in% c("missing", "unmatched", "ambiguous", "no_boundary") | res$status == "fuzzy")) {
-    .mm_abort("Strict join rejected unresolved, missing, fuzzy or boundaryless input rows. Inspect {.fn mn_match} with details = TRUE.",
-              "join")
+    .mm_abort(
+      "Strict join rejected unresolved, missing, fuzzy or boundaryless input rows. Inspect {.fn mn_match} with details = TRUE.",
+      "join"
+    )
   }
   data$..pcode <- res$pcode
   data <- data[selected, , drop = FALSE]
@@ -270,11 +277,17 @@ mn_join_audit <- function(x) {
       if (!length(r)) next
       if (length(r) > 1 || length(cty) > 1) {
         .mm_abort("Ulaanbaatar has repeated records within a stratum. Supply all statistical dimensions in {.arg strata}.",
-                  "join", call = call)
+          "join",
+          call = call
+        )
       }
-      conflict <- if (length(cty)) cols$values[vapply(cols$values, function(v) {
-        !is.na(data[[v]][r]) && !is.na(data[[v]][cty]) && !isTRUE(all.equal(data[[v]][r], data[[v]][cty]))
-      }, logical(1))] else character()
+      conflict <- if (length(cty)) {
+        cols$values[vapply(cols$values, function(v) {
+          !is.na(data[[v]][r]) && !is.na(data[[v]][cty]) && !isTRUE(all.equal(data[[v]][r], data[[v]][cty]))
+        }, logical(1))]
+      } else {
+        character()
+      }
       if (length(conflict)) {
         msg <- "Conflicting Ulaanbaatar region/capital values in {.val {conflict}} (input row {r})."
         if (strict || policy == "error") .mm_abort(msg, "ub_conflict", call = call) else .mm_warn(msg, "ub_conflict")
@@ -304,7 +317,8 @@ mn_join_audit <- function(x) {
     }
     if (length(used)) {
       .mm_inform(c("i" = "Using Ulaanbaatar region values to fill capital data within {length(used)} statistical stratum/strata."),
-                 class = "ub_from_region")
+        class = "ub_from_region"
+      )
     }
   }
   list(data = data, res = res, other = other, selected = selected, action = action)

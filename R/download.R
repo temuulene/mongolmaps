@@ -28,11 +28,17 @@
 
 .mm_cached_ok <- function(dest, row, verify = getOption("mongolmaps.verify_cache", TRUE)) {
   side <- paste0(dest, ".sha256")
-  if (!file.exists(dest) || !file.exists(side)) return(FALSE)
+  if (!file.exists(dest) || !file.exists(side)) {
+    return(FALSE)
+  }
   sha <- tryCatch(readLines(side, warn = FALSE)[1], error = function(e) NA_character_)
-  if (is.na(sha) || !grepl("^[0-9a-f]{64}$", sha)) return(FALSE)
+  if (is.na(sha) || !grepl("^[0-9a-f]{64}$", sha)) {
+    return(FALSE)
+  }
   expected <- row$sha256
-  if (!is.na(expected) && !identical(sha, expected)) return(FALSE)
+  if (!is.na(expected) && !identical(sha, expected)) {
+    return(FALSE)
+  }
   !isTRUE(verify) || identical(.mm_sha256(dest), sha)
 }
 
@@ -42,7 +48,8 @@
       c(
         "Can't download {.field {row$title}}: offline mode is on.",
         "i" = "Turn it off with {.code options(mongolmaps.offline = FALSE)}, or prefetch layers with {.fn mn_download}."
-      ), "offline", call = call
+      ), "offline",
+      call = call
     )
   }
   dir.create(dirname(dest), recursive = TRUE, showWarnings = FALSE)
@@ -55,13 +62,16 @@
   on.exit(unlink(c(tmp, side)), add = TRUE)
   urls <- stats::na.omit(c(.mm_asset_url(row), row$fallback_url))
   for (i in seq_along(urls)) {
-    ok <- tryCatch({
-      .mm_http_download(urls[i], tmp)
-      TRUE
-    }, mongolmaps_http_error = function(e) {
-      if (i == length(urls)) stop(e)
-      FALSE
-    })
+    ok <- tryCatch(
+      {
+        .mm_http_download(urls[i], tmp)
+        TRUE
+      },
+      mongolmaps_http_error = function(e) {
+        if (i == length(urls)) stop(e)
+        FALSE
+      }
+    )
     if (ok) break
   }
   if (!file.exists(tmp)) .mm_abort("The download did not produce a file.", "http", call = call)
@@ -70,13 +80,16 @@
     if (row$delivery == "release") {
       .mm_abort(
         c("The download of {.field {row$title}} is corrupt (checksum mismatch).",
-          "i" = "Try again; if it keeps failing, report it at {.url https://github.com/temuulene/mongolmaps/issues}."),
-        "checksum", call = call
+          "i" = "Try again; if it keeps failing, report it at {.url https://github.com/temuulene/mongolmaps/issues}."
+        ),
+        "checksum",
+        call = call
       )
     }
     .mm_warn(
       c("{.field {row$title}} changed upstream since this package version (checksum mismatch).",
-        "i" = "Using it anyway; results may differ from the documented data."),
+        "i" = "Using it anyway; results may differ from the documented data."
+      ),
       class = "checksum_warning"
     )
   }
@@ -94,19 +107,22 @@
 .mm_publish_files <- function(from, to) {
   backups <- vapply(to, function(p) tempfile(".backup-", tmpdir = dirname(p)), character(1))
   old_moved <- new_moved <- rep(FALSE, length(to))
-  err <- tryCatch({
-    for (i in seq_along(to)) {
-      if (file.exists(to[i])) {
-        if (!.mm_move_file(to[i], backups[i])) stop("Cannot stage previous cache file.")
-        old_moved[i] <- TRUE
+  err <- tryCatch(
+    {
+      for (i in seq_along(to)) {
+        if (file.exists(to[i])) {
+          if (!.mm_move_file(to[i], backups[i])) stop("Cannot stage previous cache file.")
+          old_moved[i] <- TRUE
+        }
       }
-    }
-    for (i in seq_along(to)) {
-      if (!.mm_move_file(from[i], to[i])) stop("Cannot publish replacement cache file.")
-      new_moved[i] <- TRUE
-    }
-    NULL
-  }, error = identity)
+      for (i in seq_along(to)) {
+        if (!.mm_move_file(from[i], to[i])) stop("Cannot publish replacement cache file.")
+        new_moved[i] <- TRUE
+      }
+      NULL
+    },
+    error = identity
+  )
   if (!is.null(err)) {
     unlink(to[new_moved], recursive = TRUE)
     restored <- vapply(which(old_moved), function(i) .mm_move_file(backups[i], to[i]), logical(1))
@@ -120,7 +136,9 @@
 }
 
 .mm_validate_download <- function(row, path) {
-  if (row$id != "wdpa") return(invisible(TRUE))
+  if (row$id != "wdpa") {
+    return(invisible(TRUE))
+  }
   text <- paste(readLines(path, warn = FALSE), collapse = "")
   if (grepl('"exceededTransferLimit"[[:space:]]*:[[:space:]]*true', text)) {
     .mm_abort("The protected-area service returned an incomplete page; cached data were not replaced.", "http")
@@ -167,7 +185,9 @@
 
 # Extracts zip files next to the download; returns the path to use.
 .mm_unpacked <- function(row, dest) {
-  if (!grepl("\\.zip$", dest)) return(dest)
+  if (!grepl("\\.zip$", dest)) {
+    return(dest)
+  }
   out_dir <- file.path(dirname(dest), row$id)
   inner <- sub("\\.zip$", "", basename(dest))
   target <- file.path(out_dir, inner)
@@ -176,10 +196,14 @@
   ready <- file.exists(marker) && identical(readLines(marker, warn = FALSE)[1], sha)
   if (ready && file.exists(target)) {
     content_side <- paste0(target, ".sha256")
-    if (file.exists(content_side) && identical(readLines(content_side, warn = FALSE)[1], .mm_sha256(target))) return(target)
+    if (file.exists(content_side) && identical(readLines(content_side, warn = FALSE)[1], .mm_sha256(target))) {
+      return(target)
+    }
     ready <- FALSE
   }
-  if (ready && dir.exists(out_dir) && !file.exists(target)) return(out_dir)
+  if (ready && dir.exists(out_dir) && !file.exists(target)) {
+    return(out_dir)
+  }
   lock <- .mm_lock_cache(paste0(dest, ".extract"))
   on.exit(unlink(lock, recursive = TRUE), add = TRUE)
   stage <- tempfile(".extract-", tmpdir = dirname(dest))
@@ -229,7 +253,8 @@
   if (!dir.create(lock, showWarnings = FALSE)) {
     .mm_abort(
       c("Cache asset is busy: {.path {path}}. Retry after the other session finishes.",
-        "i" = "Remove an abandoned .lock directory only when no session is using it."),
+        "i" = "Remove an abandoned .lock directory only when no session is using it."
+      ),
       "cache_busy"
     )
   }

@@ -110,9 +110,13 @@ test_that("water erasing keeps polygon parts when the difference is a collection
   expect_equal(as.character(sf::st_geometry_type(y)), "MULTIPOLYGON")
   expect_length(sf::st_geometry(y)[[1]], 2)
   local_mocked_bindings(st_difference = function(x, y, ...) {
-    sf::st_sfc(sf::st_geometrycollection(list(rect(0, 40), rect(60, 100),
-                                              sf::st_linestring(rbind(c(40, 0), c(40, 100))))),
-               crs = sf::st_crs(x))
+    sf::st_sfc(
+      sf::st_geometrycollection(list(
+        rect(0, 40), rect(60, 100),
+        sf::st_linestring(rbind(c(40, 0), c(40, 100)))
+      )),
+      crs = sf::st_crs(x)
+    )
   }, .package = "sf")
   y <- mn_erase_water(x, water)
   expect_equal(as.character(sf::st_geometry_type(y)), "MULTIPOLYGON")

@@ -19,8 +19,8 @@ mn_erase_water <- function(x, water = NULL, min_area_km2 = 0) {
   .mm_check_inset_data(x)
   water <- water %||% mn_lakes()
   .mm_check_inset_data(water)
-  if (!is.numeric(min_area_km2) || length(min_area_km2) != 1 ||
-        !is.finite(min_area_km2) || min_area_km2 < 0) {
+  ok_area <- is.numeric(min_area_km2) && length(min_area_km2) == 1 && is.finite(min_area_km2)
+  if (!ok_area || min_area_km2 < 0) {
     .mm_abort("{.arg min_area_km2} must be a nonnegative number.", "input")
   }
   crs <- sf::st_crs(x)
@@ -38,7 +38,9 @@ mn_erase_water <- function(x, water = NULL, min_area_km2 = 0) {
           d <- suppressWarnings(sf::st_collection_extract(d, "POLYGON"))
         }
         d <- d[!sf::st_is_empty(d) & sf::st_geometry_type(d) %in% c("POLYGON", "MULTIPOLYGON")]
-        if (!length(d)) return(sf::st_multipolygon())
+        if (!length(d)) {
+          return(sf::st_multipolygon())
+        }
         sf::st_cast(sf::st_union(d), "MULTIPOLYGON")[[1]]
       })
       sf::st_geometry(area) <- sf::st_sfc(geom, crs = sf::st_crs(area))
