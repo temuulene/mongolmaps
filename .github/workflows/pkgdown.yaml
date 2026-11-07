@@ -3,6 +3,7 @@ name: pkgdown
 on:
   push:
     branches: [main, master]
+  pull_request:
   release:
     types: [published]
   workflow_dispatch:
@@ -57,6 +58,7 @@ jobs:
         run: Rscript pkgdown/verify-articles.R
 
       - name: Deploy to GitHub pages
+        if: github.event_name != 'pull_request'
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           clean: false

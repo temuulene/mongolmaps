@@ -2,6 +2,9 @@
 # Run after both site builds: Rscript pkgdown/verify-articles.R [site-directory]
 args <- commandArgs(trailingOnly = TRUE)
 root <- if (length(args)) args[[1]] else "docs"
+# Development versions are built into dev/ inside each site (pkgdown's
+# development mode), leaving the released site in place.
+dev <- if (pkgdown::as_pkgdown(".")$development$in_dev) "dev" else ""
 expected <- c(
   mongolmaps = 4L, ulaanbaatar = 5L, `joining-data` = 4L,
   `names-and-codes` = 0L, `audited-workflows` = 4L,
@@ -9,8 +12,8 @@ expected <- c(
   `bags-from-nso` = 0L
 )
 problems <- character()
-for (language in c("", "mn")) {
-  article_dir <- file.path(root, language, "articles")
+for (site in c(file.path(root, dev), file.path(root, "mn", dev))) {
+  article_dir <- file.path(site, "articles")
   for (name in names(expected)) {
     path <- file.path(article_dir, paste0(name, ".html"))
     if (!file.exists(path)) {
