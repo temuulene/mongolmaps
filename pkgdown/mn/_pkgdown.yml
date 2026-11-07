@@ -1,5 +1,9 @@
 url: https://temuulene.github.io/mongolmaps/mn/
 lang: mn
+# As on the English site: development versions go to mn/dev/, leaving the
+# released Mongolian site in place.
+development:
+  mode: auto
 template:
   bootstrap: 5
   bslib:
